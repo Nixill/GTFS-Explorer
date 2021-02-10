@@ -1,15 +1,15 @@
 {
-  "executable": "GTFS-Explorer",
+  "executable": "GTFS-Explorer.FrontEnd",
   "splashscreen": {
     "imageFile": ""
   },
-  "name": "GTFS-Explorer",
+  "name": "GTFS-Explorer.FrontEnd",
   "author": "",
   "singleInstance": false,
   "environment": "Production",
   "build": {
-    "appId": "com.GTFS-Explorer.app",
-    "productName": "GTFS-Explorer",
+    "appId": "com.GTFS-Explorer.FrontEnd.app",
+    "productName": "GTFS-Explorer.FrontEnd",
     "copyright": "Copyright © 2020",
     "buildVersion": "1.0.0",
     "compression": "maximum",

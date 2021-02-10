@@ -10,7 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace GTFS_Explorer
+namespace GTFS_Explorer.FrontEnd
 {
     public class Startup
     {

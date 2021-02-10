@@ -8,7 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace GTFS_Explorer
+namespace GTFS_Explorer.FrontEnd
 {
     public class Program
     {
@@ -21,9 +21,8 @@ namespace GTFS_Explorer
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.UseElectron(args);
-                    webBuilder.UseEnvironment("Development");
                     webBuilder.UseStartup<Startup>();
+                    webBuilder.UseElectron(args);
                 });
     }
 }
