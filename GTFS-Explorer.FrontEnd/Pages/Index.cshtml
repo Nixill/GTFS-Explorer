@@ -5,6 +5,16 @@
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <div id="welcome">
+        <h3>WELCOME TO THE TRANSIT FEED EXPLORER!</h3>
+        <div id="drop-area">
+            <form class="my-form">
+                <p>Drag or upload a file to begin</p>
+                <i class="fas fa-cloud-upload-alt fa-2x"></i>
+                <input type="file" id="fileElem" multiple accept="image/*" onchange="handleFiles(this.files)">
+                <label class="button" for="fileElem">BROWSE</label>
+            </form>
+        </div>
+        <label class="submit" for="fileElem">SUBMIT</label>
+    </div>
 </div>

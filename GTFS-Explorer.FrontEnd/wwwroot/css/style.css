@@ -1,0 +1,217 @@
+﻿body {
+    font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+    background: linear-gradient( rgba(0, 0, 0,.7), rgba(0, 0, 0,.7) ), url("../images/map.png");
+    background-size: cover;
+    position: relative;
+}
+
+.header {
+    overflow: hidden;
+    background-color: transparent;
+    padding: 5px 5px;
+    width: 90%;
+    margin-left: 40px;
+}
+
+/* Style the header links */
+.header a {
+    background-color: black;
+    float: left;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    text-decoration: none;
+    font-size: 18px;
+    line-height: 25px;
+    border-radius: 4px;
+    -webkit-border-top-left-radius: 15px -webkit-border-top-right-radius:15px;
+    -moz-border-radius-topleft: 15px;
+    -moz-border-radius-topright: 15px;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+}
+/* Change the background color on mouse-over */
+.header a:hover {
+    background-color: #ddd;
+    color: black;
+}
+
+/* Style the active/current link*/
+.header a.active {
+    background-color: #ECA227;
+    color: white;
+}
+
+/* Float the link section to the right */
+.header-right {
+    float: left;
+}
+
+.floater {
+    background-color: #434344;
+    height: 450px;
+    width: 90%;
+    margin-left: 40px;
+    margin-bottom: 30px;
+}
+
+.floater-content {
+    float: left;
+    height: 80%;
+    width: 50%;
+    background-color: #EFEEED;
+    margin-top: 20px;
+    margin-left: 30px;
+}
+
+.floater input[type=text] {
+    background-color: #ccc;
+    float: right;
+    padding: 6px;
+    border: none;
+    margin-top: 40px;
+    margin-right: 40px;
+    font-size: 17px;
+}
+
+#welcome {
+    background-color: #EFEEED;
+    border: 2px solid #ECA227;
+    border-radius: 20px;
+    width: 380px;
+    height: 250px;
+    font-family: sans-serif;
+    margin: 100px auto;
+    padding: 20px;
+}
+
+#drop-area {
+    background-color: #EFEEED;
+    border: 2px dashed #087983;
+    border-radius: 20px;
+    width: 280px;
+    font-family: sans-serif;
+    margin: auto;
+    padding: 20px;
+}
+
+#drop-area.highlight {
+    border-color: purple;
+}
+
+p {
+    margin-top: 0;
+}
+
+.my-form {
+    margin-bottom: 10px;
+}
+
+.button {
+    margin-left: 100px;
+    display: inline-block;
+    padding: 10px;
+    background: #414042;
+    color: #fff;
+    cursor: pointer;
+}
+
+.button:hover {
+    background: #ddd;
+}
+
+.submit {
+    margin-left: 150px;
+    margin-top: 10px;
+    display: inline-block;
+    padding: 10px;
+    background: #A3CD3D;
+    cursor: pointer;
+}
+
+    .submit:hover {
+        background: #ddd;
+    }
+
+#fileElem {
+    display: none;
+}
+/* Style the tab */
+.tab {
+    overflow: hidden;
+    border: 1px solid #ccc;
+    background-color: transparent;
+    width: 380px;
+    height: 150px;
+    font-family: sans-serif;
+    color: white;
+    margin: 200px auto;
+    padding-top: 50px;
+    padding-right: 30px;
+    padding-bottom: 50px;
+    padding-left: 80px;
+}
+
+/* Style the buttons that are used to open the tab content */
+.tab button {
+    background-color: #ECA227;
+    float: none;
+    border: none;
+    margin: 10px;
+    color: white;
+    text-align: center;
+    outline: none;
+    cursor: pointer;
+    padding: 20px;
+    transition: 0.3s;
+    border-radius: 10px;
+    -webkit-border-top-left-radius: 15px -webkit-border-top-right-radius:15px;
+    -moz-border-radius-topleft: 15px;
+    -moz-border-radius-topright: 15px;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+}
+
+/* Change background color of buttons on hover */
+.tab button:hover {
+    background-color: #ddd;
+}
+
+/* Create an active/current tablink class */
+.tab button.active {
+    background-color: #ccc;
+}
+
+/* Style the tab content */
+.tabcontent {
+    display: none;
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    border-top: none;
+}
+
+.select-file {
+    background: #A3CD3D;
+    font-family: sans-serif;
+    color: white;
+    padding: 10px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.select-file:hover {
+    background: #ddd;
+}
+
+/* Add media queries for responsiveness - when the screen is 500px wide or less, stack the links on top of each other */
+@media screen and (max-width: 90%) {
+    .header a {
+        float: none;
+        display: block;
+        text-align: left;
+    }
+
+    .header-right {
+        float: none;
+    }
+}

@@ -1,0 +1,21 @@
+﻿@page
+@model GTFS_Explorer.FrontEnd.Pages.MainPages.StopsModel
+@{
+    ViewData["Title"] = "Stops";
+}
+
+<section>
+    <div class="header">
+        <div class="header-right">
+            <a asp-page="/MainPages/Routes">Routes</a>
+            <a class="active" asp-page="/MainPages/Stops">Stops</a>
+            <a asp-page="/MainPages/SystemMap">Map</a>
+        </div>
+    </div>
+    <div class="floater">
+        <div class="floater-content">
+            <!--Stops go here-->
+        </div>
+    </div>
+    <label class="select-file" for="selectfile">Select New File</label>
+</section>
