@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ElectronNET.API;
+using ElectronNET.API.Entities;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -61,7 +62,15 @@ namespace GTFS_Explorer.FrontEnd
 
         private async void CreateWindow()
         {
-            var window = await Electron.WindowManager.CreateWindowAsync();
+            const int MIN_HEIGHT = 780;
+            const int MIN_WIDTH = 1100;
+
+            var options = new BrowserWindowOptions();
+            options.Height = MIN_HEIGHT;
+            options.Width = MIN_WIDTH;
+
+            var window = await Electron.WindowManager.CreateWindowAsync(options);
+            window.SetMinimumSize(MIN_WIDTH, MIN_HEIGHT);
             window.OnClosed += () => {
                 Electron.App.Quit();
             };
