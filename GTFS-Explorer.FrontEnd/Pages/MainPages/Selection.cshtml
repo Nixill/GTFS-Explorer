@@ -1,0 +1,26 @@
+﻿@page
+@model GTFS_Explorer.FrontEnd.Pages.MainPages.SelectionModel
+@{
+    ViewData["Title"] = "Selection";
+}
+
+<section class="container">
+    <div class="tab">
+        <p class="text-center">File name or other meta data displayed here.</p><br>
+        <div class="d-flex justify-content-around">
+            <form method="post">
+                <button class="tablinks" 
+                        type="submit" 
+                        asp-page="/MainPages/Routes">Routes</button>
+                <button class="tablinks" 
+                        type="submit" 
+                        asp-page="/MainPages/Stops">Stops</button>
+                <button class="tablinks" 
+                        type="submit" 
+                        asp-page="/MainPages/SystemMap">System Map</button>
+            </form>
+        </div>
+    </div>
+
+    <label class="select-file" for="selectfile">Select New File</label>
+</section>

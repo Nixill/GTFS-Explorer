@@ -4,17 +4,18 @@
     ViewData["Title"] = "Home page";
 }
 
-<div class="text-center">
-    <div id="welcome">
+<div class="text-center container">
+    <div id="welcome" class="container">
         <h3>WELCOME TO THE TRANSIT FEED EXPLORER!</h3>
         <div id="drop-area">
-            <form class="my-form">
+            <form id="gtfs-file-form" class="my-form" asp-action="/MainPages/Selection">
                 <p>Drag or upload a file to begin</p>
                 <i class="fas fa-cloud-upload-alt fa-2x"></i>
-                <input type="file" id="fileElem" multiple accept="image/*" onchange="handleFiles(this.files)">
+                <input type="file" id="fileElem" @*accept="image/*" onchange="handleFiles(this.files)"*@>
                 <label class="button" for="fileElem">BROWSE</label>
             </form>
         </div>
-        <label class="submit" for="fileElem">SUBMIT</label>
+        <label class="submit" for="gtfs-file-form">SUBMIT</label>
+        @*<input class="submit" for="fileElem" type="submit" value="Submit" />*@
     </div>
 </div>

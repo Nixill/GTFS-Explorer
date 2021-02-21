@@ -1,8 +1,9 @@
 ﻿body {
     font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
-    background: linear-gradient( rgba(0, 0, 0,.7), rgba(0, 0, 0,.7) ), url("../images/map.png");
+    background: linear-gradient( rgba(0, 0, 0, .75), rgba(0, 0, 0, .8) ), url("../images/map.png");
     background-size: cover;
     position: relative;
+    height: 100%;
 }
 
 .header {
@@ -78,8 +79,8 @@
     background-color: #EFEEED;
     border: 2px solid #ECA227;
     border-radius: 20px;
-    width: 380px;
-    height: 250px;
+    width: 380px;/*
+    height: 250px;*/
     font-family: sans-serif;
     margin: 100px auto;
     padding: 20px;
@@ -129,9 +130,9 @@ p {
     cursor: pointer;
 }
 
-    .submit:hover {
-        background: #ddd;
-    }
+.submit:hover {
+    background: #ddd;
+}
 
 #fileElem {
     display: none;
@@ -141,8 +142,6 @@ p {
     overflow: hidden;
     border: 1px solid #ccc;
     background-color: transparent;
-    width: 380px;
-    height: 150px;
     font-family: sans-serif;
     color: white;
     margin: 200px auto;
@@ -165,6 +164,7 @@ p {
     padding: 20px;
     transition: 0.3s;
     border-radius: 10px;
+    text-decoration: none;
     -webkit-border-top-left-radius: 15px -webkit-border-top-right-radius:15px;
     -moz-border-radius-topleft: 15px;
     -moz-border-radius-topright: 15px;
