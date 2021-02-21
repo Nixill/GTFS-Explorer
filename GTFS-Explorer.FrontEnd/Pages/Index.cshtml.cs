@@ -11,6 +11,7 @@ namespace GTFS_Explorer.FrontEnd.Pages
     public class IndexModel : PageModel
     {
         private readonly ILogger<IndexModel> _logger;
+        public bool isValidFile { get; set; } = false;
 
         public IndexModel(ILogger<IndexModel> logger)
         {

@@ -7,15 +7,21 @@
 <div class="text-center container">
     <div id="welcome" class="container">
         <h3>WELCOME TO THE TRANSIT FEED EXPLORER!</h3>
-        <div id="drop-area">
-            <form id="gtfs-file-form" class="my-form" asp-action="/MainPages/Selection">
+        <form id="main-form" class="my-form" asp-action="/MainPages/Selection">
+            <div id="drop-area">
                 <p>Drag or upload a file to begin</p>
                 <i class="fas fa-cloud-upload-alt fa-2x"></i>
                 <input type="file" id="fileElem" @*accept="image/*" onchange="handleFiles(this.files)"*@>
                 <label class="button" for="fileElem">BROWSE</label>
-            </form>
-        </div>
-        <label class="submit" for="gtfs-file-form">SUBMIT</label>
-        @*<input class="submit" for="fileElem" type="submit" value="Submit" />*@
+            </div>
+            <div class="d-flex justify-content-center">
+
+                <button class="@(Model.isValidFile ? "btn button submit" : "btn disabled submit")"
+                        type="submit"
+                        @(Model.isValidFile ? "" : "disabled" )>
+                    SUBMIT
+                </button>
+            </div>
+        </form>
     </div>
 </div>

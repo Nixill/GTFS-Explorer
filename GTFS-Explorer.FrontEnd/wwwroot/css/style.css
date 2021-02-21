@@ -115,10 +115,12 @@ p {
     background: #414042;
     color: #fff;
     cursor: pointer;
+    border-radius: 5px;
 }
 
 .button:hover {
-    background: #ddd;
+    /*background: #ddd;*/
+    opacity: 0.7;
 }
 
 .submit {
@@ -128,6 +130,7 @@ p {
     padding: 10px;
     background: #A3CD3D;
     cursor: pointer;
+    border-radius: 5px;
 }
 
 .submit:hover {
@@ -137,6 +140,16 @@ p {
 #fileElem {
     display: none;
 }
+
+.disabled {
+    background: #ddd;
+}
+
+.disabled:hover {
+    cursor: initial;
+    background: #ddd;
+}
+
 /* Style the tab */
 .tab {
     overflow: hidden;
