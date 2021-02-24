@@ -15,7 +15,11 @@
     <div class="floater">
         <div class="floater-content">
             <!--Stops go here-->
+            <a asp-page="/StopOptions/StopSummary">Stop Options</a>
         </div>
     </div>
-    <label class="select-file" for="selectfile">Select New File</label>
+    <form>
+        <input type="file" class="hidden" id="selectfile"/>
+        <label class="select-file" for="selectfile">Select New File</label>
+    </form>
 </section>

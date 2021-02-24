@@ -16,8 +16,11 @@
         <input type="text" placeholder="Search...">
         <div class="floater-content">
             <!--Display Routes here-->
-            <a asp-page="/RouteOptions/Summary">Route Options</a>
+            <a asp-page="/RouteOptions/RouteSummary">Route Options</a>
         </div>
     </div>
-    <label class="select-file" for="selectFile">Select New File</label>
+    <form>
+        <input type="file" class="hidden" id="selectfile" />
+        <label class="select-file" for="selectfile">Select New File</label>
+    </form>
 </section>
