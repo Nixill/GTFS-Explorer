@@ -9,7 +9,7 @@
 .header {
     overflow: hidden;
     background-color: transparent;
-    padding: 5px 5px;
+    /*padding: 5px 5px;*/
     width: 90%;
     margin-left: 40px;
 }
@@ -214,6 +214,10 @@ p {
 
 .select-file:hover {
     background: #ddd;
+}
+
+.hidden {
+    display: none;
 }
 
 /* Add media queries for responsiveness - when the screen is 500px wide or less, stack the links on top of each other */

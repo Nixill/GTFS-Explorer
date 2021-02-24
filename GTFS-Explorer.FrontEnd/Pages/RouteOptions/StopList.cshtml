@@ -1,0 +1,27 @@
+﻿@page
+@model GTFS_Explorer.FrontEnd.Pages.RouteOptions.StopListModel
+@{
+    ViewData["Title"] = "StopList";
+}
+
+
+<section>
+    <div class="header">
+        <div class="header-right">
+            <a asp-page="/RouteOptions/Summary">Summary</a>
+            <a asp-page="/RouteOptions/RouteMap">Route Map</a>
+            <a class="active" asp-page="/RouteOptions/StopList">Stop List</a>
+            <a asp-page="/RouteOptions/Schedule">Schedule</a>
+        </div>
+    </div>
+    <div class="floater">
+        <div class="floater-content">
+        </div>
+    </div>
+    <form>
+        <input type="file" id="selectFile" class="hidden" />
+        <label asp-page="/Index" class="select-file" for="selectFile">Select New File</label>
+        <a asp-page="/MainPages/Routes" id="returnToRoutes" />
+        <label class="select-file" for="returnToRoutes">Return to Routes</label>
+    </form>
+</section>
