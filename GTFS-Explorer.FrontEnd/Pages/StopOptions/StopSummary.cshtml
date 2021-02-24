@@ -1,0 +1,25 @@
+﻿@page
+@model GTFS_Explorer.FrontEnd.Pages.StopOptions.StopSummaryModel
+@{
+    ViewData["Title"] = "StopSummary";
+}
+
+<section>
+    <div class="header">
+        <div class="header-right">
+            <a class="active" asp-page="/StopOptions/StopSummary">Summary</a>
+            <a asp-page="/StopOptions/StopSchedule">Stop Schedule</a>
+            <a asp-page="/StopOptions/NearbyStops">Nearby Stops</a>
+        </div>
+    </div>
+    <div class="floater">
+        <div class="floater-content">
+        </div>
+    </div>
+    <form>
+        <input type="file" id="selectFile" class="hidden" />
+        <label class="select-file" for="selectFile">Select New File</label>
+        <a asp-page="/MainPages/Stops" id="returnToStops" />
+        <label class="select-file" for="returnToStops">Return to Stops</label>
+    </form>
+</section>
