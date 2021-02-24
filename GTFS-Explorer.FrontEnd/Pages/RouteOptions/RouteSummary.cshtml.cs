@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace GTFS_Explorer.FrontEnd.Pages.RouteOptions
 {
-    public class SummaryModel : PageModel
+    public class RouteSummaryModel : PageModel
     {
         public void OnGet()
         {

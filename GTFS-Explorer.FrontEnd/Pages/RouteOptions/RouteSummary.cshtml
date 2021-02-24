@@ -1,13 +1,13 @@
 ﻿@page
-@model GTFS_Explorer.FrontEnd.Pages.RouteOptions.SummaryModel
+@model GTFS_Explorer.FrontEnd.Pages.RouteOptions.RouteSummaryModel
 @{
-    ViewData["Title"] = "Summary";
+    ViewData["Title"] = "RouteSummary";
 }
 
 <section>
     <div class="header">
         <div class="header-right">
-            <a class="active" asp-page="/RouteOptions/Summary">Summary</a>
+            <a class="active" asp-page="/RouteOptions/RouteSummary">Summary</a>
             <a asp-page="/RouteOptions/RouteMap">Route Map</a>
             <a asp-page="/RouteOptions/StopList">Stop List</a>
             <a asp-page="/RouteOptions/Schedule">Schedule</a>
@@ -18,8 +18,8 @@
         </div>
     </div>
     <form>
-        <input type="file" id="selectFile" class="hidden"/>
-        <label asp-page="/Index" class="select-file" for="selectFile">Select New File</label>
+        <input type="file" id="selectFile" class="hidden" />
+        <label class="select-file" for="selectFile">Select New File</label>
         <a asp-page="/MainPages/Routes" id="returnToRoutes" />
         <label class="select-file" for="returnToRoutes">Return to Routes</label>
     </form>
