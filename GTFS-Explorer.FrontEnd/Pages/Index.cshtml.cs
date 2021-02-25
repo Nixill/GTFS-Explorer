@@ -1,12 +1,20 @@
-﻿using Microsoft.AspNetCore.Mvc.RazorPages;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.IO;
 
 namespace GTFS_Explorer.FrontEnd.Pages
 {
     public class IndexModel : PageModel
     {
         private readonly ILogger<IndexModel> _logger;
-        public bool isValidFile { get; set; } = false;
+        public bool isValidFile { get; set; } = true;
+
+        [BindProperty]
+        public IFormFile UploadedFile { get; set; }
 
         public IndexModel(ILogger<IndexModel> logger)
         {
@@ -15,13 +23,28 @@ namespace GTFS_Explorer.FrontEnd.Pages
 
         public void OnPost()
         {
-            ValidateFile();
+            isValidFile = ValidateFile();
         }
 
-        private void ValidateFile()
+        protected bool IsValidExtension()
         {
-            //GTFS file validation here
-            //(TODO: Change isValidFile accordingly^)
+            if (UploadedFile == null)
+                return false;
+
+            string FileExt = Path.GetExtension(UploadedFile.FileName);
+            FileExt = FileExt.ToLower();
+            return FileExt == ".gtfs" || FileExt == ".zip";
+        }
+
+        protected bool ValidateFile()
+        {
+            if (!IsValidExtension())
+                return false;
+
+            //Add inside files of zip validation here
+            //Ex: contains all GTFS required files, etc..
+
+            return true;
         }
     }
 }
