@@ -13,17 +13,18 @@
                 enctype="multipart/form-data">
             <div id="drop-area">
                 <p>Drag or upload a file to begin</p>
+                @*<p id="uploadMsg">Upload File</p>*@
                 <i class="fas fa-cloud-upload-alt fa-2x"></i>
-                @if (!Model.isValidFile)
+                @if (Model.isValidFile.Item1)
                 {
-                    <p id="uploadMsg" class="text-danger">Invalid File</p>
+                    <p id="uploadMsg">@Model.UploadedFile.FileName</p>
                 }
                 else
                 {
-                    <p id="uploadMsg">Upload File</p>
+                    <p id="uploadMsg" class="text-danger">@Model.isValidFile.Item2</p>
                 }
                 <input asp-for="UploadedFile" type="file"
-                       id="fileElem" accept=".zip, .gtfs">
+                       id="fileElem" accept=".zip, .gtfs" onchange="handleFile()">
                 <label class="button" for="fileElem">BROWSE</label>
             </div>
             <div class="d-flex justify-content-center">
@@ -40,13 +41,14 @@
     @section Scripts
     {
     <script>
-        const file = document.getElementById("fileElem");
-        const uploadMsg = document.getElementById("uploadMsg");
-        file.onchange = () => {
+        const handleFile = () => {
+            const file = document.getElementById("fileElem");
+            const uploadMsg = document.getElementById("uploadMsg");
+
             let fileName = file.files[0].name
             uploadMsg.innerHTML = fileName
             uploadMsg.classList.remove("text-danger")
-        };
+        }
     </script>
     }
 </div>

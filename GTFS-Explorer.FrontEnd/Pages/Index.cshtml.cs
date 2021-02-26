@@ -2,49 +2,58 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+using GTFSExplorer.Backend;
 using System.IO;
+using System;
+using Microsoft.Extensions.Hosting;
+using System.Threading.Tasks;
+using ElectronNET.API;
+using ElectronNET.API.Entities;
+using Microsoft.AspNetCore.Hosting;
 
 namespace GTFS_Explorer.FrontEnd.Pages
 {
     public class IndexModel : PageModel
     {
         private readonly ILogger<IndexModel> _logger;
-        public bool isValidFile { get; set; } = true;
+        private readonly IWebHostEnvironment _environment;
+
+        public Tuple<bool, string> isValidFile { get; set; } 
+            = new Tuple<bool, string>(false, "");
 
         [BindProperty]
         public IFormFile UploadedFile { get; set; }
 
-        public IndexModel(ILogger<IndexModel> logger)
+        public IndexModel(ILogger<IndexModel> logger, IWebHostEnvironment env)
         {
             _logger = logger;
+            _environment = env;
         }
 
-        public void OnPost()
+        public async Task OnPostAsync()
         {
-            isValidFile = ValidateFile();
+            isValidFile = await IsValidFile();
+            if (!isValidFile.Item1 && UploadedFile != null) 
+            {
+                string targetFileName = $"{_environment.WebRootPath}\\tempFiles\\{UploadedFile.FileName}";
+                System.IO.File.Delete(targetFileName);
+            }
         }
 
-        protected bool IsValidExtension()
+        protected async Task<Tuple<bool, string>> IsValidFile()
         {
             if (UploadedFile == null)
-                return false;
+                return new Tuple<bool, string>(false, "No file uploaded!");
 
-            string FileExt = Path.GetExtension(UploadedFile.FileName);
-            FileExt = FileExt.ToLower();
-            return FileExt == ".gtfs" || FileExt == ".zip";
-        }
+            /*If running electron: yourPath\GTFS-Explorer.FrontEnd\obj\Host\bin\wwwroot\tempFiles*/
+            /*If running browser: yourPath\GTFS-Explorer.FrontEnd\wwwroot\tempFiles*/
+            string targetFileName = $"{_environment.WebRootPath}\\tempFiles\\{UploadedFile.FileName}";
+            using (var stream = new FileStream(targetFileName, FileMode.Create))
+            {
+                await UploadedFile.CopyToAsync(stream);
+            }
 
-        protected bool ValidateFile()
-        {
-            if (!IsValidExtension())
-                return false;
-
-            //Add inside files of zip validation here
-            //Ex: contains all GTFS required files, etc..
-
-            return true;
+            return Validator.IsValidGTFS(targetFileName);
         }
     }
 }

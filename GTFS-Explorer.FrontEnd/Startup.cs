@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using ElectronNET.API;
@@ -56,11 +57,11 @@ namespace GTFS_Explorer.FrontEnd
 
             if (HybridSupport.IsElectronActive)
             {
-                CreateWindow();
+                CreateWindow(env);
             }
         }
 
-        private async void CreateWindow()
+        private async void CreateWindow(IWebHostEnvironment env)
         {
             const int MIN_HEIGHT = 780;
             const int MIN_WIDTH = 1100;
@@ -72,6 +73,14 @@ namespace GTFS_Explorer.FrontEnd
             var window = await Electron.WindowManager.CreateWindowAsync(options);
             window.SetMinimumSize(MIN_WIDTH, MIN_HEIGHT);
             window.OnClosed += () => {
+                string dir = $"{env.WebRootPath}\\tempFiles";
+                if (Directory.Exists(dir))
+                {
+                    foreach(string filename in Directory.GetFiles(dir))
+                    {
+                        File.Delete(filename);
+                    }
+                }
                 Electron.App.Quit();
             };
         }

@@ -1,5 +1,7 @@
 using System;
+using System.IO;
 using System.IO.Compression;
+using System.Linq;
 
 namespace GTFSExplorer.Backend
 {
@@ -13,20 +15,21 @@ namespace GTFSExplorer.Backend
 
                 var files = file.Entries;
 
-                if (!files.Contains("agency.txt")) return new Tuple<bool, string>(false, "No agency.txt file");
-                if (!files.Contains("stops.txt")) return new Tuple<bool, string>(false, "No stops.txt file");
-                if (!files.Contains("routes.txt")) return new Tuple<bool, string>(false, "No routes.txt file");
-                if (!files.Contains("trips.txt")) return new Tuple<bool, string>(false, "No trips.txt file");
-                if (!files.Contains("stop_times.txt")) return new Tuple<bool, string>(false, "No stop_times.txt file");
-                if (!(files.Contains("calendar.txt") || files.Contains("calendar_dates.txt"))) return new Tuple<bool, string>(false, "No calendar.txt or calendar_dates.txt file");
+                if (file.GetEntry("agency.txt") == null) return new Tuple<bool, string>(false, "No agency.txt file");
+                if (file.GetEntry("stops.txt") == null) return new Tuple<bool, string>(false, "No stops.txt file");
+                if (file.GetEntry("routes.txt") == null) return new Tuple<bool, string>(false, "No routes.txt file");
+                if (file.GetEntry("trips.txt") == null) return new Tuple<bool, string>(false, "No trips.txt file");
+                if (file.GetEntry("stop_times.txt") == null) return new Tuple<bool, string>(false, "No stop_times.txt file");
+                if ((file.GetEntry("calendar.txt") == null) || file.GetEntry("calendar_dates.txt") == null)
+                        return new Tuple<bool, string>(false, "No calendar.txt or calendar_dates.txt file");
 
                 return new Tuple<bool, string>(true, "");
             }
-            catch (InvalidDataException ex)
+            catch (InvalidDataException)
             {
                 return new Tuple<bool, string>(false, "Not a zip file");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return new Tuple<bool, string>(false, "Unknown error occurred");
             }
