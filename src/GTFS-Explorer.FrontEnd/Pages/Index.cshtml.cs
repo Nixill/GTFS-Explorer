@@ -30,14 +30,16 @@ namespace GTFS_Explorer.FrontEnd.Pages
             _environment = env;
         }
 
-        public async Task OnPostAsync()
+        public async Task<IActionResult> OnPostAsync()
         {
             isValidFile = await IsValidFile();
             if (!isValidFile.Item1 && UploadedFile != null) 
             {
                 string targetFileName = $"{_environment.WebRootPath}\\tempFiles\\{UploadedFile.FileName}";
                 System.IO.File.Delete(targetFileName);
+                return null;
             }
+            return RedirectToPage("/MainPages/Selection");
         }
 
         protected async Task<Tuple<bool, string>> IsValidFile()
