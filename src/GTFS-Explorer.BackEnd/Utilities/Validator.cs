@@ -3,7 +3,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 
-namespace GTFSExplorer.Backend
+namespace GTFS_Explorer.BackEnd.Utilities
 {
     public class Validator
     {
@@ -20,8 +20,8 @@ namespace GTFSExplorer.Backend
                 if (file.GetEntry("routes.txt") == null) return new Tuple<bool, string>(false, "No routes.txt file");
                 if (file.GetEntry("trips.txt") == null) return new Tuple<bool, string>(false, "No trips.txt file");
                 if (file.GetEntry("stop_times.txt") == null) return new Tuple<bool, string>(false, "No stop_times.txt file");
-                if ((file.GetEntry("calendar.txt") == null) || file.GetEntry("calendar_dates.txt") == null)
-                        return new Tuple<bool, string>(false, "No calendar.txt or calendar_dates.txt file");
+                if (file.GetEntry("calendar.txt") == null || file.GetEntry("calendar_dates.txt") == null)
+                    return new Tuple<bool, string>(false, "No calendar.txt or calendar_dates.txt file");
 
                 return new Tuple<bool, string>(true, "");
             }
