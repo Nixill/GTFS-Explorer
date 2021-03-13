@@ -16,6 +16,10 @@
         <input type="text" placeholder="Search...">
         <div class="floater-content">
             <!--Display Routes here-->
+            @foreach (var route in Model.Routes)
+            {
+                <p>@route.LongName</p>
+            }
             <a asp-page="/RouteOptions/RouteSummary">Route Options</a>
         </div>
     </div>
