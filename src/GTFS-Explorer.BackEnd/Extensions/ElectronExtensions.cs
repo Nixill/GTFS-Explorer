@@ -18,7 +18,7 @@ namespace GTFS_Explorer.BackEnd.Extensions
         }
 
         /// <summary>
-        /// Extensions to get the directory of where the GTFS files are copied to
+        /// Extension to create and get the directory of where the GTFS files are copied to
         /// </summary>
         /// <param name="env">Host Environment</param>
         /// <returns>Directory of GTFS files storage</returns>
@@ -35,20 +35,33 @@ namespace GTFS_Explorer.BackEnd.Extensions
         }
 
         /// <summary>
-        /// Extension to delete the GTFS files from the GTFS storage directory
+        /// Extension to delete the GTFS storage directory
         /// </summary>
         /// <param name="env">Host Environment</param>
-        public static void DeleteStoredGTFSFiles(this App app, IWebHostEnvironment env)
+        public static void DeleteGTFSFileDir(this App app, IWebHostEnvironment env)
         {
             var dir = Electron.App.GetGTFSFileDir(env);
-            if (Directory.Exists(dir))
+            if(Directory.Exists(dir))
+                DeleteDirectory(dir);
+        }
+
+        private static void DeleteDirectory(string target_dir)
+        {
+            string[] files = Directory.GetFiles(target_dir);
+            string[] dirs = Directory.GetDirectories(target_dir);
+
+            foreach (string file in files)
             {
-                foreach (string filename in Directory.GetFiles(dir))
-                {
-                    //Directory.Delete(Path.Combine(dir, filename), true);
-                    File.Delete(filename);
-                }
+                File.SetAttributes(file, FileAttributes.Normal);
+                File.Delete(file);
             }
+
+            foreach (string dir in dirs)
+            {
+                DeleteDirectory(dir);
+            }
+
+            Directory.Delete(target_dir, false);
         }
     }
 }

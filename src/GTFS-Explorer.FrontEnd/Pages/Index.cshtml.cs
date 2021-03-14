@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using GTFS_Explorer.BackEnd.Utilities;
 using ElectronNET.API;
-using ElectronNET.API.Entities;
 using GTFS_Explorer.BackEnd.Extensions;
 
 namespace GTFS_Explorer.FrontEnd.Pages
@@ -32,7 +31,7 @@ namespace GTFS_Explorer.FrontEnd.Pages
 
         public async Task<IActionResult> OnPostAsync()
         {
-            if(UploadedFile == null)
+            if (UploadedFile == null)
             {
                 isValidFile = new Tuple<bool, string>(false, "No file uploaded!");
                 return Page();
@@ -51,6 +50,7 @@ namespace GTFS_Explorer.FrontEnd.Pages
                 System.IO.File.Delete(file);
                 return null;
             }
+
             return RedirectToPage("/MainPages/Selection");
         }
     }

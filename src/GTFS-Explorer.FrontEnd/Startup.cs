@@ -82,7 +82,7 @@ namespace GTFS_Explorer.FrontEnd
 
             Electron.App.BeforeQuit += (x) =>
             {
-                Electron.App.DeleteStoredGTFSFiles(env);
+                Electron.App.DeleteGTFSFileDir(env);
                 return Task.CompletedTask;
             };
         }
