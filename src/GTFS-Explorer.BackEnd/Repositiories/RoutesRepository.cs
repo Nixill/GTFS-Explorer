@@ -32,7 +32,7 @@ namespace GTFS_Explorer.BackEnd.Readers
             return dict;
         }
 
-        public Route GetRoute(int id)
+        public Route GetRouteById(string id)
         {
             return _feedReader.Feed.Routes.Get(id);
         }

@@ -50,10 +50,9 @@
 
 .floater {
     background-color: #434344;
-    height: 450px;
+    height: 525px;
     width: 90%;
     margin-left: 40px;
-    margin-bottom: 30px;
 }
 
 .floater-content {
@@ -222,19 +221,39 @@ p {
 }
 
 /*Style Routes Table*/
-.routes-tbody tr{
+.routes-tbody tr {
     cursor: pointer;
 }
 /*End Style Routes Table*/
+
+/*Style of all bordered tables*/
+.table-bordered > thead > tr > th,
+.table-bordered > thead > tr > td {
+    border: 2px solid #f8f9fa;
+    vertical-align: central;
+}
+
+.table-bordered > tbody > tr > th,
+.table-bordered > tbody > tr > td {
+    border: 2px solid #f8f9fa;
+    vertical-align: central;
+}
+
+.bootstrap-table-override > td, 
+.bootstrap-table-override > th {
+    vertical-align: central;
+}
+
+/*.table-bordered td, .table-bordered th {
+    border: 2px solid #f8f9fa;
+}*/
+/*End Style of all bordered tables*/
 
 /*Custom Scrollbar From: 
     https://css-tricks.com/the-current-state-of-styling-scrollbars/
 */
 .scrollbar {
-    /*margin-left: 30px;*/
     float: left;
-    /*height: 300px;
-    width: 65px;*/
     background: #F5F5F5;
     overflow-y: scroll;
     margin-bottom: 25px;

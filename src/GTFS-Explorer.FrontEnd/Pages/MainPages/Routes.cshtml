@@ -25,7 +25,7 @@
                 <tbody class="routes-tbody">
                     @foreach (var route in Model.Routes)
                     {
-                        <tr onclick="location.href = '@(Url.Page("/RouteOptions/RouteSummary", new { id = route.Id }))'">
+                        <tr onclick="location.href = '@(Url.Page("/RouteOptions/RouteSummary", new { routeId = route.Id }))'">
                             <td scope="row">
                                 @route.Id
                             </td>

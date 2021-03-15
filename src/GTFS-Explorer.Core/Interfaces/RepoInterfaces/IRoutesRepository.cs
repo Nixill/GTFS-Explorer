@@ -7,7 +7,7 @@ namespace GTFS_Explorer.Core.Interfaces.RepoInterfaces
     public interface IRoutesRepository
     {
         Dictionary<Agency, List<Route>> GetAllRoutes();
-        Route GetRoute(int id);
+        Route GetRouteById(string id);
         List<Route> GetRoutesList();
     }
 }

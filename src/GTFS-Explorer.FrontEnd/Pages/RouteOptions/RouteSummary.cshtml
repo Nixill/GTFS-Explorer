@@ -1,22 +1,110 @@
-﻿@page
+﻿@page "{routeId}"
 @model GTFS_Explorer.FrontEnd.Pages.RouteOptions.RouteSummaryModel
 @{
     ViewData["Title"] = "RouteSummary";
 }
 
+
+<link rel="stylesheet" href="~/css/style.css" />
 <section>
     <div class="header">
         <div class="header-right">
-            <a class="active" asp-page="/RouteOptions/RouteSummary">Summary</a>
-            <a asp-page="/RouteOptions/RouteMap">Route Map</a>
+            <a class="active"
+               asp-page="/RouteOptions/RouteSummary"
+               asp-route-routeId="@Model.RouteId">Summary</a>
+            <a asp-page="/RouteOptions/RouteMap" asp-route-routeId="@Model.RouteId">Route Map</a>
             <a asp-page="/RouteOptions/StopList">Stop List</a>
             <a asp-page="/RouteOptions/Schedule">Schedule</a>
         </div>
     </div>
-    <div class="floater">
-        <div class="floater-content">
+    <div class="d-flex align-items-center">
+        <div class="container floater">
+            <div class="row ml-2 mt-3 mr-2 d-flex justify-content-center">
+                <div class="col-md-5 p-md-5">
+                    @if (string.IsNullOrEmpty(Model.Route.Description))
+                    {
+                        <p class="text-light">No description provided!</p>
+                    }
+                    else
+                    {
+                        <p class="text-light">@Model.Route.Description</p>
+                    }
+
+                    @if (string.IsNullOrEmpty(Model.Route.Url))
+                    {
+                        <p class="text-light">No URL provided!</p>
+                    }
+                    else
+                    {
+                        <a class="text-light" 
+                           href="@Model.Route.Url">@Model.Route.Url</a>
+                    }
+                </div>
+                <div class="col p-2"
+                     style="background-color: #EFEEED;">
+                    <div class="d-flex justify-content-between">
+                        <h5 style="color: #087983;"
+                            class="pt-2">Route Stats</h5>
+                        <input type="datetime-local" />
+                    </div>
+                    <table class="table table-bordered mt-2">
+                        <thead>
+                            <tr>
+                                <td></td>
+                                <td class="text-center">Avg</td>
+                                <td class="text-center">Min</td>
+                                <td class="text-center">Max</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="text-center pt-4">Headway</td>
+                                <!--Info will be based on stats-->
+                                <td class="text-center">19<br />min</td>
+                                <td class="text-center">15<br />min</td>
+                                <td class="text-center">60<br />min</td>
+                            </tr>
+                            <tr>
+                                <td class="text-center pt-4">Trip Length</td>
+                                <!--Info will be based on stats-->
+                                <td class="text-center">60<br />min</td>
+                                <td class="text-center">50<br />min</td>
+                                <td class="text-center">65<br />min</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="row mx-auto p-3 d-flex justify-content-center">
+                <div class="col"
+                     style="background-color: #EFEEED;">
+                    <div class="d-flex justify-content-between">
+                        <h5 style="color: #087983;"
+                            class="pt-2">Running Times</h5>
+                    </div>
+                    <table class="table table-bordered pt-4">
+                        <thead>
+                            <tr>
+                                <td>Route Direction</td>
+                                <td>Route Runs</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>To Grand River & Grandview</td>
+                                <td>04:00 - 03:50 (+1 day)</td>
+                            </tr>
+                            <tr>
+                                <td>To Beaubien & Jefferson</td>
+                                <td>04:00 - 03:50 (+1 day)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
+
     <form>
         <input type="file" id="selectFile" class="hidden" />
         <label class="select-file" for="selectFile">Select New File</label>

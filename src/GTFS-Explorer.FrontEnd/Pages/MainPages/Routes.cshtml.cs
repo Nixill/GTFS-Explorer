@@ -12,6 +12,7 @@ namespace GTFS_Explorer.FrontEnd.Pages.MainPages
     public class RoutesModel : PageModel
     {
         private readonly IRoutesRepository _routesRepository;
+
         public List<Route> Routes = new List<Route>();
 
         public RoutesModel(IRoutesRepository routesRepository)
@@ -20,10 +21,9 @@ namespace GTFS_Explorer.FrontEnd.Pages.MainPages
             Routes = _routesRepository.GetRoutesList();
         }
 
-
         public void OnGet()
         {
-            Routes = _routesRepository.GetRoutesList();
+            //Routes = await Task.Run(_routesRepository.GetRoutesList);
         }
     }
 }

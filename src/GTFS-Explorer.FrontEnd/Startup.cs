@@ -67,8 +67,8 @@ namespace GTFS_Explorer.FrontEnd
 
         private async void CreateWindow(IWebHostEnvironment env)
         {
-            const int MIN_HEIGHT = 780;
-            const int MIN_WIDTH = 1100;
+            const int MIN_HEIGHT = 800;
+            const int MIN_WIDTH = 1150;
 
             var options = new BrowserWindowOptions();
             options.Height = MIN_HEIGHT;
