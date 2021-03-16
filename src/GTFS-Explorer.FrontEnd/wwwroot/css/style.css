@@ -287,6 +287,20 @@ p {
 }
 /*End Custom ScrollBar*/
 
+/*Fader Screen (When loading file)*/
+#fader {
+    opacity: 0.5;
+    background: black;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: none;
+}
+/*Fader Screen (When loading file)*/
+
+
 /* Add media queries for responsiveness - when the screen is 500px wide or less, stack the links on top of each other */
 @media screen and (max-width: 90%) {
     .header a {
