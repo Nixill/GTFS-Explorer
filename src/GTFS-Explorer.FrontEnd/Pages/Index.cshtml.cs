@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Hosting;
 using GTFS_Explorer.BackEnd.Utilities;
 using ElectronNET.API;
 using GTFS_Explorer.BackEnd.Extensions;
+using System.Linq;
+using ElectronNET.API.Entities;
 
 namespace GTFS_Explorer.FrontEnd.Pages
 {
@@ -49,6 +51,22 @@ namespace GTFS_Explorer.FrontEnd.Pages
             {
                 System.IO.File.Delete(file);
                 return null;
+            }
+
+            if (HybridSupport.IsElectronActive)
+            {
+                var mainWindow = Electron.WindowManager.BrowserWindows.First();
+                var options = new OpenDialogOptions
+                {
+                    Properties = new OpenDialogProperty[]
+                    {
+                        OpenDialogProperty.openDirectory
+                    }
+                };
+                var folderPath = await Electron.Dialog.ShowOpenDialogAsync(mainWindow, options);
+
+                var resultFromTypeScript = await Electron.HostHook.CallAsync<string>("create-excel-file", folderPath);
+                //await Electron.Dialog.ShowMessageBoxAsync("Loading File...");
             }
 
             return RedirectToPage("/MainPages/Selection");

@@ -36,7 +36,7 @@ namespace GTFS_Explorer.BackEnd.Lookups
 
       var stops = feed.Stops;
 
-      
+      return null;
     }
   }
 

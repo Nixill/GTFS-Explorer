@@ -13,9 +13,61 @@
         </div>
     </div>
     <div class="floater">
-        <div class="floater-content">
-            <!--Stops go here-->
-            <a asp-page="/StopOptions/StopSummary">Stop Options</a>
+        <form class="rad d-flex justify-content-between floater-background-color ">
+            <div class="form-group">
+                <label>Major Stops</label>
+                <input type="radio" />
+            </div>
+            <div class="form-group">
+                <label>Local Stops</label>
+                <input type="radio" />
+            </div>
+        </form>
+
+        <div class="floater-content scrollbar d-flex justify-content-around"
+             id="style-1">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">Stop #</th>
+                        <th scope="col">Stop Name</th>
+                    </tr>
+                </thead>
+                <tbody class="routes-tbody">
+                    @*@foreach (var stop in Model.StopsDictionary)
+                    {
+                        <tr onclick="location.href = '@(Url.Page("/StopOptions/StopSummary", new { stopId = route.Id }))'">
+                            <td scope="row">
+                                Stop Id here
+                            </td>
+                            <td scope="row">
+                                Stop Name here
+                            </td>
+                        </tr>
+                    }*@
+
+                    <tr onclick="location.href = '@(Url.Page("/StopOptions/StopSummary"))'">
+                        <td scope="row">
+                            Stop Id here
+                        </td>
+                        <td scope="row">
+                            Stop Name here
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div>
+            <input type="text" placeholder="Search...">
+            <label style="color: #A3CD3D">Direction</label>
+            <button type="submit"
+                    class="button">
+                East
+            </button>
+            <button type="submit"
+                    class="active">
+                West
+            </button>
         </div>
     </div>
     <form>
