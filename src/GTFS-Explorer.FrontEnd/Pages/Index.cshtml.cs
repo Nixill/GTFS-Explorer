@@ -7,6 +7,8 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using GTFS_Explorer.BackEnd.Utilities;
+using ElectronNET.API;
+using GTFS_Explorer.BackEnd.Extensions;
 
 namespace GTFS_Explorer.FrontEnd.Pages
 {
@@ -29,30 +31,27 @@ namespace GTFS_Explorer.FrontEnd.Pages
 
         public async Task<IActionResult> OnPostAsync()
         {
-            isValidFile = await IsValidFile();
-            if (!isValidFile.Item1 && UploadedFile != null) 
-            {
-                string targetFileName = $"{_environment.WebRootPath}\\tempFiles\\{UploadedFile.FileName}";
-                System.IO.File.Delete(targetFileName);
-                return null;
-            }
-            return RedirectToPage("/MainPages/Selection");
-        }
-
-        protected async Task<Tuple<bool, string>> IsValidFile()
-        {
             if (UploadedFile == null)
-                return new Tuple<bool, string>(false, "No file uploaded!");
+            {
+                isValidFile = new Tuple<bool, string>(false, "No file uploaded!");
+                return Page();
+            }
 
-            /*If running electron: yourPath\GTFS-Explorer.FrontEnd\obj\Host\bin\wwwroot\tempFiles*/
-            /*If running browser: yourPath\GTFS-Explorer.FrontEnd\wwwroot\tempFiles*/
-            string targetFileName = $"{_environment.WebRootPath}\\tempFiles\\{UploadedFile.FileName}";
-            using (var stream = new FileStream(targetFileName, FileMode.Create))
+            string file = Electron.App.GetGTFSFilePath(_environment, UploadedFile.FileName);
+            
+            using (var stream = new FileStream(file, FileMode.Create))
             {
                 await UploadedFile.CopyToAsync(stream);
             }
 
-            return Validator.IsValidGTFS(targetFileName);
+            isValidFile = Validator.IsValidGTFS(file);
+            if (!isValidFile.Item1 && UploadedFile != null)
+            {
+                System.IO.File.Delete(file);
+                return null;
+            }
+
+            return RedirectToPage("/MainPages/Selection");
         }
     }
 }

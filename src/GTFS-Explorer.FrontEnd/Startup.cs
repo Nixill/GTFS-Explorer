@@ -1,6 +1,8 @@
 using System.IO;
+using System.Threading.Tasks;
 using ElectronNET.API;
 using ElectronNET.API.Entities;
+using GTFS_Explorer.BackEnd.Extensions;
 using GTFS_Explorer.FrontEnd.Installers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -12,12 +14,14 @@ namespace GTFS_Explorer.FrontEnd
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IWebHostEnvironment environment)
         {
             Configuration = configuration;
+            HostingEnvironment = environment;
         }
 
         public IConfiguration Configuration { get; }
+        public IWebHostEnvironment HostingEnvironment { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -26,7 +30,7 @@ namespace GTFS_Explorer.FrontEnd
              * Now this method takes care of installing services for us 
              * everytime we create an Installer class!
              */
-            services.InstallServicesInAssembly(Configuration);
+            services.InstallServicesInAssembly(Configuration, HostingEnvironment);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -63,8 +67,8 @@ namespace GTFS_Explorer.FrontEnd
 
         private async void CreateWindow(IWebHostEnvironment env)
         {
-            const int MIN_HEIGHT = 780;
-            const int MIN_WIDTH = 1100;
+            const int MIN_HEIGHT = 800;
+            const int MIN_WIDTH = 1150;
 
             var options = new BrowserWindowOptions();
             options.Height = MIN_HEIGHT;
@@ -73,15 +77,13 @@ namespace GTFS_Explorer.FrontEnd
             var window = await Electron.WindowManager.CreateWindowAsync(options);
             window.SetMinimumSize(MIN_WIDTH, MIN_HEIGHT);
             window.OnClosed += () => {
-                string dir = $"{env.WebRootPath}\\tempFiles";
-                if (Directory.Exists(dir))
-                {
-                    foreach(string filename in Directory.GetFiles(dir))
-                    {
-                        File.Delete(filename);
-                    }
-                }
                 Electron.App.Quit();
+            };
+
+            Electron.App.BeforeQuit += (x) =>
+            {
+                Electron.App.DeleteGTFSFileDir(env);
+                return Task.CompletedTask;
             };
         }
     }

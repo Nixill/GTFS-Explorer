@@ -6,13 +6,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Readers\" />
-    <Folder Include="Repositiories\" />
+    <PackageReference Include="CS-NixLib" Version="0.7.3" />
+    <PackageReference Include="ElectronNET.API" Version="9.31.2" />
+    <PackageReference Include="GTFS" Version="1.7.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="ElectronNET.API" Version="9.31.2" />
-    <PackageReference Include="GTFS" Version="1.7.1" />
+    <ProjectReference Include="..\GTFS-Explorer.Core\GTFS-Explorer.Core.csproj" />
   </ItemGroup>
 
 </Project>

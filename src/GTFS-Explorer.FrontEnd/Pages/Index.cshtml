@@ -13,7 +13,6 @@
                 enctype="multipart/form-data">
             <div id="drop-area">
                 <p>Drag or upload a file to begin</p>
-                @*<p id="uploadMsg">Upload File</p>*@
                 <i class="fas fa-cloud-upload-alt fa-2x"></i>
                 @if (Model.isValidFile.Item1)
                 {
@@ -30,6 +29,7 @@
             <div class="d-flex justify-content-center">
                 <button class="btn button submit"
                         type="submit"
+                        id="main-submit"
                         @*(Model.isValidFile ? "" : "disabled" )*@
                         @*class="@(Model.isValidFile ? "btn button submit" : "btn disabled submit")"*@>
                     SUBMIT
@@ -52,4 +52,3 @@
     </script>
     }
 </div>
-
