@@ -70,11 +70,12 @@ namespace GTFS_Explorer.FrontEnd
             const int MIN_HEIGHT = 800;
             const int MIN_WIDTH = 1150;
 
-            var options = new BrowserWindowOptions();
-            options.Height = MIN_HEIGHT;
-            options.Width = MIN_WIDTH;
+            var window = await Electron.WindowManager.CreateWindowAsync(new BrowserWindowOptions
+            {
+                Height = MIN_HEIGHT,
+                Width = MIN_WIDTH
+            });
 
-            var window = await Electron.WindowManager.CreateWindowAsync(options);
             window.SetMinimumSize(MIN_WIDTH, MIN_HEIGHT);
             window.OnClosed += () => {
                 Electron.App.Quit();

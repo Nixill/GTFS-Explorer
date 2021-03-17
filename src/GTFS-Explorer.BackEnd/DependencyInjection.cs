@@ -1,6 +1,5 @@
-﻿using ElectronNET.API;
-using GTFS_Explorer.BackEnd.Extensions;
-using GTFS_Explorer.BackEnd.Readers;
+﻿using GTFS_Explorer.BackEnd.Readers;
+using GTFS_Explorer.BackEnd.Repositiories;
 using GTFS_Explorer.Core.Interfaces.RepoInterfaces;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,6 +20,7 @@ namespace GTFS_Explorer.BackEnd
              */
             services.AddSingleton(provider => new GTFSFeedReader(env));
             services.AddScoped<IRoutesRepository, RoutesRepository>();
+            services.AddScoped<IStopsRepository, StopsRepository>();
             return services;
         }
     }
