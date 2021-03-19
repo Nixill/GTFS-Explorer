@@ -17,7 +17,7 @@ namespace GTFS_Explorer.BackEnd.Extensions
         /// <param name="separator">A custom separator.</param>
         /// <typeparam name="T">The GTFS feed type.</typeparam>
         /// <returns>The GTFS feed.</returns>
-        public static T Read<T>(this GTFSReader<T> reader, string path, char? separator = null) where T : IGTFSFeed, new()
+        public static T ReadFeed<T>(this GTFSReader<T> reader, string path, char? separator = null) where T : IGTFSFeed, new()
         {
             if (path == null) throw new ArgumentNullException(nameof(path));
 
