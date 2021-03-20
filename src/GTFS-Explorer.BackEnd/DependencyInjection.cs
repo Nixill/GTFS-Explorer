@@ -1,5 +1,7 @@
 ﻿using GTFS_Explorer.BackEnd.Readers;
 using GTFS_Explorer.BackEnd.Repositiories;
+using GTFS_Explorer.BackEnd.Utilities;
+using GTFS_Explorer.Core.Interfaces;
 using GTFS_Explorer.Core.Interfaces.RepoInterfaces;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,6 +21,7 @@ namespace GTFS_Explorer.BackEnd
              * throughout the whole application. Otherwise our app would be slow.
              */
             services.AddSingleton(provider => new GTFSFeedReader(env));
+            services.AddSingleton<IEventRegistry, EventRegistry>(provider => new EventRegistry(env));
             services.AddScoped<IRoutesRepository, RoutesRepository>();
             services.AddScoped<IStopsRepository, StopsRepository>();
             return services;

@@ -3,6 +3,8 @@ using System.Threading.Tasks;
 using ElectronNET.API;
 using ElectronNET.API.Entities;
 using GTFS_Explorer.BackEnd.Extensions;
+using GTFS_Explorer.Core.Interfaces;
+using GTFS_Explorer.FrontEnd.ElectronEvents;
 using GTFS_Explorer.FrontEnd.Installers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -14,7 +16,9 @@ namespace GTFS_Explorer.FrontEnd
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration, IWebHostEnvironment environment)
+        public Startup(
+            IConfiguration configuration, 
+            IWebHostEnvironment environment)
         {
             Configuration = configuration;
             HostingEnvironment = environment;
@@ -22,6 +26,7 @@ namespace GTFS_Explorer.FrontEnd
 
         public IConfiguration Configuration { get; }
         public IWebHostEnvironment HostingEnvironment { get; }
+        private IEventRegistry EventRegistry { get; set; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -34,8 +39,13 @@ namespace GTFS_Explorer.FrontEnd
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(
+            IApplicationBuilder app, 
+            IWebHostEnvironment env,
+            IEventRegistry eventRegistry)
         {
+            EventRegistry = eventRegistry;
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -61,11 +71,11 @@ namespace GTFS_Explorer.FrontEnd
 
             if (HybridSupport.IsElectronActive)
             {
-                CreateWindow(env);
+                CreateWindow();
             }
         }
 
-        private async void CreateWindow(IWebHostEnvironment env)
+        private async void CreateWindow()
         {
             const int MIN_HEIGHT = 800;
             const int MIN_WIDTH = 1150;
@@ -81,11 +91,7 @@ namespace GTFS_Explorer.FrontEnd
                 Electron.App.Quit();
             };
 
-            Electron.App.BeforeQuit += (x) =>
-            {
-                Electron.App.DeleteGTFSFileDir(env);
-                return Task.CompletedTask;
-            };
+            EventRegistry.RegisterEvents();
         }
     }
 }

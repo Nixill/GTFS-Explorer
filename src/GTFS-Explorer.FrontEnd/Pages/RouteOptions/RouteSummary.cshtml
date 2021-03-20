@@ -36,15 +36,16 @@
                     }
                     else
                     {
-                        <a class="text-light" 
-                           href="@Model.Route.Url">@Model.Route.Url</a>
+                        <a class="text-light" id="route-link">@Model.Route.Url</a>
                     }
                 </div>
                 <div class="col p-2"
                      style="background-color: #EFEEED;">
                     <div class="d-flex justify-content-between">
                         <h5 style="color: #087983;"
-                            class="pt-2">Route Stats</h5>
+                            class="pt-2">
+                            Route Stats
+                        </h5>
                         <input type="datetime-local" />
                     </div>
                     <table class="table table-bordered mt-2">
@@ -80,7 +81,9 @@
                      style="background-color: #EFEEED;">
                     <div class="d-flex justify-content-between">
                         <h5 style="color: #087983;"
-                            class="pt-2">Running Times</h5>
+                            class="pt-2">
+                            Running Times
+                        </h5>
                     </div>
                     <table class="table table-bordered pt-4">
                         <thead>
@@ -111,4 +114,14 @@
         <a asp-page="/MainPages/Routes" id="returnToRoutes" />
         <label class="select-file" for="returnToRoutes">Return to Routes</label>
     </form>
+
+    <script>
+        (function(){
+            const { ipcRenderer } = require("electron");
+
+            document.getElementById("route-link").addEventListener("click", () => {
+                ipcRenderer.send("open-route-link");
+            });
+        }());
+    </script>
 </section>

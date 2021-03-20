@@ -1,52 +1,45 @@
 ﻿@page
 @model GTFS_Explorer.FrontEnd.Pages.MainPages.RoutesModel
 @{
-    ViewData["Title"] = "Routes";
+	ViewData["Title"] = "Routes";
 }
 
 <section>
-    <div class="header">
-        <div class="header-right">
-            <a class="active" asp-page="/MainPages/Routes">Routes</a>
-            <a asp-page="/MainPages/Stops">Stops</a>
-            <a asp-page="/MainPages/SystemMap">Map</a>
-        </div>
-    </div>
-    <div class="floater">
-        <input type="text" placeholder="Search...">
-        <div class="floater-content scrollbar" id="style-1">
-            <table class="table table-hover">
-                <thead>
-                    <tr>
-                        <th scope="col">Route #</th>
-                        <th scope="col">Route Name</th>
-                    </tr>
-                </thead>
-                <tbody class="routes-tbody">
-                    @foreach (var route in Model.Routes)
-                    {
-                        <tr onclick="location.href = '@(Url.Page("/RouteOptions/RouteSummary", new { routeId = route.Id }))'">
-                            <td scope="row">
-                                @route.Id
-                            </td>
-                            <td scope="row">
-                                @route.LongName
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-    </div>
-    <form>
-        <input type="file" class="hidden" id="selectfile" />
-        <label class="select-file" for="selectfile">Select New File</label>
-    </form>
+	<div class="header">
+		<div class="header-right">
+			<a class="active" asp-page="/MainPages/Routes">Routes</a>
+			<a asp-page="/MainPages/Stops">Stops</a>
+			<a asp-page="/MainPages/SystemMap">Map</a>
+		</div>
+	</div>
+	<div class="floater">
+		<input type="text" placeholder="Search...">
+		<div class="floater-content scrollbar" id="style-1">
+			<table class="table table-hover">
+				<thead>
+					<tr>
+						<th scope="col">Route #</th>
+						<th scope="col">Route Name</th>
+					</tr>
+				</thead>
+				<tbody class="routes-tbody">
+					@foreach (var route in Model.Routes)
+					{
+						<tr onclick="location.href = '@(Url.Page("/RouteOptions/RouteSummary", new { routeId = route.Id }))'">
+							<td scope="row">
+								@route.Id
+							</td>
+							<td scope="row">
+								@route.LongName
+							</td>
+						</tr>
+					}
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<form>
+		<input type="file" class="hidden" id="selectfile" />
+		<label class="select-file" for="selectfile">Select New File</label>
+	</form>
 </section>
-
-@section scripts
-{
-    <script>
-
-    </script>
-}

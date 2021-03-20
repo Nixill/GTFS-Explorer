@@ -12,7 +12,7 @@ namespace GTFS_Explorer.BackEnd.Readers
 
         public GTFSFeedReader(IWebHostEnvironment env)
         {
-            var dir = Electron.App.GetGTFSFileDir(env);
+            var dir = Electron.App.CreateGTFSFileDir(env);
             string[] files = Directory.GetFiles(dir);
 
             if(files != null)

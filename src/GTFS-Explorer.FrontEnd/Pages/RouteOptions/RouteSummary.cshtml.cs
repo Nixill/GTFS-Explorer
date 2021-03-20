@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ElectronNET.API;
 using GTFS.Entities;
 using GTFS_Explorer.Core.Interfaces.RepoInterfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -26,6 +27,11 @@ namespace GTFS_Explorer.FrontEnd.Pages.RouteOptions
         {
             RouteId = routeId;
             Route = _routesRepository.GetRouteById(RouteId);
+
+            Electron.IpcMain.On("open-route-link", async (args) =>
+            {
+                await Electron.Shell.OpenExternalAsync(Route.Url);
+            });
         }
     }
 }

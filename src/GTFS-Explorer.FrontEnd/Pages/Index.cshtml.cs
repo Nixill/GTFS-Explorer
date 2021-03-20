@@ -14,62 +14,52 @@ using ElectronNET.API.Entities;
 
 namespace GTFS_Explorer.FrontEnd.Pages
 {
-    public class IndexModel : PageModel
-    {
-        private readonly ILogger<IndexModel> _logger;
-        private readonly IWebHostEnvironment _environment;
+	public class IndexModel : PageModel
+	{
+		private readonly ILogger<IndexModel> _logger;
+		private readonly IWebHostEnvironment _environment;
 
-        public Tuple<bool, string> isValidFile { get; set; } 
-            = new Tuple<bool, string>(false, "");
+		public Tuple<bool, string> isValidFile { get; set; }
+				= new Tuple<bool, string>(false, "");
 
-        [BindProperty]
-        public IFormFile UploadedFile { get; set; }
+		[BindProperty]
+		public IFormFile UploadedFile { get; set; }
 
-        public IndexModel(ILogger<IndexModel> logger, IWebHostEnvironment env)
-        {
-            _logger = logger;
-            _environment = env;
-        }
+		public IndexModel(ILogger<IndexModel> logger, IWebHostEnvironment env)
+		{
+			_logger = logger;
+			_environment = env;
+		}
 
-        public async Task<IActionResult> OnPostAsync()
-        {
-            if (UploadedFile == null)
-            {
-                isValidFile = new Tuple<bool, string>(false, "No file uploaded!");
-                return Page();
-            }
+		public async Task<IActionResult> OnPostAsync()
+		{
+			if (UploadedFile == null)
+			{
+				isValidFile = new Tuple<bool, string>(false, "No file uploaded!");
+				return Page();
+			}
 
-            string file = Electron.App.GetGTFSFilePath(_environment, UploadedFile.FileName);
-            
-            using (var stream = new FileStream(file, FileMode.Create))
-            {
-                await UploadedFile.CopyToAsync(stream);
-            }
+			string file = Electron.App.GetGTFSFilePath(_environment, UploadedFile.FileName);
 
-            isValidFile = Validator.IsValidGTFS(file);
-            if (!isValidFile.Item1 && UploadedFile != null)
-            {
-                System.IO.File.Delete(file);
-                return null;
-            }
+			using (var stream = new FileStream(file, FileMode.Create))
+			{
+				await UploadedFile.CopyToAsync(stream);
+			}
 
-            if (HybridSupport.IsElectronActive)
-            {
-                var mainWindow = Electron.WindowManager.BrowserWindows.First();
-                var options = new OpenDialogOptions
-                {
-                    Properties = new OpenDialogProperty[]
-                    {
-                        OpenDialogProperty.openDirectory
-                    }
-                };
-                var folderPath = await Electron.Dialog.ShowOpenDialogAsync(mainWindow, options);
+			isValidFile = Validator.IsValidGTFS(file);
+			if (!isValidFile.Item1 && UploadedFile != null)
+			{
+				System.IO.File.Delete(file);
+				return null;
+			}
 
-                var resultFromTypeScript = await Electron.HostHook.CallAsync<string>("create-excel-file", folderPath);
-                //await Electron.Dialog.ShowMessageBoxAsync("Loading File...");
-            }
+			/* TODO here:
+			 * Send message to ipcRenderer using ElectronNET.API
+			 * notifying that file is loading in order to 
+			 * display a loading screen
+			 */
 
-            return RedirectToPage("/MainPages/Selection");
-        }
-    }
+			return RedirectToPage("/MainPages/Selection");
+		}
+	}
 }
