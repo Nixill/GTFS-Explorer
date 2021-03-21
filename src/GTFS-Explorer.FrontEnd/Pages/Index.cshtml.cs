@@ -12,6 +12,8 @@ using GTFS_Explorer.BackEnd.Extensions;
 using System.Linq;
 using ElectronNET.API.Entities;
 using GTFS_Explorer.BackEnd.Readers;
+using Microsoft.AspNetCore.SignalR;
+using GTFS_Explorer.BackEnd.SignalR;
 
 namespace GTFS_Explorer.FrontEnd.Pages
 {
@@ -20,6 +22,7 @@ namespace GTFS_Explorer.FrontEnd.Pages
 		private readonly ILogger<IndexModel> _logger;
 		private readonly IWebHostEnvironment _environment;
 		private readonly GTFSFeedReader _reader;
+		private readonly IHubContext<EventsHub> _hubContext;
 
 		public Tuple<bool, string> isValidFile { get; set; }
 				= new Tuple<bool, string>(false, "");
@@ -30,11 +33,13 @@ namespace GTFS_Explorer.FrontEnd.Pages
 		public IndexModel(
 			ILogger<IndexModel> logger, 
 			IWebHostEnvironment env,
-			GTFSFeedReader reader)
+			GTFSFeedReader reader,
+			IHubContext<EventsHub> hubContext)
 		{
 			_logger = logger;
 			_environment = env;
 			_reader = reader;
+			_hubContext = hubContext;
 		}
 
 		public void OnGet()
@@ -64,13 +69,9 @@ namespace GTFS_Explorer.FrontEnd.Pages
 				return null;
 			}
 
-			/* TODO here:
-			 * Send message to render process using SignalR
-			 * notifying that file is loading in order to 
-			 * display a loading screen
-			 */
-
+			await _hubContext.Clients.All.SendAsync("loading-file");
 			_reader.ReadFeed();
+
 			return RedirectToPage("/MainPages/Selection");
 		}
 	}

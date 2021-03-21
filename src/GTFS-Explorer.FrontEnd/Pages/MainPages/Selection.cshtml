@@ -30,9 +30,11 @@
 
 @section Scripts
 {
-    <script>
-        $(document).ready(function () {
+	<script>
+		window.addEventListener('load', () => {
+			$('#loader').css('display', 'none');
             $('#fader').css('display', 'none');
-        }); 
-    </script>
+			$('#loader-wrapper').css('display', 'none');
+		});
+	</script>
 }

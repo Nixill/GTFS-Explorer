@@ -12,10 +12,12 @@
 </head>
 <body>
 	<div id="fader">
-		<div class="container jumbotron-fluid">
-			<h1>Loading GTFS File...</h1>
-		</div>
 	</div>
+	<div id="loader-wrapper">
+		<div id="loader" style="opacity: 1"></div>
+		@*<h4>Loading GTFS File</h4>*@
+	</div>
+
 	<div class="container">
 		<main role="main" class="pb-3">
 			@RenderBody()

@@ -3,7 +3,6 @@
 
 // Write your Javascript code.
 
-"use strict";
 var connection = new signalR.HubConnectionBuilder().withUrl("/eventsHub").build();
 
 async function start() {
@@ -20,14 +19,20 @@ connection.onclose(start);
 start();
 
 connection.on("select-new-file-response", (response) => {
+	//0 = Yes
 	if (response == 0) {
 		window.location.href = "/Index";
 	}
 });
 
+connection.on("loading-file", () => {
+	$('#loader').css('display', 'block');
+	$('#fader').css('display', 'block');
+	$('#loader-wrapper').css('display', 'block');
+});
+
 (function () {
 	const { ipcRenderer } = require("electron");
-	
 
 	document.getElementById("selectFile").addEventListener("click", (e) => {
 		//To prevent open dialog to open since we'll be using Electron's
@@ -36,9 +41,4 @@ connection.on("select-new-file-response", (response) => {
 		//Send event to Main Ipc
 		ipcRenderer.send("select-new-gtfs-file");
 	});
-
-	//Listen event from Electron.IpcMain
-	//ipcRenderer.on("redirect-to-selection", (event, arg) => {
-	//	window.location.href = "/MainPages/Selection";
-	//});
 }());
