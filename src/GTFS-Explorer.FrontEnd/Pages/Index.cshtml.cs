@@ -11,6 +11,7 @@ using ElectronNET.API;
 using GTFS_Explorer.BackEnd.Extensions;
 using System.Linq;
 using ElectronNET.API.Entities;
+using GTFS_Explorer.BackEnd.Readers;
 
 namespace GTFS_Explorer.FrontEnd.Pages
 {
@@ -18,6 +19,7 @@ namespace GTFS_Explorer.FrontEnd.Pages
 	{
 		private readonly ILogger<IndexModel> _logger;
 		private readonly IWebHostEnvironment _environment;
+		private readonly GTFSFeedReader _reader;
 
 		public Tuple<bool, string> isValidFile { get; set; }
 				= new Tuple<bool, string>(false, "");
@@ -25,10 +27,19 @@ namespace GTFS_Explorer.FrontEnd.Pages
 		[BindProperty]
 		public IFormFile UploadedFile { get; set; }
 
-		public IndexModel(ILogger<IndexModel> logger, IWebHostEnvironment env)
+		public IndexModel(
+			ILogger<IndexModel> logger, 
+			IWebHostEnvironment env,
+			GTFSFeedReader reader)
 		{
 			_logger = logger;
 			_environment = env;
+			_reader = reader;
+		}
+
+		public void OnGet()
+		{
+			Electron.App.DeleteGTFSFileDir(_environment);
 		}
 
 		public async Task<IActionResult> OnPostAsync()
@@ -54,11 +65,12 @@ namespace GTFS_Explorer.FrontEnd.Pages
 			}
 
 			/* TODO here:
-			 * Send message to ipcRenderer using ElectronNET.API
+			 * Send message to render process using SignalR
 			 * notifying that file is loading in order to 
 			 * display a loading screen
 			 */
 
+			_reader.ReadFeed();
 			return RedirectToPage("/MainPages/Selection");
 		}
 	}

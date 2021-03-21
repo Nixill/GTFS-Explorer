@@ -35,13 +35,26 @@ namespace GTFS_Explorer.BackEnd.Extensions
         }
 
         /// <summary>
+        /// Extension to get GTFS file directory
+        /// </summary>
+        /// <param name="env">Host Environment</param>
+        /// <returns>Returns the directory if it exists, otherwise returns null</returns>
+        public static string GetGTFSFileDir(this App app, IWebHostEnvironment env)
+        {
+            string dir = $"{env.WebRootPath}\\tempFiles\\";
+            if (!Directory.Exists(dir))
+                return null;
+            return dir;
+        }
+
+        /// <summary>
         /// Extension to delete the GTFS storage directory
         /// </summary>
         /// <param name="env">Host Environment</param>
         public static void DeleteGTFSFileDir(this App app, IWebHostEnvironment env)
         {
-            var dir = Electron.App.CreateGTFSFileDir(env);
-            if(Directory.Exists(dir))
+            var dir = Electron.App.GetGTFSFileDir(env);
+            if(dir != null)
                 DeleteDirectory(dir);
         }
 

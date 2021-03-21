@@ -45,7 +45,7 @@ namespace GTFS_Explorer.BackEnd.Utilities
 			Electron.IpcMain.On("select-new-gtfs-file", async (args) =>
 			{
 				var result = await Electron.Dialog.ShowMessageBoxAsync(new MessageBoxOptions(
-					"This will redirect you to the main page. You will loose access to the current GTFS file" +
+					"This will redirect you to the main page. You will loose access to the current GTFS file " +
 					"unless you load it again, would you like to proceed?")
 				{
 					Type = MessageBoxType.warning,

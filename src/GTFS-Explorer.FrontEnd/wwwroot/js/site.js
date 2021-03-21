@@ -20,8 +20,6 @@ connection.onclose(start);
 start();
 
 connection.on("select-new-file-response", (response) => {
-	console.log("Got Response!");
-	console.log(response);
 	if (response == 0) {
 		window.location.href = "/Index";
 	}
@@ -31,7 +29,7 @@ connection.on("select-new-file-response", (response) => {
 	const { ipcRenderer } = require("electron");
 	
 
-	document.getElementById("selectfile").addEventListener("click", (e) => {
+	document.getElementById("selectFile").addEventListener("click", (e) => {
 		//To prevent open dialog to open since we'll be using Electron's
 		e.preventDefault();
 
