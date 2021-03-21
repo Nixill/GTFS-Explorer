@@ -1,10 +1,7 @@
-using System.IO;
-using System.Threading.Tasks;
 using ElectronNET.API;
 using ElectronNET.API.Entities;
-using GTFS_Explorer.BackEnd.Extensions;
+using GTFS_Explorer.BackEnd.SignalR;
 using GTFS_Explorer.Core.Interfaces;
-using GTFS_Explorer.FrontEnd.ElectronEvents;
 using GTFS_Explorer.FrontEnd.Installers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -67,6 +64,7 @@ namespace GTFS_Explorer.FrontEnd
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapRazorPages();
+                endpoints.MapHub<EventsHub>("/eventsHub");
             });
 
             if (HybridSupport.IsElectronActive)

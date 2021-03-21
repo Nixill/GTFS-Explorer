@@ -16,12 +16,14 @@ namespace GTFS_Explorer.BackEnd
         /// <returns>Service Collection from backend</returns>
         public static IServiceCollection AddBackend(this IServiceCollection services, IWebHostEnvironment env)
         {
+            services.AddSignalR();
+
             /*
              * Singleton since there will be only 1 GTFS file reader instance
              * throughout the whole application. Otherwise our app would be slow.
              */
             services.AddSingleton(provider => new GTFSFeedReader(env));
-            services.AddSingleton<IEventRegistry, EventRegistry>(provider => new EventRegistry(env));
+            services.AddSingleton<IEventRegistry, EventRegistry>();
             services.AddScoped<IRoutesRepository, RoutesRepository>();
             services.AddScoped<IStopsRepository, StopsRepository>();
             return services;

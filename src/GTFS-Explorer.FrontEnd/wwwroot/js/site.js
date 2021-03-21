@@ -3,8 +3,33 @@
 
 // Write your Javascript code.
 
+"use strict";
+var connection = new signalR.HubConnectionBuilder().withUrl("/eventsHub").build();
+
+async function start() {
+	try {
+		await connection.start();
+		console.log("SignalR Connected.");
+	} catch (err) {
+		console.log(err);
+		setTimeout(start, 5000);
+	}
+};
+
+connection.onclose(start);
+start();
+
+connection.on("select-new-file-response", (response) => {
+	console.log("Got Response!");
+	console.log(response);
+	if (response == 0) {
+		window.location.href = "/Index";
+	}
+});
+
 (function () {
 	const { ipcRenderer } = require("electron");
+	
 
 	document.getElementById("selectfile").addEventListener("click", (e) => {
 		//To prevent open dialog to open since we'll be using Electron's

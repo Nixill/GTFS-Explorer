@@ -1,8 +1,10 @@
 ﻿using ElectronNET.API;
 using ElectronNET.API.Entities;
 using GTFS_Explorer.BackEnd.Extensions;
+using GTFS_Explorer.BackEnd.SignalR;
 using GTFS_Explorer.Core.Interfaces;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.SignalR;
 using System.Threading.Tasks;
 
 namespace GTFS_Explorer.BackEnd.Utilities
@@ -10,10 +12,14 @@ namespace GTFS_Explorer.BackEnd.Utilities
 	public class EventRegistry : IEventRegistry
 	{
 		private readonly IWebHostEnvironment _env;
+		private readonly IHubContext<EventsHub> _hubContext;
 
-		public EventRegistry(IWebHostEnvironment env)
+		public EventRegistry(
+			IWebHostEnvironment env, 
+			IHubContext<EventsHub> hubContext)
 		{
 			_env = env;
+			_hubContext = hubContext;
 		}
 
 		/// <summary>
@@ -47,14 +53,13 @@ namespace GTFS_Explorer.BackEnd.Utilities
 					Buttons = new string[] { "Yes", "No" }
 				});
 
-				//TODO: Send this response to client using SignalR
+				//result.Response: 0 = Yes, 1 = No
+
+				//Send this response to client using SignalR
 				//in order to redirect there
 
-				//Response: 0 = Yes, 1 = No
-				if (result.Response == 1)
-				{
-					//Redirect here
-				}
+				await _hubContext.Clients.All.SendAsync(
+					"select-new-file-response", result.Response);
 			});
 		}
 
