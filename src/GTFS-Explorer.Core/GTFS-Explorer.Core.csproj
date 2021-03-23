@@ -12,7 +12,7 @@
 
   <ItemGroup>
     <PackageReference Include="ElectronNET.API" Version="9.31.2" />
-    <PackageReference Include="GTFS" Version="3.0.0-pre4" />
+	<PackageReference Include="GTFS" Version="3.0.0-pre004" />
   </ItemGroup>
 
 </Project>
