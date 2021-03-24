@@ -1,6 +1,8 @@
 using System.Collections.Generic;
+using System.Linq;
 using GTFS;
 using GTFS.Entities;
+using GTFS.Entities.Enumerations;
 using Nixill.Collections;
 
 namespace GTFS_Explorer.BackEnd.Lookups
@@ -30,19 +32,28 @@ namespace GTFS_Explorer.BackEnd.Lookups
     /// Returns a <c>Dictionary</c> containing all the stops in the feed,
     /// along with how major a stop it is.
     /// </summary>
-    public static Dictionary<Stop, StopMajority> GetAllStops(GTFSFeed feed)
+    /// <param name="feed">The GTFS feed to use.</param>
+    public static List<Stop> GetAllStops(GTFSFeed feed)
     {
-      Dictionary<Stop, StopMajority> dict = new Dictionary<Stop, StopMajority>();
+      List<Stop> list = new List<Stop>();
 
       var stops = feed.Stops;
 
-      return null;
-    }
-  }
+      // First, we need to add platforms with no parent station
+      list.AddRange(
+        from stop in stops
+        where stop.LocationType == LocationType.Stop && stop.ParentStation == null
+        select stop
+      );
 
-  public enum StopMajority {
-    All,
-    Some,
-    None
+      // Second, add whole stations
+      list.AddRange(
+        from stop in stops
+        where stop.LocationType == LocationType.Station
+        select stop
+      );
+
+      return list;
+    }
   }
 }
