@@ -4,6 +4,7 @@ using GTFS_Explorer.Core.Enums;
 using GTFS_Explorer.Core.Interfaces.RepoInterfaces;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace GTFS_Explorer.BackEnd.Repositiories
@@ -17,18 +18,23 @@ namespace GTFS_Explorer.BackEnd.Repositiories
             _reader = reader;
         }
 
-        /// <summary>
-        /// Returns a <c>Dictionary</c> containing all the stops in the feed,
-        /// along with how major a stop it is.
-        /// </summary>
-        public Dictionary<Stop, StopMajority> GetAllStops()
-        {
-            Dictionary<Stop, StopMajority> dict = new Dictionary<Stop, StopMajority>();
+		public List<Stop> GetAllStops()
+		{
+			return _reader.Feed.Stops.ToList();
+		}
 
-            var stops = _reader.Feed.Stops;
+		/// <summary>
+		/// Returns a <c>Dictionary</c> containing all the stops in the feed,
+		/// along with how major a stop it is.
+		/// </summary>
+		//public Dictionary<Stop, StopMajority> GetAllStops()
+		//{
+		//    Dictionary<Stop, StopMajority> dict = new Dictionary<Stop, StopMajority>();
 
-            //For now to prevent errors
-            return null;
-        }
-    }
+		//    var stops = _reader.Feed.Stops;
+
+		//    //For now to prevent errors
+		//    return null;
+		//}
+	}
 }

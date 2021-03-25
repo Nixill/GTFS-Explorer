@@ -8,6 +8,7 @@ namespace GTFS_Explorer.Core.Interfaces.RepoInterfaces
 {
     public interface IStopsRepository
     {
-        Dictionary<Stop, StopMajority> GetAllStops();
+        //Dictionary<Stop, StopMajority> GetAllStops();
+        List<Stop> GetAllStops();
     }
 }
