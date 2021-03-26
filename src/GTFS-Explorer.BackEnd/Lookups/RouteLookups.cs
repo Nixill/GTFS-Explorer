@@ -17,10 +17,16 @@ namespace GTFS_Explorer.BackEnd.Lookups
     {
       var stops = ScheduleBuilder.GetScheduleHeader(feed, route, dir, strat);
       var times = ScheduleBuilder.GetSortTimes(feed, route, dir, stops);
-      Tuple<List<string>, List<Tuple<string, Dictionary<string, TimeOfDay>>>> sched = ScheduleBuilder.GetSchedule(feed, route, dir, serviceId, stops, times);
+      var sched = ScheduleBuilder.GetSchedule(feed, route, dir, serviceId, stops, times);
       return GridifySchedule(sched);
     }
 
+    public static Grid<string> GetSchedule(GTFSFeed feed, string route, DirectionType? dir, string serviceId, List<string> stopOrder, Dictionary<string, int> sortTimes) =>
+      GridifySchedule(ScheduleBuilder.GetSchedule(feed, route, dir, serviceId, stopOrder, sortTimes));
 
+    public static Grid<String> GridifySchedule(Tuple<List<string>, List<Tuple<string, Dictionary<string, TimeOfDay>>>> sched)
+    {
+
+    }
   }
 }
