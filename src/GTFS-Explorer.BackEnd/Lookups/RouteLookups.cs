@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using GTFS;
 using GTFS.Entities;
 using GTFS.Entities.Enumerations;
@@ -26,7 +27,44 @@ namespace GTFS_Explorer.BackEnd.Lookups
 
     public static Grid<String> GridifySchedule(Tuple<List<string>, List<Tuple<string, Dictionary<string, TimeOfDay>>>> sched)
     {
+      Grid<string> ret = new Grid<string>(sched.Item1.Count + 1, 0);
 
+      // Add the stops row
+      var stops = sched.Item1;
+      stops.Insert(0, "");
+      ret.AddRow(stops);
+
+      // Now add the trips
+      var trips = sched.Item2;
+      foreach (var trip in trips)
+      {
+        List<string> tripRow = new List<string>();
+        // Add the times at each stop
+        foreach (string stop in stops)
+        {
+          if (stop == "")
+          {
+            tripRow.Add(trip.Item1);
+          }
+          else
+          {
+            if (trip.Item2.ContainsKey(stop))
+            {
+              int time = trip.Item2[stop].TotalSeconds;
+              string timeString = NodaTime.LocalTime.FromSecondsSinceMidnight(time).ToString("HH:mm:ss", DateTimeFormatInfo.InvariantInfo);
+              tripRow.Add(timeString);
+            }
+            else
+            {
+              tripRow.Add("");
+            }
+          }
+        }
+
+        ret.AddRow(tripRow);
+      }
+
+      return ret;
     }
   }
 }
