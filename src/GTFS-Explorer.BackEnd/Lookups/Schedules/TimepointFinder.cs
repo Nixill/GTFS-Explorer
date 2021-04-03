@@ -124,8 +124,8 @@ namespace Nixill.GTFS
 
   public enum TimepointStrategy
   {
-    SelfSufficient,
-    NullTimepoints,
-    SpecifiedTimepoints
+	SelfSufficient,
+	NullTimepoints,
+	SpecifiedTimepoints
   }
 }

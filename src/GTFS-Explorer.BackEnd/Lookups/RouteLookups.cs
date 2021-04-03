@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using GTFS;
 using GTFS.Entities;
 using GTFS.Entities.Enumerations;
+using GTFS_Explorer.Core.Enums;
 using Nixill.Collections.Grid;
 using Nixill.GTFS;
 

@@ -4,6 +4,7 @@
     <RootNamespace>GTFS_Explorer.FrontEnd</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="CS-NixLib" Version="0.7.3" />
     <PackageReference Include="ElectronNET.API" Version="9.31.2" />
 	<PackageReference Include="GTFS" Version="3.0.0-pre004" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.5" />

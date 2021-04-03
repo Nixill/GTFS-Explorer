@@ -4,6 +4,7 @@ using GTFS;
 using GTFS.Entities;
 using GTFS.Entities.Enumerations;
 using System;
+using GTFS_Explorer.Core.Enums;
 
 namespace Nixill.GTFS
 {
