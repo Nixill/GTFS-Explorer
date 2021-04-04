@@ -11,9 +11,41 @@ namespace GTFS_Explorer.BackEnd.Lookups
 {
   public static class RouteLookups
   {
-    public static Grid<string> GetSchedule(GTFSFeed feed, string routeID, DirectionType? dir, string serviceId) =>
-      GetSchedule(feed, routeID, dir, serviceId, TimepointFinder.GetTimepointStrategy(feed));
+    /// <summary>
+    ///   <para>Returns a transit schedule in grid form.</para>
+    /// </summary>
+    /// <remarks>
+    ///   <para>The returned schedule will have stop IDs along the first
+    ///     row, trip IDs in the first column, and times of when that trip
+    ///     reaches that stop in the rest of the grid.</para>
+    /// </remarks>
+    /// <param name="feed">The GTFS feed to use.</param>
+    /// <param name="route">The ID of the route to retrieve.</param>
+    /// <param name="dir">
+    ///   Which direction of the route should be scheduled.
+    /// </param>
+    /// <param name="serviceId">The ID of the day to retrieve.</param>
+    public static Grid<string> GetSchedule(GTFSFeed feed, string route, DirectionType? dir, string serviceId) =>
+      GetSchedule(feed, route, dir, serviceId, TimepointFinder.GetTimepointStrategy(feed));
 
+    /// <summary>
+    ///   <para>Returns a transit schedule in grid form.</para>
+    /// </summary>
+    /// <remarks>
+    ///   <para>The returned schedule will have stop IDs along the first
+    ///     row, trip IDs in the first column, and times of when that trip
+    ///     reaches that stop in the rest of the grid.</para>
+    /// </remarks>
+    /// <param name="feed">The GTFS feed to use.</param>
+    /// <param name="route">The ID of the route to retrieve.</param>
+    /// <param name="dir">
+    ///   Which direction of the route should be scheduled.
+    /// </param>
+    /// <param name="serviceId">The ID of the day to retrieve.</param>
+    /// <param name="strat">
+    ///   The timepoint strategy, a value returned by
+    ///   <c>TimepointFinder.GetTimepointStrategy()</c>.
+    /// </param>
     public static Grid<string> GetSchedule(GTFSFeed feed, string route, DirectionType? dir, string serviceId, TimepointStrategy strat)
     {
       var stops = ScheduleBuilder.GetScheduleHeader(feed, route, dir, strat);
@@ -22,6 +54,22 @@ namespace GTFS_Explorer.BackEnd.Lookups
       return GridifySchedule(sched);
     }
 
+    /// <summary>
+    ///   <para>Returns a transit schedule in grid form.</para>
+    /// </summary>
+    /// <remarks>
+    ///   <para>The returned schedule will have stop IDs along the first
+    ///     row, trip IDs in the first column, and times of when that trip
+    ///     reaches that stop in the rest of the grid.</para>
+    /// </remarks>
+    /// <param name="feed">The GTFS feed to use.</param>
+    /// <param name="route">The ID of the route to retrieve.</param>
+    /// <param name="dir">
+    ///   Which direction of the route should be scheduled.
+    /// </param>
+    /// <param name="serviceId">The ID of the day to retrieve.</param>
+    /// <param name="stopOrder">The order of stops to use.</param>
+    /// <param name="sortTimes">The sort times of the trips.</param>
     public static Grid<string> GetSchedule(GTFSFeed feed, string route, DirectionType? dir, string serviceId, List<string> stopOrder, Dictionary<string, int> sortTimes) =>
       GridifySchedule(ScheduleBuilder.GetSchedule(feed, route, dir, serviceId, stopOrder, sortTimes));
 
