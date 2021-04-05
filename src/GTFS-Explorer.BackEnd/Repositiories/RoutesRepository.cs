@@ -9,6 +9,7 @@ using GTFS.Entities.Enumerations;
 using GTFS_Explorer.Core.Enums;
 using GTFS_Explorer.Core.Interfaces;
 using System;
+using System.Globalization;
 
 namespace GTFS_Explorer.BackEnd.Repositiories
 {
@@ -77,7 +78,7 @@ namespace GTFS_Explorer.BackEnd.Repositiories
 
         public Grid<string> GridifySchedule(Tuple<List<string>, List<Tuple<string, Dictionary<string, TimeOfDay>>>> sched)
         {
-            Grid<string> ret = new Grid<string>(sched.Item1.Count + 1, 0);
+            Grid<string> ret = new Grid<string>();
 
             // Add the stops row
             var stops = sched.Item1;
@@ -101,7 +102,10 @@ namespace GTFS_Explorer.BackEnd.Repositiories
                         if (trip.Item2.ContainsKey(stop))
                         {
                             int time = trip.Item2[stop].TotalSeconds;
-                            string timeString = NodaTime.LocalTime.FromSecondsSinceMidnight(time).ToString("HH:mm:ss", DateTimeFormatInfo.InvariantInfo);
+                            string timeString = 
+                                NodaTime.LocalTime
+                                .FromSecondsSinceMidnight(time)
+                                .ToString("HH:mm:ss", DateTimeFormatInfo.InvariantInfo);
                             tripRow.Add(timeString);
                         }
                         else

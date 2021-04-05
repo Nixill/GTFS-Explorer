@@ -12,10 +12,9 @@ namespace GTFS_Explorer.FrontEnd.Pages.MainPages
         public StopsModel(IStopsRepository stopsRepository)
         {
             _stopsRepository = stopsRepository;
-            Stops = _stopsRepository.GetAllStops();
+            Stops = _stopsRepository.GetStopList();
         }
 
-        //public Dictionary<Stop, StopMajority> StopsDictionary;
         public List<Stop> Stops;
 
         public void OnGet()

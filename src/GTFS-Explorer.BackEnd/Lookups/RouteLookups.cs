@@ -15,7 +15,7 @@ namespace GTFS_Explorer.BackEnd.Lookups
     public static Grid<string> GetSchedule(GTFSFeed feed, string routeID, DirectionType? dir, string serviceId) =>
       GetSchedule(feed, routeID, dir, serviceId, TimepointFinder.GetTimepointStrategy(feed));
 
-    public static Grid<string> GetSchedule(GTFSFeed feed, string route, DirectionType? dir, string serviceId, TimepointStrategy strat)
+    public static Grid<string> GetSchedule(GTFSFeed feed, string route, DirectionType? dir, string serviceId, Nixill.GTFS.TimepointStrategy strat)
     {
       var stops = ScheduleBuilder.GetScheduleHeader(feed, route, dir, strat);
       var times = ScheduleBuilder.GetSortTimes(feed, route, dir, stops);

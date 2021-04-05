@@ -8,5 +8,7 @@ namespace GTFS_Explorer.Core.Interfaces.RepoInterfaces
     {
         List<Stop> GetAllStops();
         IEnumerable<Stop> GetStopOrder(string route, DirectionType? direction = null);
+        Stop GetStopById(string stopId);
+        List<Stop> GetStopList();
     }
 }

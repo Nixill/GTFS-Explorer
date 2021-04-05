@@ -4,7 +4,6 @@
     ViewData["Title"] = "RouteSummary";
 }
 
-
 <link rel="stylesheet" href="~/css/style.css" />
 <section>
     <div class="header">
@@ -12,9 +11,12 @@
             <a class="active"
                asp-page="/RouteOptions/RouteSummary"
                asp-route-routeId="@Model.RouteId">Summary</a>
-            <a asp-page="/RouteOptions/RouteMap" asp-route-routeId="@Model.RouteId">Route Map</a>
-            <a asp-page="/RouteOptions/StopList">Stop List</a>
-            <a asp-page="/RouteOptions/Schedule">Schedule</a>
+            <a asp-page="/RouteOptions/RouteMap" 
+               asp-route-routeId="@Model.RouteId">Route Map</a>
+            <a asp-page="/RouteOptions/StopList"
+               asp-route-routeId="@Model.RouteId">Stop List</a>
+            <a asp-page="/RouteOptions/Schedule"
+               asp-route-routeId="@Model.RouteId">Schedule</a>
         </div>
     </div>
     <div class="d-flex align-items-center">

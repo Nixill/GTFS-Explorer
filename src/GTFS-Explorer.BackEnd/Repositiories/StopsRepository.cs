@@ -44,6 +44,21 @@ namespace GTFS_Explorer.BackEnd.Repositiories
             return list;
         }
 
+        public List<Stop> GetStopList()
+		{
+            return _reader.Feed.Stops.ToList();
+		}
+
+        /// <summary>
+        /// Gets the stop by Id
+        /// </summary>
+        /// <param name="stopId"></param>
+        /// <returns>The stop found</returns>
+        public Stop GetStopById(string stopId)
+		{
+            return _reader.Feed.Stops.Get(stopId);
+		}
+
         /// <summary>
         /// Lists the stops along a route, in order.
         /// </summary>

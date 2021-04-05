@@ -1,21 +1,66 @@
-﻿@page
+﻿@page "{routeId}"
 @model GTFS_Explorer.FrontEnd.Pages.RouteOptions.ScheduleModel
 @{
     ViewData["Title"] = "Schedule";
 }
 
+@using Nixill.Collections.Grid;
+
 <section>
     <div class="header">
-        <div class="header-right">
-            <a asp-page="/RouteOptions/RouteSummary">Summary</a>
-            <a asp-page="/RouteOptions/RouteMap">Route Map</a>
-            <a asp-page="/RouteOptions/StopList">Stop List</a>
-            <a class="active" asp-page="/RouteOptions/Schedule">Schedule</a>
-        </div>
+		<div class="header-right">
+			<a asp-page="/RouteOptions/RouteSummary"
+			   asp-route-routeId="@Model.RouteId">Summary</a>
+			<a asp-page="/RouteOptions/RouteMap"
+			   asp-route-routeId="@Model.RouteId">Route Map</a>
+			<a asp-page="/RouteOptions/StopList"
+			   asp-route-routeId="@Model.RouteId">Stop List</a>
+			<a class="active"
+               asp-page="/RouteOptions/Schedule"
+			   asp-route-routeId="@Model.RouteId">Schedule</a>
+		</div>
     </div>
     <div class="floater">
-        <div class="floater-content">
-        </div>
+		<div class="floater-content">
+			<table class="table table-striped">
+				@{ int index = 0; }
+				@foreach (GridLine<string> gridLine in (Grid<string>)Model.Schedule)
+				{
+					if (index == 0)
+					{
+						<thead>
+							<tr>
+								@{int columnIndex = 0;} 
+								@foreach (string stopId in gridLine.Skip(1))
+								{
+								<th class="mouse-pointer"
+									onclick="location.href='@(Url.Page("/StopOptions/StopSummary", new { stopId = stopId }))'">
+									@Model.Stops[columnIndex].Name
+								</th>
+									columnIndex++;
+								}
+							</tr>
+						</thead>
+					}
+					else
+					{
+						<tbody>
+							@{var tripId = gridLine[0];}
+							<tr>
+								@foreach (string column in gridLine.Skip(1))
+								{
+									<td class="mouse-pointer"
+										onclick="location.href='@(Url.Page("/Trips", new { tripId = tripId}))' ">
+										@column
+									</td>
+								}
+							</tr>
+						</tbody>
+					}
+					index++;
+				}
+			</table>
+		</div>
     </div>
     <form>
         <input type="file" id="selectFile" class="hidden" />
