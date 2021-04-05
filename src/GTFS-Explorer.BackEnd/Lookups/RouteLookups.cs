@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using GTFS;
 using GTFS.Entities;
 using GTFS.Entities.Enumerations;
@@ -74,7 +75,7 @@ namespace GTFS_Explorer.BackEnd.Lookups
     public static Grid<string> GetSchedule(GTFSFeed feed, string route, DirectionType? dir, string serviceId, List<string> stopOrder, Dictionary<string, int> sortTimes) =>
       GridifySchedule(ScheduleBuilder.GetSchedule(feed, route, dir, serviceId, stopOrder, sortTimes));
 
-    public static Grid<string> GridifySchedule(Tuple<List<string>, List<Tuple<string, Dictionary<string, TimeOfDay>>>> sched)
+    private static Grid<string> GridifySchedule(Tuple<List<string>, List<Tuple<string, Dictionary<string, TimeOfDay>>>> sched)
     {
       Grid<string> ret = new Grid<string>(sched.Item1.Count + 1, 0);
 
@@ -114,6 +115,34 @@ namespace GTFS_Explorer.BackEnd.Lookups
       }
 
       return ret;
+    }
+
+    /// <summary>
+    ///   Returns whether or not the Route has any trips or any stop
+    ///   times.
+    /// </summary>
+    /// <param name="feed">The GTFS feed to check.</param>
+    /// <param name="string">The ID of the route to check.</param>
+    public static bool HasAnyService(GTFSFeed feed, string route)
+    {
+      // First see if it has any trips
+      var trips =
+        from trip in feed.Trips
+        where trip.RouteId == route
+        select trip;
+
+      // If so, let's see if any of them have any stop times
+      foreach (Trip theTrip in trips)
+      {
+        var stopTimes =
+          from time in feed.StopTimes
+          where time.TripId == theTrip.Id
+          select time;
+
+        if (stopTimes.Any()) return true;
+      }
+
+      return false;
     }
   }
 }
