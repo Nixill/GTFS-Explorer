@@ -8,6 +8,7 @@ using GTFS.Entities.Enumerations;
 using GTFS_Explorer.Core.Enums;
 using Nixill.Collections.Grid;
 using Nixill.GTFS;
+using NodaTime;
 
 namespace GTFS_Explorer.BackEnd.Lookups
 {
@@ -143,6 +144,44 @@ namespace GTFS_Explorer.BackEnd.Lookups
       }
 
       return false;
+    }
+
+    /// <summary>
+    ///   Returns a <c>List</c> of all the service IDs active on a given
+    ///   day.
+    /// </summary>
+    /// <remarks>
+    ///   If no services run on a given day, an empty list is returned.
+    /// </remarks>
+    /// <param name="feed">The GTFS feed to check.</param>
+    /// <param name="date">The date to check.</param>
+    public static List<string> ServicesOn(GTFSFeed feed, LocalDate date)
+    {
+      var ret = from cal in feed.Calendars
+                where date.DayOfWeek switch
+                {
+                  IsoDayOfWeek.Monday => cal.Monday,
+                  IsoDayOfWeek.Tuesday => cal.Tuesday,
+                  IsoDayOfWeek.Wednesday => cal.Wednesday,
+                  IsoDayOfWeek.Thursday => cal.Thursday,
+                  IsoDayOfWeek.Friday => cal.Friday,
+                  IsoDayOfWeek.Saturday => cal.Saturday,
+                  IsoDayOfWeek.Sunday => cal.Sunday,
+                  _ => false
+                }
+                select cal.ServiceId;
+
+      DateTime dt = date.ToDateTimeUnspecified();
+
+      ret = ret.Union(from cald in feed.CalendarDates
+                      where cald.Date == dt
+                      select cald.ServiceId);
+
+      ret = ret.Except(from cald in feed.CalendarDates
+                       where cald.Date == dt
+                       select cald.ServiceId);
+
+      return ret.Distinct().ToList();
     }
   }
 }
