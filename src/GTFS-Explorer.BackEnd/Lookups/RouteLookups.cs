@@ -29,9 +29,6 @@ namespace GTFS_Explorer.BackEnd.Lookups
     public static Grid<string> GetSchedule(GTFSFeed feed, string route, DirectionType? dir, string serviceId) =>
       GetSchedule(feed, route, dir, serviceId, TimepointFinder.GetTimepointStrategy(feed));
 
-<<<<<<< HEAD
-    public static Grid<string> GetSchedule(GTFSFeed feed, string route, DirectionType? dir, string serviceId, Nixill.GTFS.TimepointStrategy strat)
-=======
     /// <summary>
     ///   <para>Returns a transit schedule in grid form.</para>
     /// </summary>
@@ -51,7 +48,6 @@ namespace GTFS_Explorer.BackEnd.Lookups
     ///   <c>TimepointFinder.GetTimepointStrategy()</c>.
     /// </param>
     public static Grid<string> GetSchedule(GTFSFeed feed, string route, DirectionType? dir, string serviceId, TimepointStrategy strat)
->>>>>>> 228ea415de6ff2b0cf6947cad3eb925cd07f3c8f
     {
       var stops = ScheduleBuilder.GetScheduleHeader(feed, route, dir, strat);
       var times = ScheduleBuilder.GetSortTimes(feed, route, dir, stops);
@@ -78,7 +74,7 @@ namespace GTFS_Explorer.BackEnd.Lookups
     public static Grid<string> GetSchedule(GTFSFeed feed, string route, DirectionType? dir, string serviceId, List<string> stopOrder, Dictionary<string, int> sortTimes) =>
       GridifySchedule(ScheduleBuilder.GetSchedule(feed, route, dir, serviceId, stopOrder, sortTimes));
 
-    public static Grid<String> GridifySchedule(Tuple<List<string>, List<Tuple<string, Dictionary<string, TimeOfDay>>>> sched)
+    public static Grid<string> GridifySchedule(Tuple<List<string>, List<Tuple<string, Dictionary<string, TimeOfDay>>>> sched)
     {
       Grid<string> ret = new Grid<string>(sched.Item1.Count + 1, 0);
 

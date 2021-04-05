@@ -4,6 +4,7 @@ using GTFS.Entities;
 using GTFS.Entities.Enumerations;
 using System.Linq;
 using System;
+using GTFS_Explorer.Core.Enums;
 
 namespace Nixill.GTFS
 {
@@ -122,10 +123,10 @@ namespace Nixill.GTFS
       => FirstAndLastStopList(feed, route.Id, dir);
   }
 
-  public enum TimepointStrategy
-  {
-	SelfSufficient,
-	NullTimepoints,
-	SpecifiedTimepoints
-  }
+ // public enum TimepointStrategy
+ // {
+	//SelfSufficient,
+	//NullTimepoints,
+	//SpecifiedTimepoints
+ // }
 }

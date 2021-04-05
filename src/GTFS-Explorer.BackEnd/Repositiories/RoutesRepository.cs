@@ -64,6 +64,23 @@ namespace GTFS_Explorer.BackEnd.Repositiories
             return _feedReader.Feed.Routes.ToList();
         }
 
+        /// <summary>
+        ///   <para>Returns a transit schedule in grid form.</para>
+        /// </summary>
+        /// <remarks>
+        ///   <para>The returned schedule will have stop IDs along the first
+        ///     row, trip IDs in the first column, and times of when that trip
+        ///     reaches that stop in the rest of the grid.</para>
+        /// </remarks>
+        /// <param name="route">The ID of the route to retrieve.</param>
+        /// <param name="dir">
+        ///   Which direction of the route should be scheduled.
+        /// </param>
+        /// <param name="serviceId">The ID of the day to retrieve.</param>
+        /// <param name="strat">
+        ///   The timepoint strategy, a value returned by
+        ///   <c>TimepointFinder.GetTimepointStrategy()</c>.
+        /// </param>
         public Grid<string> GetSchedule(string route, DirectionType? dir, string serviceId, TimepointStrategy strat)
         {
             var stops = _scheduleBuilder.GetScheduleHeader(route, dir, strat);
@@ -73,6 +90,19 @@ namespace GTFS_Explorer.BackEnd.Repositiories
             return GridifySchedule(sched);
         }
 
+        /// <summary>
+        ///   <para>Returns a transit schedule in grid form.</para>
+        /// </summary>
+        /// <remarks>
+        ///   <para>The returned schedule will have stop IDs along the first
+        ///     row, trip IDs in the first column, and times of when that trip
+        ///     reaches that stop in the rest of the grid.</para>
+        /// </remarks>
+        /// <param name="routeID">The ID of the route to retrieve.</param>
+        /// <param name="dir">
+        ///   Which direction of the route should be scheduled.
+        /// </param>
+        /// <param name="serviceId">The ID of the day to retrieve.</param>
         public Grid<string> GetSchedule(string routeID, DirectionType? dir, string serviceId) =>
             GetSchedule(routeID, dir, serviceId, _timepointRepository.GetTimepointStrategy());
 
