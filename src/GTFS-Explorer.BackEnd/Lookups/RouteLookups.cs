@@ -283,29 +283,31 @@ namespace GTFS_Explorer.BackEnd.Lookups
     /// <param name="date">The date to check.</param>
     public static List<string> ServicesOn(GTFSFeed feed, LocalDate date)
     {
-      var ret = from cal in feed.Calendars
-                where date.DayOfWeek switch
-                {
-                  IsoDayOfWeek.Monday => cal.Monday,
-                  IsoDayOfWeek.Tuesday => cal.Tuesday,
-                  IsoDayOfWeek.Wednesday => cal.Wednesday,
-                  IsoDayOfWeek.Thursday => cal.Thursday,
-                  IsoDayOfWeek.Friday => cal.Friday,
-                  IsoDayOfWeek.Saturday => cal.Saturday,
-                  IsoDayOfWeek.Sunday => cal.Sunday,
-                  _ => false
-                }
-                select cal.ServiceId;
-
       DateTime dt = date.ToDateTimeUnspecified();
 
-      ret = ret.Union(from cald in feed.CalendarDates
-                      where cald.Date == dt
-                      select cald.ServiceId);
+      var ret = from cal in feed.Calendars
+                where cal.StartDate <= dt
+                  && cal.EndDate >= dt
+                  && date.DayOfWeek switch
+                  {
+                    IsoDayOfWeek.Monday => cal.Monday,
+                    IsoDayOfWeek.Tuesday => cal.Tuesday,
+                    IsoDayOfWeek.Wednesday => cal.Wednesday,
+                    IsoDayOfWeek.Thursday => cal.Thursday,
+                    IsoDayOfWeek.Friday => cal.Friday,
+                    IsoDayOfWeek.Saturday => cal.Saturday,
+                    IsoDayOfWeek.Sunday => cal.Sunday,
+                    _ => false
+                  }
+                select cal.ServiceId;
 
       ret = ret.Except(from cald in feed.CalendarDates
-                       where cald.Date == dt
+                       where cald.Date == dt && cald.ExceptionType == ExceptionType.Removed
                        select cald.ServiceId);
+
+      ret = ret.Union(from cald in feed.CalendarDates
+                      where cald.Date == dt && cald.ExceptionType == ExceptionType.Added
+                      select cald.ServiceId);
 
       return ret.Distinct().ToList();
     }
