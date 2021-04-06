@@ -85,11 +85,11 @@ namespace Nixill.GTFS
       return times;
     }
 
-    public static Tuple<List<string>, List<Tuple<string, Dictionary<string, TimeOfDay>>>> GetSchedule(GTFSFeed feed, string route, DirectionType? dir, string serviceId, List<string> stopOrder, Dictionary<string, int> sortTimes)
+    public static Tuple<List<string>, List<Tuple<string, Dictionary<string, TimeOfDay>>>> GetSchedule(GTFSFeed feed, string route, DirectionType? dir, List<string> serviceIds, List<string> stopOrder, Dictionary<string, int> sortTimes)
     {
       var filteredTrips =
         from trips in feed.Trips
-        where trips.RouteId == route && trips.Direction == dir && trips.ServiceId == serviceId
+        where trips.RouteId == route && trips.Direction == dir && serviceIds.Contains(trips.ServiceId)
         select trips.Id;
 
       List<Tuple<string, Dictionary<string, TimeOfDay>, int>> tripSchedules = new List<Tuple<string, Dictionary<string, TimeOfDay>, int>>();
@@ -128,14 +128,14 @@ namespace Nixill.GTFS
       return new Tuple<List<string>, List<Tuple<string, Dictionary<string, TimeOfDay>>>>(stopOrder, allTrips);
     }
 
-    public static Tuple<List<string>, List<Tuple<string, Dictionary<string, TimeOfDay>>>> GetSchedule(GTFSFeed feed, string route, DirectionType? dir, string serviceId) =>
-      GetSchedule(feed, route, dir, serviceId, TimepointFinder.GetTimepointStrategy(feed));
+    public static Tuple<List<string>, List<Tuple<string, Dictionary<string, TimeOfDay>>>> GetSchedule(GTFSFeed feed, string route, DirectionType? dir, List<string> serviceIds) =>
+      GetSchedule(feed, route, dir, serviceIds, TimepointFinder.GetTimepointStrategy(feed));
 
-    public static Tuple<List<string>, List<Tuple<string, Dictionary<string, TimeOfDay>>>> GetSchedule(GTFSFeed feed, string route, DirectionType? dir, string serviceId, TimepointStrategy strat)
+    public static Tuple<List<string>, List<Tuple<string, Dictionary<string, TimeOfDay>>>> GetSchedule(GTFSFeed feed, string route, DirectionType? dir, List<string> serviceIds, TimepointStrategy strat)
     {
       var stops = GetScheduleHeader(feed, route, dir, strat);
       var times = GetSortTimes(feed, route, dir, stops);
-      return GetSchedule(feed, route, dir, serviceId, stops, times);
+      return GetSchedule(feed, route, dir, serviceIds, stops, times);
     }
   }
 }

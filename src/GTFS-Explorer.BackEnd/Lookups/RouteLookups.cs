@@ -27,9 +27,30 @@ namespace GTFS_Explorer.BackEnd.Lookups
     /// <param name="dir">
     ///   Which direction of the route should be scheduled.
     /// </param>
-    /// <param name="serviceId">The ID of the day to retrieve.</param>
+    /// <param name="serviceIds">The IDs of the days to retrieve.</param>
+    public static Grid<string> GetSchedule(GTFSFeed feed, string route, DirectionType? dir, List<string> serviceIds) =>
+      GetSchedule(feed, route, dir, serviceIds, TimepointFinder.GetTimepointStrategy(feed));
+
+    /// <summary>
+    ///   <para>Returns a transit schedule in grid form.</para>
+    /// </summary>
+    /// <remarks>
+    ///   <para>The returned schedule will have stop IDs along the first
+    ///     row, trip IDs in the first column, and times of when that trip
+    ///     reaches that stop in the rest of the grid.</para>
+    ///   <para>This overload is deprecated; <c>serviceId</c> should be
+    ///     replaced with <c>new List&lt;string&gt; { serviceId }</c>.
+    ///   </para>
+    /// </remarks>
+    /// <param name="feed">The GTFS feed to use.</param>
+    /// <param name="route">The ID of the route to retrieve.</param>
+    /// <param name="dir">
+    ///   Which direction of the route should be scheduled.
+    /// </param>
+    /// <param name="serviceId">The ID of the service to retrieve.</param>
+    [Obsolete("Change `serviceId` to `new List<string> { serviceId }`.")]
     public static Grid<string> GetSchedule(GTFSFeed feed, string route, DirectionType? dir, string serviceId) =>
-      GetSchedule(feed, route, dir, serviceId, TimepointFinder.GetTimepointStrategy(feed));
+      GetSchedule(feed, route, dir, new List<string> { serviceId }, TimepointFinder.GetTimepointStrategy(feed));
 
     /// <summary>
     ///   <para>Returns a transit schedule in grid form.</para>
@@ -44,16 +65,33 @@ namespace GTFS_Explorer.BackEnd.Lookups
     /// <param name="dir">
     ///   Which direction of the route should be scheduled.
     /// </param>
-    /// <param name="serviceId">The ID of the day to retrieve.</param>
+    /// <param name="date">The date to retrieve.</param>
+    public static Grid<string> GetSchedule(GTFSFeed feed, string route, DirectionType? dir, LocalDate date) =>
+      GetSchedule(feed, route, dir, ServicesOn(feed, date));
+
+    /// <summary>
+    ///   <para>Returns a transit schedule in grid form.</para>
+    /// </summary>
+    /// <remarks>
+    ///   <para>The returned schedule will have stop IDs along the first
+    ///     row, trip IDs in the first column, and times of when that trip
+    ///     reaches that stop in the rest of the grid.</para>
+    /// </remarks>
+    /// <param name="feed">The GTFS feed to use.</param>
+    /// <param name="route">The ID of the route to retrieve.</param>
+    /// <param name="dir">
+    ///   Which direction of the route should be scheduled.
+    /// </param>
+    /// <param name="serviceIds">The IDs of the days to retrieve.</param>
     /// <param name="strat">
     ///   The timepoint strategy, a value returned by
     ///   <c>TimepointFinder.GetTimepointStrategy()</c>.
     /// </param>
-    public static Grid<string> GetSchedule(GTFSFeed feed, string route, DirectionType? dir, string serviceId, TimepointStrategy strat)
+    public static Grid<string> GetSchedule(GTFSFeed feed, string route, DirectionType? dir, List<string> serviceIds, TimepointStrategy strat)
     {
       var stops = ScheduleBuilder.GetScheduleHeader(feed, route, dir, strat);
       var times = ScheduleBuilder.GetSortTimes(feed, route, dir, stops);
-      var sched = ScheduleBuilder.GetSchedule(feed, route, dir, serviceId, stops, times);
+      var sched = ScheduleBuilder.GetSchedule(feed, route, dir, serviceIds, stops, times);
       return GridifySchedule(sched);
     }
 
@@ -64,17 +102,105 @@ namespace GTFS_Explorer.BackEnd.Lookups
     ///   <para>The returned schedule will have stop IDs along the first
     ///     row, trip IDs in the first column, and times of when that trip
     ///     reaches that stop in the rest of the grid.</para>
+    ///   <para>This overload is deprecated; <c>serviceId</c> should be
+    ///     replaced with <c>new List&lt;string&gt; { serviceId }</c>.
+    ///   </para>
     /// </remarks>
     /// <param name="feed">The GTFS feed to use.</param>
     /// <param name="route">The ID of the route to retrieve.</param>
     /// <param name="dir">
     ///   Which direction of the route should be scheduled.
     /// </param>
-    /// <param name="serviceId">The ID of the day to retrieve.</param>
+    /// <param name="serviceId">The ID of the service to retrieve.</param>
+    /// <param name="strat">
+    ///   The timepoint strategy, a value returned by
+    ///   <c>TimepointFinder.GetTimepointStrategy()</c>.
+    /// </param>
+    [Obsolete("Change `serviceId` to `new List<string> { serviceId }`.")]
+    public static Grid<string> GetSchedule(GTFSFeed feed, string route, DirectionType? dir, string serviceId, TimepointStrategy strat) =>
+      GetSchedule(feed, route, dir, new List<string> { serviceId }, strat);
+
+    /// <summary>
+    ///   <para>Returns a transit schedule in grid form.</para>
+    /// </summary>
+    /// <remarks>
+    ///   <para>The returned schedule will have stop IDs along the first
+    ///     row, trip IDs in the first column, and times of when that trip
+    ///     reaches that stop in the rest of the grid.</para>
+    /// </remarks>
+    /// <param name="feed">The GTFS feed to use.</param>
+    /// <param name="route">The ID of the route to retrieve.</param>
+    /// <param name="dir">
+    ///   Which direction of the route should be scheduled.
+    /// </param>
+    /// <param name="date">The date to retrieve.</param>
+    /// <param name="strat">
+    ///   The timepoint strategy, a value returned by
+    ///   <c>TimepointFinder.GetTimepointStrategy()</c>.
+    /// </param>
+    public static Grid<string> GetSchedule(GTFSFeed feed, string route, DirectionType? dir, LocalDate date, TimepointStrategy strat) =>
+      GetSchedule(feed, route, dir, ServicesOn(feed, date), strat);
+
+    /// <summary>
+    ///   <para>Returns a transit schedule in grid form.</para>
+    /// </summary>
+    /// <remarks>
+    ///   <para>The returned schedule will have stop IDs along the first
+    ///     row, trip IDs in the first column, and times of when that trip
+    ///     reaches that stop in the rest of the grid.</para>
+    /// </remarks>
+    /// <param name="feed">The GTFS feed to use.</param>
+    /// <param name="route">The ID of the route to retrieve.</param>
+    /// <param name="dir">
+    ///   Which direction of the route should be scheduled.
+    /// </param>
+    /// <param name="serviceIds">The IDs of the days to retrieve.</param>
     /// <param name="stopOrder">The order of stops to use.</param>
     /// <param name="sortTimes">The sort times of the trips.</param>
+    public static Grid<string> GetSchedule(GTFSFeed feed, string route, DirectionType? dir, List<string> serviceIds, List<string> stopOrder, Dictionary<string, int> sortTimes) =>
+      GridifySchedule(ScheduleBuilder.GetSchedule(feed, route, dir, serviceIds, stopOrder, sortTimes));
+
+    /// <summary>
+    ///   <para>Returns a transit schedule in grid form.</para>
+    /// </summary>
+    /// <remarks>
+    ///   <para>The returned schedule will have stop IDs along the first
+    ///     row, trip IDs in the first column, and times of when that trip
+    ///     reaches that stop in the rest of the grid.</para>
+    ///   <para>This overload is deprecated; <c>serviceId</c> should be
+    ///     replaced with <c>new List&lt;string&gt; { serviceId }</c>.
+    ///   </para>
+    /// </remarks>
+    /// <param name="feed">The GTFS feed to use.</param>
+    /// <param name="route">The ID of the route to retrieve.</param>
+    /// <param name="dir">
+    ///   Which direction of the route should be scheduled.
+    /// </param>
+    /// <param name="serviceId">The ID of the service to retrieve.</param>
+    /// <param name="stopOrder">The order of stops to use.</param>
+    /// <param name="sortTimes">The sort times of the trips.</param>
+    [Obsolete("Change `serviceId` to `new List<string> { serviceId }`.")]
     public static Grid<string> GetSchedule(GTFSFeed feed, string route, DirectionType? dir, string serviceId, List<string> stopOrder, Dictionary<string, int> sortTimes) =>
-      GridifySchedule(ScheduleBuilder.GetSchedule(feed, route, dir, serviceId, stopOrder, sortTimes));
+      GridifySchedule(ScheduleBuilder.GetSchedule(feed, route, dir, new List<string> { serviceId }, stopOrder, sortTimes));
+
+    /// <summary>
+    ///   <para>Returns a transit schedule in grid form.</para>
+    /// </summary>
+    /// <remarks>
+    ///   <para>The returned schedule will have stop IDs along the first
+    ///     row, trip IDs in the first column, and times of when that trip
+    ///     reaches that stop in the rest of the grid.</para>
+    /// </remarks>
+    /// <param name="feed">The GTFS feed to use.</param>
+    /// <param name="route">The ID of the route to retrieve.</param>
+    /// <param name="dir">
+    ///   Which direction of the route should be scheduled.
+    /// </param>
+    /// <param name="date">The date to retrieve.</param>
+    /// <param name="stopOrder">The order of stops to use.</param>
+    /// <param name="sortTimes">The sort times of the trips.</param>
+    public static Grid<string> GetSchedule(GTFSFeed feed, string route, DirectionType? dir, LocalDate date, List<string> stopOrder, Dictionary<string, int> sortTimes) =>
+      GridifySchedule(ScheduleBuilder.GetSchedule(feed, route, dir, ServicesOn(feed, date), stopOrder, sortTimes));
 
     private static Grid<string> GridifySchedule(Tuple<List<string>, List<Tuple<string, Dictionary<string, TimeOfDay>>>> sched)
     {
