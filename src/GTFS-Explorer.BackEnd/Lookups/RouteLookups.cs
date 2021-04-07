@@ -311,5 +311,71 @@ namespace GTFS_Explorer.BackEnd.Lookups
 
       return ret.Distinct().ToList();
     }
+
+    public static Dictionary<DirectionType?, RouteStats> GetRouteStats(GTFSFeed feed, LocalDate date, string route)
+    {
+      Dictionary<DirectionType?, RouteStats> ret = new Dictionary<DirectionType?, RouteStats>();
+
+      var services = ServicesOn(feed, date);
+      var allTrips = feed.Trips.Where(x => x.RouteId == route && services.Contains(x.ServiceId));
+      var directions = allTrips.Select(x => x.Direction).Distinct();
+
+      foreach (DirectionType? dir in directions)
+      {
+        var dirTrips = allTrips.Where(x => x.Direction == dir);
+
+        var rs = new RouteStats()
+        {
+          StartStops = new List<string>(),
+          EndStops = new List<string>(),
+          TotalTrips = 0,
+          AverageTrip = Duration.FromSeconds(0),
+          StartTime = Duration.FromSeconds(0),
+          EndTime = Duration.MaxValue,
+          ShortestTrip = Duration.FromSeconds(0),
+          LongestTrip = Duration.MaxValue
+        };
+
+        foreach (Trip t in dirTrips)
+        {
+          var stops = feed.StopTimes.Where(x => x.TripId == t.Id).OrderBy(x => x.ArrivalTime);
+          var firstStop = stops.First();
+          var lastStop = stops.Last();
+
+          var firstTime = Duration.FromSeconds(firstStop.DepartureTime.Value.TotalSeconds);
+          var lastTime = Duration.FromSeconds(lastStop.ArrivalTime.Value.TotalSeconds);
+          var length = lastTime - firstTime;
+
+          if (rs.StartTime > firstTime) rs.StartTime = firstTime;
+          if (rs.EndTime < lastTime) rs.EndTime = lastTime;
+          if (rs.ShortestTrip > length) rs.ShortestTrip = length;
+          if (rs.LongestTrip < length) rs.LongestTrip = length;
+
+          rs.AverageTrip += length;
+          rs.TotalTrips += 1;
+        }
+
+        rs.AverageTrip /= rs.TotalTrips;
+        ret[dir] = rs;
+      }
+
+      return ret;
+    }
+  }
+
+  public struct RouteStats
+  {
+    // Line 1
+    public Duration StartTime;
+    public Duration EndTime;
+    // Line 2
+    public List<string> StartStops;
+    // Line 3
+    public List<string> EndStops;
+    // Line 4
+    public Duration ShortestTrip;
+    public Duration LongestTrip;
+    public Duration AverageTrip;
+    public int TotalTrips;
   }
 }
