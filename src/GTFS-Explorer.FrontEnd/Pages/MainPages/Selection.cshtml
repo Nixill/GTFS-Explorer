@@ -6,7 +6,25 @@
 
 <section class="container">
     <div class="tab">
-        <p class="text-center">File name or other meta data displayed here.</p><br>
+		<div class="text-center mt-3">
+			<h3 class="text-white h3">Feed Info</h3>
+			<p class="text-white lead">Publisher Name: @Model.FeedInfo.PublisherName</p>
+			<p class="text-white lead">Publisher Url: 
+				<a id="publisher-url" 
+				   class="text-decoration-none mouse-pointer">
+					@Model.FeedInfo.PublisherUrl
+				</a>
+			</p>
+			<p class="text-white lead">Language: @Model.FeedInfo.Lang</p>
+			@if (!string.IsNullOrEmpty(Model.FeedInfo.StartDate) &&
+			   !string.IsNullOrEmpty(Model.FeedInfo.EndDate))
+			{
+				<p class="text-white lead">
+					Valid from @Model.FeedInfo.StartDate to @Model.FeedInfo.EndDate
+				</p>
+			}
+		</div>
+        <br>
         <div class="d-flex justify-content-around">
             <form method="post">
                 <button class="tablinks" 
@@ -36,5 +54,11 @@
             $('#fader').css('display', 'none');
 			$('#loader-wrapper').css('display', 'none');
 		});
+
+        const { ipcRenderer } = require("electron");
+
+		document.getElementById("publisher-url").addEventListener("click", () => {
+			ipcRenderer.send("open-publisher-url");
+        });
 	</script>
 }
