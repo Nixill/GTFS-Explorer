@@ -3,7 +3,7 @@ using GTFS.Entities.Enumerations;
 using GTFS_Explorer.Core.Enums;
 using System.Collections.Generic;
 using Nixill.Collections.Grid;
-using System;
+using NodaTime;
 
 namespace GTFS_Explorer.Core.Interfaces.RepoInterfaces
 {
@@ -12,7 +12,8 @@ namespace GTFS_Explorer.Core.Interfaces.RepoInterfaces
         Dictionary<Agency, List<Route>> GetAllRoutes();
         Route GetRouteById(string id);
         List<Route> GetRoutesList();
-        Grid<string> GetSchedule(string route, DirectionType? dir, string serviceId, TimepointStrategy strat);
-        Grid<string> GridifySchedule(Tuple<List<string>, List<Tuple<string, Dictionary<string, TimeOfDay>>>> sched);
+        Grid<string> GetSchedule(string route, DirectionType? dir, List<string> serviceIds, TimepointStrategy strat);
+        bool HasAnyService(string route);
+        List<string> ServicesOn(LocalDate date);
     }
 }

@@ -1,4 +1,4 @@
-﻿@page "{routeId}"
+﻿@page "{routeId}/{scheduleDate:datetime?}"
 @model GTFS_Explorer.FrontEnd.Pages.RouteOptions.ScheduleModel
 @{
     ViewData["Title"] = "Schedule";
@@ -20,9 +20,9 @@
 			   asp-route-routeId="@Model.RouteId">Schedule</a>
 		</div>
     </div>
-    <div class="floater">
-		<div class="floater-content">
-			<table class="table table-striped">
+    <div class="floater d-flex justify-content-around">
+		<div class="floater-content col-lg-7">
+			<table class="table">
 				@{ int index = 0; }
 				@foreach (GridLine<string> gridLine in (Grid<string>)Model.Schedule)
 				{
@@ -61,6 +61,15 @@
 				}
 			</table>
 		</div>
+		<form asp-page-handler="CreateSchedule"
+			  class="mt-md-3">
+			<input type="date" 
+				   class="form-control" 
+				   asp-for="ScheduleDate"/>
+			@Html.HiddenFor(m => m.RouteId)
+			<button type="submit"
+					class="btn button submit">See Schedule</button>
+		</form>
     </div>
     <form>
         <input type="file" id="selectFile" class="hidden" />

@@ -26,7 +26,7 @@ namespace GTFS_Explorer.BackEnd.Schedules
 			_stopsRepository = stopsRepository;
 		}
 
-		public List<string> GetScheduleHeader(string route, DirectionType? dir) =>
+        public List<string> GetScheduleHeader(string route, DirectionType? dir) =>
             GetScheduleHeader(route, dir, _timepointFinder.GetTimepointStrategy());
 
         public List<string> GetScheduleHeader(string route, DirectionType? dir, TimepointStrategy strat)
@@ -102,11 +102,16 @@ namespace GTFS_Explorer.BackEnd.Schedules
         }
 
         public Tuple<List<string>, List<Tuple<string, Dictionary<string, TimeOfDay>>>> 
-            GetSchedule(string route, DirectionType? dir, string serviceId, List<string> stopOrder, Dictionary<string, int> sortTimes)
+            GetSchedule(
+                string route, 
+                DirectionType? dir, 
+                List<string> serviceIds, 
+                List<string> stopOrder, 
+                Dictionary<string, int> sortTimes)
         {
             var filteredTrips =
               from trips in _reader.Feed.Trips
-              where trips.RouteId == route && trips.Direction == dir && trips.ServiceId == serviceId
+              where trips.RouteId == route && trips.Direction == dir && serviceIds.Contains(trips.ServiceId)
               select trips.Id;
 
             List<Tuple<string, Dictionary<string, TimeOfDay>, int>> tripSchedules = new List<Tuple<string, Dictionary<string, TimeOfDay>, int>>();
@@ -145,16 +150,15 @@ namespace GTFS_Explorer.BackEnd.Schedules
             return new Tuple<List<string>, List<Tuple<string, Dictionary<string, TimeOfDay>>>>(stopOrder, allTrips);
         }
 
-        public Tuple<List<string>, List<Tuple<string, Dictionary<string, TimeOfDay>>>> 
-            GetSchedule(string route, DirectionType? dir, string serviceId) 
-                => GetSchedule(route, dir, serviceId, _timepointFinder.GetTimepointStrategy());
+        public Tuple<List<string>, List<Tuple<string, Dictionary<string, TimeOfDay>>>> GetSchedule(string route, DirectionType? dir, List<string> serviceIds) =>
+          GetSchedule(route, dir, serviceIds, _timepointFinder.GetTimepointStrategy());
 
         public Tuple<List<string>, List<Tuple<string, Dictionary<string, TimeOfDay>>>> 
-            GetSchedule(string route, DirectionType? dir, string serviceId, TimepointStrategy strat)
+            GetSchedule(string route, DirectionType? dir, List<string> serviceIds, TimepointStrategy strat)
         {
             var stops = GetScheduleHeader(route, dir, strat);
             var times = GetSortTimes(route, dir, stops);
-            return GetSchedule(route, dir, serviceId, stops, times);
+            return GetSchedule(route, dir, serviceIds, stops, times);
         }
     }
 }
