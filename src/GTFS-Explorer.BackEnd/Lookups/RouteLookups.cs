@@ -5,6 +5,7 @@ using System.Linq;
 using GTFS;
 using GTFS.Entities;
 using GTFS.Entities.Enumerations;
+using GTFS_Explorer.BackEnd.Utilities;
 using GTFS_Explorer.Core.Enums;
 using Nixill.Collections.Grid;
 using Nixill.GTFS;
@@ -92,7 +93,7 @@ namespace GTFS_Explorer.BackEnd.Lookups
       var stops = ScheduleBuilder.GetScheduleHeader(feed, route, dir, strat);
       var times = ScheduleBuilder.GetSortTimes(feed, route, dir, stops);
       var sched = ScheduleBuilder.GetSchedule(feed, route, dir, serviceIds, stops, times);
-      return GridifySchedule(sched);
+      return GridifySchedule(feed, sched);
     }
 
     /// <summary>
@@ -158,7 +159,7 @@ namespace GTFS_Explorer.BackEnd.Lookups
     /// <param name="stopOrder">The order of stops to use.</param>
     /// <param name="sortTimes">The sort times of the trips.</param>
     public static Grid<string> GetSchedule(GTFSFeed feed, string route, DirectionType? dir, List<string> serviceIds, List<string> stopOrder, Dictionary<string, int> sortTimes) =>
-      GridifySchedule(ScheduleBuilder.GetSchedule(feed, route, dir, serviceIds, stopOrder, sortTimes));
+      GridifySchedule(feed, ScheduleBuilder.GetSchedule(feed, route, dir, serviceIds, stopOrder, sortTimes));
 
     /// <summary>
     ///   <para>Returns a transit schedule in grid form.</para>
@@ -181,7 +182,7 @@ namespace GTFS_Explorer.BackEnd.Lookups
     /// <param name="sortTimes">The sort times of the trips.</param>
     [Obsolete("Change `serviceId` to `new List<string> { serviceId }`.")]
     public static Grid<string> GetSchedule(GTFSFeed feed, string route, DirectionType? dir, string serviceId, List<string> stopOrder, Dictionary<string, int> sortTimes) =>
-      GridifySchedule(ScheduleBuilder.GetSchedule(feed, route, dir, new List<string> { serviceId }, stopOrder, sortTimes));
+      GridifySchedule(feed, ScheduleBuilder.GetSchedule(feed, route, dir, new List<string> { serviceId }, stopOrder, sortTimes));
 
     /// <summary>
     ///   <para>Returns a transit schedule in grid form.</para>
@@ -200,9 +201,9 @@ namespace GTFS_Explorer.BackEnd.Lookups
     /// <param name="stopOrder">The order of stops to use.</param>
     /// <param name="sortTimes">The sort times of the trips.</param>
     public static Grid<string> GetSchedule(GTFSFeed feed, string route, DirectionType? dir, LocalDate date, List<string> stopOrder, Dictionary<string, int> sortTimes) =>
-      GridifySchedule(ScheduleBuilder.GetSchedule(feed, route, dir, ServicesOn(feed, date), stopOrder, sortTimes));
+      GridifySchedule(feed, ScheduleBuilder.GetSchedule(feed, route, dir, ServicesOn(feed, date), stopOrder, sortTimes));
 
-    private static Grid<string> GridifySchedule(Tuple<List<string>, List<Tuple<string, Dictionary<string, TimeOfDay>>>> sched)
+    private static Grid<string> GridifySchedule(GTFSFeed feed, Tuple<List<string>, List<Tuple<string, Dictionary<string, TimeOfDay>>>> sched)
     {
       Grid<string> ret = new Grid<string>(sched.Item1.Count + 1, 0);
 
@@ -228,7 +229,7 @@ namespace GTFS_Explorer.BackEnd.Lookups
             if (trip.Item2.ContainsKey(stop))
             {
               int time = trip.Item2[stop].TotalSeconds;
-              string timeString = NodaTime.LocalTime.FromSecondsSinceMidnight(time).ToString("HH:mm:ss", DateTimeFormatInfo.InvariantInfo);
+              string timeString = NodaTime.LocalTime.FromSecondsSinceMidnight(time).ToString("HH:mm", DateTimeFormatInfo.InvariantInfo);
               tripRow.Add(timeString);
             }
             else
@@ -239,6 +240,71 @@ namespace GTFS_Explorer.BackEnd.Lookups
         }
 
         ret.AddRow(tripRow);
+
+        // Also frequency-based trips
+        var freqs = feed.Frequencies.Where(x => x.TripId == trip.Item1);
+
+        foreach (var freq in freqs)
+        {
+          string freqDesc = "";
+          if (!(freq.ExactTimes.HasValue && freq.ExactTimes.Value))
+          {
+            freqDesc = "approximately ";
+          }
+
+          freqDesc += "every ";
+
+          int headway = int.Parse(freq.HeadwaySecs);
+          int secs, mins, hrs;
+
+          if (headway < 300)
+          {
+            secs = headway % 60;
+          }
+          else
+          {
+            secs = 0;
+            headway += 30; // For rounding
+          }
+
+          headway /= 60;
+
+          mins = headway % 60;
+          hrs = headway / 60;
+
+          if (hrs > 1)
+          {
+            freqDesc += $" {hrs} hours";
+          }
+          else if (hrs == 1)
+          {
+            freqDesc += " 1 hour";
+          }
+
+          if (mins > 1)
+          {
+            freqDesc += $" {mins} minutes";
+          }
+          else if (mins == 1)
+          {
+            freqDesc += " 1 minute";
+          }
+
+          if (secs > 1)
+          {
+            freqDesc += $" {secs} seconds";
+          }
+          else if (secs == 1)
+          {
+            freqDesc += " 1 second";
+          }
+
+          string startTime = ExtraUtils.RemoveSeconds(freq.StartTime);
+          string endTime = ExtraUtils.RemoveSeconds(freq.EndTime);
+
+          freqDesc += $" from {startTime} to {endTime}";
+          ret.AddRow(new List<string> { "", freqDesc });
+        }
       }
 
       return ret;
