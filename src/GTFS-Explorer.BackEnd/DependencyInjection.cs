@@ -28,6 +28,8 @@ namespace GTFS_Explorer.BackEnd
             services.AddScoped<IStopsRepository, StopsRepository>();
             services.AddScoped<ITimepointRepository, TimepointRepository>();
             services.AddScoped<ICalendarTesterRepository, CalendarTesterRepository>();
+            services.AddScoped<IAgencyRepository, AgencyRepository>();
+            services.AddScoped<ITripsRepository, TripsRepository>();
 
             //Other Services
             services.AddSingleton<IEventRegistry, EventRegistry>();

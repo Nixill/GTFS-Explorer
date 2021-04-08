@@ -4,6 +4,7 @@ using GTFS_Explorer.Core.Enums;
 using System.Collections.Generic;
 using Nixill.Collections.Grid;
 using NodaTime;
+using GTFS_Explorer.Core.Models.Structs;
 
 namespace GTFS_Explorer.Core.Interfaces.RepoInterfaces
 {
@@ -15,5 +16,6 @@ namespace GTFS_Explorer.Core.Interfaces.RepoInterfaces
         Grid<string> GetSchedule(string route, DirectionType? dir, List<string> serviceIds, TimepointStrategy strat);
         bool HasAnyService(string route);
         List<string> ServicesOn(LocalDate date);
+        Dictionary<DirectionType?, RouteStats> GetRouteStats(LocalDate date, string route);
     }
 }

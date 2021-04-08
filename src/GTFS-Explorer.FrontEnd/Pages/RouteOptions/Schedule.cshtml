@@ -1,4 +1,4 @@
-﻿@page "{routeId}/{scheduleDate:datetime?}"
+﻿@page "{routeId}/{scheduleDate:datetime?}/{routeDirection?}"
 @model GTFS_Explorer.FrontEnd.Pages.RouteOptions.ScheduleModel
 @{
     ViewData["Title"] = "Schedule";
@@ -62,13 +62,33 @@
 			</table>
 		</div>
 		<form asp-page-handler="CreateSchedule"
-			  class="mt-md-3">
-			<input type="date" 
-				   class="form-control" 
-				   asp-for="ScheduleDate"/>
+			  class="mt-md-3"
+			  id="form-s">
+			<input type="date"
+				   class="form-control"
+				   asp-for="ScheduleDate" />
 			@Html.HiddenFor(m => m.RouteId)
-			<button type="submit"
-					class="btn button submit">See Schedule</button>
+			<input type="hidden"
+				   class="text-center"
+				   id="route-direction"
+				   value="@Model.RouteDirection"
+				   name="routeDirection" />
+			<div class="d-flex justify-content-center">
+				@if (Model.DirectionsOfRoute.Count() > 1)
+				{
+					<button type="submit"
+							class="btn button submit"
+							style="margin-left: 10px"
+							onclick="changeDirection()">
+						Switch Direction
+					</button>
+				}
+				<button type="submit"
+						class="btn button submit"
+						style="margin-left: 10px">
+					See Schedule
+				</button>
+			</div>
 		</form>
     </div>
     <form>
@@ -78,3 +98,17 @@
         <label class="select-file" for="returnToRoutes">Return to Routes</label>
     </form>
 </section>
+
+@section Scripts
+{
+	<script>
+		const dir = document.getElementById("route-direction");
+		function changeDirection() {
+			const dir = document.getElementById("route-direction");
+			if (dir.value == "OneDirection") 
+				dir.value = "OppositeDirection";
+			else
+				dir.value = "OneDirection";
+		}
+	</script>
+}

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using GTFS.Entities;
 using GTFS_Explorer.Core.Interfaces.RepoInterfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -13,17 +10,28 @@ namespace GTFS_Explorer.FrontEnd.Pages.MainPages
     {
         private readonly IRoutesRepository _routesRepository;
 
-        public List<Route> Routes = new List<Route>();
+        public List<Route> Routes { get; set; } = new List<Route>();
 
-        public RoutesModel(IRoutesRepository routesRepository)
-        {
-            _routesRepository = routesRepository;
-            Routes = _routesRepository.GetRoutesList();
+		public RoutesModel(IRoutesRepository routesRepository)
+		{
+			_routesRepository = routesRepository;
+            GetRoutes();
         }
 
-        public void OnGet()
+		public IActionResult OnGet()
         {
-            //Routes = await Task.Run(_routesRepository.GetRoutesList);
+            return Page();
+        }
+
+        private void GetRoutes()
+		{
+            var routes = _routesRepository.GetAllRoutes();
+            foreach (var agency in routes.Keys)
+            {
+                List<Route> agencyRouteList;
+                routes.TryGetValue(agency, out agencyRouteList);
+                Routes.AddRange(agencyRouteList);
+            }
         }
     }
 }

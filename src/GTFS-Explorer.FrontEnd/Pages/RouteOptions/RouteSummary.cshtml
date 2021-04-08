@@ -1,4 +1,4 @@
-﻿@page "{routeId}"
+﻿@page "{routeId}/{servicesDate:datetime?}"
 @model GTFS_Explorer.FrontEnd.Pages.RouteOptions.RouteSummaryModel
 @{
     ViewData["Title"] = "RouteSummary";
@@ -43,13 +43,22 @@
                 </div>
                 <div class="col p-2"
                      style="background-color: #EFEEED;">
-                    <div class="d-flex justify-content-between">
-                        <h5 style="color: #087983;"
-                            class="pt-2">
-                            Route Stats
-                        </h5>
-                        <input type="datetime-local" />
-                    </div>
+					<div class="d-flex justify-content-between">
+						<h5 style="color: #087983;"
+							class="pt-2">
+							Route Stats
+						</h5>
+						<form asp-page-handler="RouteStats">
+							<input type="date"
+								   class="form-control"
+								   asp-for="ServicesDate" />
+							@Html.HiddenFor(m => m.RouteId)
+							<button type="submit"
+									class="btn-sm button submit">
+								See Stats
+							</button>
+						</form>
+					</div>
                     <table class="table table-bordered mt-2">
                         <thead>
                             <tr>

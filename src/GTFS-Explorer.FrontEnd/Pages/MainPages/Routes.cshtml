@@ -13,7 +13,7 @@
 		</div>
 	</div>
 	<div class="floater">
-		<input type="text" placeholder="Search...">
+		<input type="text" placeholder="Search..." id="search-routes">
 		<div class="floater-content scrollbar" id="style-1">
 			<table class="table table-hover">
 				<thead>
@@ -22,7 +22,8 @@
 						<th scope="col">Route Name</th>
 					</tr>
 				</thead>
-				<tbody class="routes-tbody">
+				<tbody class="routes-tbody" 
+					   id="all-routes-tbody">
 					@foreach (var route in Model.Routes)
 					{
 						<tr onclick="location.href = '@(Url.Page("/RouteOptions/RouteSummary", new { routeId = route.Id }))'">
@@ -43,3 +44,18 @@
 		<label class="select-file" for="selectFile">Select New File</label>
 	</form>
 </section>
+
+@section Scripts
+{
+<script>
+	var $rows = $('#all-routes-tbody tr');
+	$('#search-routes').keyup(function () {
+		var val = $.trim($(this).val()).replace(/ +/g, ' ').toLowerCase();
+
+		$rows.show().filter(function () {
+			var text = $(this).text().replace(/\s+/g, ' ').toLowerCase();
+			return !~text.indexOf(val);
+		}).hide();
+	});
+</script>
+}

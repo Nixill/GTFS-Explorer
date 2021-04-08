@@ -11,6 +11,7 @@ using GTFS_Explorer.Core.Interfaces;
 using System;
 using System.Globalization;
 using NodaTime;
+using GTFS_Explorer.Core.Models.Structs;
 
 namespace GTFS_Explorer.BackEnd.Repositiories
 {
@@ -19,15 +20,18 @@ namespace GTFS_Explorer.BackEnd.Repositiories
         private readonly GTFSFeedReader _feedReader;
         private readonly ITimepointRepository _timepointRepository;
         private readonly IScheduleBuilder _scheduleBuilder;
+        private readonly IAgencyRepository _agencyRepository;
 
 		public RoutesRepository(
-            GTFSFeedReader feedReader, 
-            ITimepointRepository timepointRepository, 
-            IScheduleBuilder scheduleBuilder)
+			GTFSFeedReader feedReader,
+			ITimepointRepository timepointRepository,
+			IScheduleBuilder scheduleBuilder, 
+            IAgencyRepository agencyRepository)
 		{
 			_feedReader = feedReader;
 			_timepointRepository = timepointRepository;
 			_scheduleBuilder = scheduleBuilder;
+			_agencyRepository = agencyRepository;
 		}
 
 		/// <summary>
@@ -40,7 +44,7 @@ namespace GTFS_Explorer.BackEnd.Repositiories
                 new GeneratorDictionary<Agency, List<Route>>(
                     new FuncGenerator<Agency, List<Route>>(x => new List<Route>()));
 
-            var agencies = _feedReader.Feed.Agencies;
+            var agencies = _agencyRepository.GetAgencies();
 
             foreach (Route route in _feedReader.Feed.Routes)
             {
@@ -363,5 +367,55 @@ namespace GTFS_Explorer.BackEnd.Repositiories
 
             return ret.Distinct().ToList();
         }
-	}
+
+        public Dictionary<DirectionType?, RouteStats> GetRouteStats(LocalDate date, string route)
+        {
+            Dictionary<DirectionType?, RouteStats> ret = new Dictionary<DirectionType?, RouteStats>();
+
+            var services = ServicesOn(date);
+            var allTrips = _feedReader.Feed.Trips.Where(x => x.RouteId == route && services.Contains(x.ServiceId));
+            var directions = allTrips.Select(x => x.Direction).Distinct();
+
+            foreach (DirectionType? dir in directions)
+            {
+                var dirTrips = allTrips.Where(x => x.Direction == dir);
+
+                var rs = new RouteStats()
+                {
+                    StartStops = new List<string>(),
+                    EndStops = new List<string>(),
+                    TotalTrips = 0,
+                    AverageTrip = Duration.FromSeconds(0),
+                    StartTime = Duration.FromSeconds(0),
+                    EndTime = Duration.MaxValue,
+                    ShortestTrip = Duration.FromSeconds(0),
+                    LongestTrip = Duration.MaxValue
+                };
+
+                foreach (Trip t in dirTrips)
+                {
+                    var stops = _feedReader.Feed.StopTimes.Where(x => x.TripId == t.Id).OrderBy(x => x.ArrivalTime);
+                    var firstStop = stops.First();
+                    var lastStop = stops.Last();
+
+                    var firstTime = Duration.FromSeconds(firstStop.DepartureTime.Value.TotalSeconds);
+                    var lastTime = Duration.FromSeconds(lastStop.ArrivalTime.Value.TotalSeconds);
+                    var length = lastTime - firstTime;
+
+                    if (rs.StartTime > firstTime) rs.StartTime = firstTime;
+                    if (rs.EndTime < lastTime) rs.EndTime = lastTime;
+                    if (rs.ShortestTrip > length) rs.ShortestTrip = length;
+                    if (rs.LongestTrip < length) rs.LongestTrip = length;
+
+                    rs.AverageTrip += length;
+                    rs.TotalTrips += 1;
+                }
+
+                rs.AverageTrip /= rs.TotalTrips;
+                ret[dir] = rs;
+            }
+
+            return ret;
+        }
+    }
 }
