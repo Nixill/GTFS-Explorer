@@ -391,6 +391,9 @@ namespace GTFS_Explorer.BackEnd.Lookups
       {
         var dirTrips = allTrips.Where(x => x.Direction == dir);
 
+        List<string> firstStops = new List<string>();
+        List<string> lastStops = new List<string>();
+
         var rs = new RouteStats()
         {
           StartStops = new List<string>(),
@@ -409,6 +412,9 @@ namespace GTFS_Explorer.BackEnd.Lookups
           var firstStop = stops.First();
           var lastStop = stops.Last();
 
+          firstStops.Add(firstStop.StopId);
+          lastStops.Add(lastStop.StopId);
+
           var firstTime = Duration.FromSeconds(firstStop.DepartureTime.Value.TotalSeconds);
           var lastTime = Duration.FromSeconds(lastStop.ArrivalTime.Value.TotalSeconds);
           var length = lastTime - firstTime;
@@ -423,6 +429,8 @@ namespace GTFS_Explorer.BackEnd.Lookups
         }
 
         rs.AverageTrip /= rs.TotalTrips;
+        rs.StartStops.AddRange(firstStops.Select(x => feed.Stops.Get(x).Name));
+        rs.EndStops.AddRange(lastStops.Select(x => feed.Stops.Get(x).Name));
         ret[dir] = rs;
       }
 
