@@ -7,6 +7,7 @@ using GTFS.Entities;
 using GTFS.Entities.Enumerations;
 using GTFS_Explorer.BackEnd.Utilities;
 using GTFS_Explorer.Core.Enums;
+using GTFS_Explorer.Core.Models.Structs;
 using Nixill.Collections.Grid;
 using Nixill.GTFS;
 using NodaTime;
@@ -427,21 +428,5 @@ namespace GTFS_Explorer.BackEnd.Lookups
 
       return ret;
     }
-  }
-
-  public struct RouteStats
-  {
-    // Line 1
-    public Duration StartTime;
-    public Duration EndTime;
-    // Line 2
-    public List<string> StartStops;
-    // Line 3
-    public List<string> EndStops;
-    // Line 4
-    public Duration ShortestTrip;
-    public Duration LongestTrip;
-    public Duration AverageTrip;
-    public int TotalTrips;
   }
 }
