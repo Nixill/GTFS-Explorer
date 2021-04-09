@@ -33,7 +33,7 @@ namespace GTFS_Explorer.BackEnd
 
             //Other Services
             services.AddSingleton<IEventRegistry, EventRegistry>();
-            services.AddScoped<IScheduleBuilder, ScheduleBuilder>();
+            services.AddScoped<IScheduleBuilderRepository, ScheduleBuilderRepository>();
             services.AddSignalR();
 
             return services;

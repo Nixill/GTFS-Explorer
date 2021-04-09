@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using ElectronNET.API;
 using GTFS.Entities;
 using GTFS.Entities.Enumerations;
-using GTFS_Explorer.BackEnd.Repositiories;
 using GTFS_Explorer.Core.Interfaces.RepoInterfaces;
 using GTFS_Explorer.Core.Models.Structs;
 using Microsoft.AspNetCore.Mvc;
@@ -26,10 +25,10 @@ namespace GTFS_Explorer.FrontEnd.Pages.RouteOptions
         public string RouteId { get; set; }
 
         [BindProperty]
-        public RouteStats RouteStats { get; set; }
+        public Dictionary<DirectionType?, RouteStats> StatsDictionary { get; set; }
 
         [BindProperty(SupportsGet = true)]
-        public DateTime ServicesDate { get; set; }
+        public DateTime ServicesDate { get; set; } = DateTime.UtcNow;
 
         public Route Route { get; set; }
 
@@ -41,13 +40,7 @@ namespace GTFS_Explorer.FrontEnd.Pages.RouteOptions
             var dateResult = LocalDatePattern.Iso.Parse(ServicesDate.ToString("yyyy-MM-dd"));
             RouteId = routeId;
             Route = _routesRepository.GetRouteById(RouteId);
-
-            var statsDict = _routesRepository.GetRouteStats(dateResult.Value, routeId);
-
-			foreach (var item in statsDict.Keys)
-			{
-
-			}
+            StatsDictionary = _routesRepository.GetRouteStats(dateResult.Value, routeId);
 
             Electron.IpcMain.On("open-route-link", async (args) =>
             {

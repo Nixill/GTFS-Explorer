@@ -4,6 +4,8 @@
     ViewData["Title"] = "RouteSummary";
 }
 
+@using GTFS_Explorer.Core.Models.Structs; 
+
 <link rel="stylesheet" href="~/css/style.css" />
 <section>
     <div class="header">
@@ -48,13 +50,15 @@
 							class="pt-2">
 							Route Stats
 						</h5>
-						<form asp-page-handler="RouteStats">
+						<form asp-page-handler="RouteStats"
+                              class="d-flex justify-content-center">
 							<input type="date"
 								   class="form-control"
 								   asp-for="ServicesDate" />
 							@Html.HiddenFor(m => m.RouteId)
 							<button type="submit"
-									class="btn-sm button submit">
+									class="btn-sm button submit"
+                                    style="margin-left: 10px">
 								See Stats
 							</button>
 						</form>
@@ -103,16 +107,25 @@
                                 <td>Route Runs</td>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr>
-                                <td>To Grand River & Grandview</td>
-                                <td>04:00 - 03:50 (+1 day)</td>
-                            </tr>
-                            <tr>
-                                <td>To Beaubien & Jefferson</td>
-                                <td>04:00 - 03:50 (+1 day)</td>
-                            </tr>
-                        </tbody>
+						<tbody>
+							@*@foreach (var direction in Model.StatsDictionary.Keys)
+							{
+                                RouteStats stats;
+                                Model.StatsDictionary.TryGetValue(direction, out stats);
+								<tr>
+									<td>To @stats.</td>
+									<td>04:00 - 03:50 (+1 day)</td>
+								</tr>
+							}*@
+							<tr>
+								<td>To Grand River & Grandview</td>
+								<td>04:00 - 03:50 (+1 day)</td>
+							</tr>
+							<tr>
+								<td>To Beaubien & Jefferson</td>
+								<td>04:00 - 03:50 (+1 day)</td>
+							</tr>
+						</tbody>
                     </table>
                 </div>
             </div>

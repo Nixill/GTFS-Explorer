@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace GTFS_Explorer.Core.Interfaces
 {
-	public interface IScheduleBuilder
+	public interface IScheduleBuilderRepository
 	{
 		List<string> GetScheduleHeader(string route, DirectionType? dir, TimepointStrategy strat);
 		Dictionary<string, int> GetSortTimes(string route, DirectionType? dir, List<string> timepoints);

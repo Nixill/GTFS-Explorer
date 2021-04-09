@@ -7,21 +7,29 @@
 <section class="container">
     <div class="tab">
 		<div class="text-center mt-3">
-			<h3 class="text-white h3">Feed Info</h3>
-			<p class="text-white lead">Publisher Name: @Model.FeedInfo.PublisherName</p>
-			<p class="text-white lead">Publisher Url: 
-				<a id="publisher-url" 
-				   class="text-decoration-none mouse-pointer">
-					@Model.FeedInfo.PublisherUrl
-				</a>
-			</p>
-			<p class="text-white lead">Language: @Model.FeedInfo.Lang</p>
-			@if (!string.IsNullOrEmpty(Model.FeedInfo.StartDate) &&
-			   !string.IsNullOrEmpty(Model.FeedInfo.EndDate))
+			@if (Model.FeedInfo != null)
 			{
+				<h3 class="text-white h3">Feed Info</h3>
+				<p class="text-white lead">Publisher Name: @Model.FeedInfo.PublisherName</p>
 				<p class="text-white lead">
-					Valid from @Model.FeedInfo.StartDate to @Model.FeedInfo.EndDate
+					Publisher Url:
+					<a id="publisher-url"
+					   class="text-decoration-none mouse-pointer">
+						@Model.FeedInfo.PublisherUrl
+					</a>
 				</p>
+				<p class="text-white lead">Language: @Model.FeedInfo.Lang</p>
+				@if (!string.IsNullOrEmpty(Model.FeedInfo.StartDate) &&
+				  !string.IsNullOrEmpty(Model.FeedInfo.EndDate))
+				{
+					<p class="text-white lead">
+						Valid from @Model.FeedInfo.StartDate to @Model.FeedInfo.EndDate
+					</p>
+				}
+			}
+			else
+			{
+				<h3>Feed Info was not provided</h3>
 			}
 		</div>
         <br>

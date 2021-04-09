@@ -206,7 +206,7 @@ namespace GTFS_Explorer.BackEnd.Lookups
 
     private static Grid<string> GridifySchedule(GTFSFeed feed, Tuple<List<string>, List<Tuple<string, Dictionary<string, TimeOfDay>>>> sched)
     {
-      Grid<string> ret = new Grid<string>(sched.Item1.Count + 1, 0);
+      Grid<string> ret = new Grid<string>();
 
       // Add the stops row
       var stops = sched.Item1;
