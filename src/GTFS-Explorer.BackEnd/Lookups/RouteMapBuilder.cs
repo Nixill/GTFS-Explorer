@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using GTFS;
 using GTFS.Entities;
@@ -118,12 +119,45 @@ namespace GTFS_Explorer.BackEnd.Lookups
 
       return loops;
     }
+
+    public static Tuple<Color, Color> GetRouteColors(Route route)
+    {
+      Color primary, secondary;
+
+      // Get primary color
+      int? color = route.Color;
+      if (color.HasValue) primary = Color.FromArgb(-16_777_216 | color.Value);
+      else primary = Color.White;
+
+      // Get secondary color
+      color = route.TextColor;
+      if (color.HasValue) secondary = Color.FromArgb(-16_777_216 | color.Value);
+      else
+      {
+        float luma = (0.299f * primary.R + 0.587f * primary.G + 0.114f * primary.B) / 255;
+        if (luma >= 0.5) secondary = Color.Black;
+        else secondary = Color.White;
+      }
+
+      return new Tuple<Color, Color>(primary, secondary);
+    }
+
+    public static List<Stop> GetStops(GTFSFeed feed, string routeID)
+    {
+      return feed.Trips
+        .Where(x => x.RouteId == routeID)
+        .SelectMany(x =>
+          feed.StopTimes
+            .Where(y => y.TripId == x.Id)
+            .Select(y => feed.Stops.Get(y.StopId))
+        ).Distinct().ToList();
+    }
   }
 
-  public struct Coordinate
+  public readonly struct Coordinate
   {
-    public double Latitude;
-    public double Longitude;
+    public readonly double Latitude;
+    public readonly double Longitude;
     public Coordinate(double lat, double lon)
     {
       Latitude = lat;
