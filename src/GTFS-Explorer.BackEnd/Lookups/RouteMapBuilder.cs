@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Linq;
 using GTFS;
 using GTFS.Entities;
+using GTFS_Explorer.Core.Models.Structs;
 using Nixill.Collections;
 
 namespace GTFS_Explorer.BackEnd.Lookups
@@ -154,25 +155,25 @@ namespace GTFS_Explorer.BackEnd.Lookups
     }
   }
 
-  public readonly struct Coordinate
-  {
-    public readonly double Latitude;
-    public readonly double Longitude;
-    public Coordinate(double lat, double lon)
-    {
-      Latitude = lat;
-      Longitude = lon;
-    }
-    public override int GetHashCode()
-    {
-      return Latitude.GetHashCode() ^ Longitude.GetHashCode();
-    }
-    public override bool Equals(object obj)
-    {
-      if (!(obj is Coordinate right)) return false;
-      return (Latitude == right.Latitude && Longitude == right.Longitude);
-    }
-    public static bool operator ==(Coordinate left, Coordinate right) => left.Equals(right);
-    public static bool operator !=(Coordinate left, Coordinate right) => !(left.Equals(right));
-  }
+  //public readonly struct Coordinate
+  //{
+  //  public readonly double Latitude;
+  //  public readonly double Longitude;
+  //  public Coordinate(double lat, double lon)
+  //  {
+  //    Latitude = lat;
+  //    Longitude = lon;
+  //  }
+  //  public override int GetHashCode()
+  //  {
+  //    return Latitude.GetHashCode() ^ Longitude.GetHashCode();
+  //  }
+  //  public override bool Equals(object obj)
+  //  {
+  //    if (!(obj is Coordinate right)) return false;
+  //    return (Latitude == right.Latitude && Longitude == right.Longitude);
+  //  }
+  //  public static bool operator ==(Coordinate left, Coordinate right) => left.Equals(right);
+  //  public static bool operator !=(Coordinate left, Coordinate right) => !(left.Equals(right));
+  //}
 }

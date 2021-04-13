@@ -1,9 +1,12 @@
 ﻿using ElectronNET.API;
 using GTFS.Entities;
 using GTFS_Explorer.BackEnd.Readers;
+using GTFS_Explorer.BackEnd.SignalR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.SignalR;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace GTFS_Explorer.FrontEnd.Pages.MainPages
 {

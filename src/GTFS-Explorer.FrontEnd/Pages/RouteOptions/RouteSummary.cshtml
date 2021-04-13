@@ -22,7 +22,8 @@
         </div>
     </div>
     <div class="d-flex align-items-center">
-        <div class="container floater">
+        <div class="container floater"
+             style="height: 560px;">
             <div class="row ml-2 mt-3 mr-2 d-flex justify-content-center">
                 <div class="col-md-5 p-md-5">
                     @if (string.IsNullOrEmpty(Model.Route.Description))
@@ -63,71 +64,33 @@
 							</button>
 						</form>
 					</div>
-                    <table class="table table-bordered mt-2">
-                        <thead>
-                            <tr>
-                                <td></td>
-                                <td class="text-center">Avg</td>
-                                <td class="text-center">Min</td>
-                                <td class="text-center">Max</td>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td class="text-center pt-4">Headway</td>
-                                <!--Info will be based on stats-->
-                                <td class="text-center">19<br />min</td>
-                                <td class="text-center">15<br />min</td>
-                                <td class="text-center">60<br />min</td>
-                            </tr>
-                            <tr>
-                                <td class="text-center pt-4">Trip Length</td>
-                                <!--Info will be based on stats-->
-                                <td class="text-center">60<br />min</td>
-                                <td class="text-center">50<br />min</td>
-                                <td class="text-center">65<br />min</td>
-                            </tr>
-                        </tbody>
-                    </table>
                 </div>
-            </div>
-            <div class="row mx-auto p-3 d-flex justify-content-center">
-                <div class="col"
-                     style="background-color: #EFEEED;">
-                    <div class="d-flex justify-content-between">
-                        <h5 style="color: #087983;"
-                            class="pt-2">
-                            Running Times
-                        </h5>
-                    </div>
-                    <table class="table table-bordered pt-4">
-                        <thead>
-                            <tr>
-                                <td>Route Direction</td>
-                                <td>Route Runs</td>
-                            </tr>
-                        </thead>
-						<tbody>
-							@*@foreach (var direction in Model.StatsDictionary.Keys)
-							{
-                                RouteStats stats;
-                                Model.StatsDictionary.TryGetValue(direction, out stats);
-								<tr>
-									<td>To @stats.</td>
-									<td>04:00 - 03:50 (+1 day)</td>
-								</tr>
-							}*@
-							<tr>
-								<td>To Grand River & Grandview</td>
-								<td>04:00 - 03:50 (+1 day)</td>
-							</tr>
-							<tr>
-								<td>To Beaubien & Jefferson</td>
-								<td>04:00 - 03:50 (+1 day)</td>
-							</tr>
-						</tbody>
-                    </table>
-                </div>
+				<div class="row">
+					@foreach (var direction in Model.StatsDictionary.Keys)
+					{
+						RouteStats stats;
+						Model.StatsDictionary.TryGetValue(direction, out stats);
+					    <div class="d-block p-lg-3">
+						    <h6 class="text-white">@direction.ToString()</h6>
+						    <ul>
+							    <li class="text-white">
+                                    The route runs @stats.StartTime to @stats.EndTime
+                                </li>
+							    <li class="text-white">
+                                    Trips start at @stats.StartStops[0]
+                                </li>
+								<li class="text-white">
+                                    Trips end at @stats.EndStops[0]
+                                </li>
+								<li class="text-white">
+									Trips are @stats.ShortestTrip.Minutes minutes 
+									to @stats.LongestTrip.Minutes minutes 
+                                    long (@stats.AverageTrip.ToString() on average)
+								</li>
+						    </ul>
+					    </div>
+					}
+				</div>
             </div>
         </div>
     </div>
@@ -140,6 +103,12 @@
     </form>
 
     <script>
+		window.addEventListener('load', () => {
+			$('#loader').css('display', 'none');
+			$('#fader').css('display', 'none');
+			$('#loader-wrapper').css('display', 'none');
+		});
+
         (function(){
             const { ipcRenderer } = require("electron");
 

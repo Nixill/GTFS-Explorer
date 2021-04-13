@@ -9,6 +9,27 @@
         "dist/browser/signalr.js",
         "dist/browser/signalr.min.js"
       ]
+    },
+    {
+      "library": "leaflet@1.7.1",
+      "destination": "wwwroot/lib/leaflet/",
+      "files": [
+        "dist/images/layers-2x.png",
+        "dist/images/layers.png",
+        "dist/images/marker-icon-2x.png",
+        "dist/images/marker-icon.png",
+        "dist/images/marker-shadow.png",
+        "dist/leaflet-src.esm.js",
+        "dist/leaflet-src.esm.js.map",
+        "dist/leaflet-src.js",
+        "dist/leaflet-src.js.map",
+        "dist/leaflet.css",
+        "dist/leaflet.js",
+        "dist/leaflet.js.map",
+        "dist/reference-1.6.0-newleafdoc.html",
+        "dist/reference-1.6.0-oldleafdoc.html",
+        "dist/reference-1.6.0.html"
+      ]
     }
   ]
 }

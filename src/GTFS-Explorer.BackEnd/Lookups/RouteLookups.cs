@@ -400,10 +400,10 @@ namespace GTFS_Explorer.BackEnd.Lookups
           EndStops = new List<string>(),
           TotalTrips = 0,
           AverageTrip = Duration.FromSeconds(0),
-          StartTime = Duration.FromSeconds(0),
-          EndTime = Duration.MaxValue,
-          ShortestTrip = Duration.FromSeconds(0),
-          LongestTrip = Duration.MaxValue
+          StartTime = Duration.MaxValue,
+          EndTime = Duration.FromSeconds(0),
+          ShortestTrip = Duration.MaxValue,
+          LongestTrip = Duration.FromSeconds(0)
         };
 
         foreach (Trip t in dirTrips)
