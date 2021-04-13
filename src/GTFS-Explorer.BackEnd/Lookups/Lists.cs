@@ -22,7 +22,11 @@ namespace GTFS_Explorer.BackEnd.Lookups
 
       foreach (Route route in feed.Routes)
       {
-        dict[agencies.Get(route.AgencyId)].Add(route);
+        if (route.Id != null && route.Id != "")
+        {
+          if (route.AgencyId == null) route.AgencyId = "";
+          dict[agencies.Get(route.AgencyId)].Add(route);
+        }
       }
 
       return dict;
