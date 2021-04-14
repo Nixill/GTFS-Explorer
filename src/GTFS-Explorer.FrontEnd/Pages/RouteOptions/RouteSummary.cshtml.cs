@@ -31,12 +31,10 @@ namespace GTFS_Explorer.FrontEnd.Pages.RouteOptions
 		[BindProperty]
         public string RouteId { get; set; }
 
-        [BindProperty]
-        public Dictionary<DirectionType?, RouteStats> StatsDictionary { get; set; }
-
         [BindProperty(SupportsGet = true)] //By default today's date
         public DateTime ServicesDate { get; set; } = DateTime.UtcNow;
 
+        public Dictionary<DirectionType?, RouteStats> StatsDictionary { get; set; }
         public Route Route { get; set; }
 
         public async Task OnGetAsync(string routeId, DateTime? servicesDate)

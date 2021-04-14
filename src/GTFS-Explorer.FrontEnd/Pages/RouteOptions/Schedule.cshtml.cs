@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using GTFS.Entities;
 using GTFS.Entities.Enumerations;
+using GTFS_Explorer.BackEnd.SignalR;
 using GTFS_Explorer.Core.Interfaces.RepoInterfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.SignalR;
 using Nixill.Collections.Grid;
 using NodaTime.Text;
 
@@ -18,17 +20,20 @@ namespace GTFS_Explorer.FrontEnd.Pages.RouteOptions
         private readonly ITimepointRepository _timepointRepository;
         private readonly IStopsRepository _stopsRepository;
         private readonly ITripsRepository _tripsRepository;
+        private readonly IHubContext<EventsHub> _hubContext;
 
 		public ScheduleModel(
 			IRoutesRepository routesRepository,
 			ITimepointRepository timepointRepository,
-			IStopsRepository stopsRepository, 
-            ITripsRepository tripsRepository)
+			IStopsRepository stopsRepository,
+			ITripsRepository tripsRepository, 
+            IHubContext<EventsHub> hubContext)
 		{
 			_routesRepository = routesRepository;
 			_timepointRepository = timepointRepository;
 			_stopsRepository = stopsRepository;
 			_tripsRepository = tripsRepository;
+			_hubContext = hubContext;
 		}
 
 		[BindProperty(SupportsGet = true)] //By default today's date
@@ -44,7 +49,7 @@ namespace GTFS_Explorer.FrontEnd.Pages.RouteOptions
         public List<Stop> Stops { get; set; } = new List<Stop>();
         public IEnumerable<DirectionType?> DirectionsOfRoute { get; set; } 
 
-        public void OnGet(
+        public async Task OnGetAsync(
             string routeId, 
             DateTime? scheduleDate, 
             string routeDirection)
@@ -58,7 +63,13 @@ namespace GTFS_Explorer.FrontEnd.Pages.RouteOptions
 
             var dateResult = LocalDatePattern.Iso.Parse(ScheduleDate.ToString("yyyy-MM-dd"));
             DirectionsOfRoute = _tripsRepository.GetDirectionsOfRoute(RouteId);
-            Enum.TryParse(RouteDirection, out DirectionType direction);
+			DirectionType direction;
+			if (DirectionsOfRoute.Count() == 1)
+                direction = (DirectionType)DirectionsOfRoute.First();
+            else
+                Enum.TryParse(RouteDirection, out direction);
+
+            await _hubContext.Clients.All.SendAsync("loading-file");
 
             Schedule = _routesRepository.GetSchedule(
                 routeId, direction, 

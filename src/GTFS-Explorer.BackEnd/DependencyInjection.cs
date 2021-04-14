@@ -1,6 +1,6 @@
-﻿using GTFS_Explorer.BackEnd.Readers;
+﻿using GTFS_Explorer.BackEnd.Builders;
+using GTFS_Explorer.BackEnd.Readers;
 using GTFS_Explorer.BackEnd.Repositiories;
-using GTFS_Explorer.BackEnd.Schedules;
 using GTFS_Explorer.BackEnd.Utilities;
 using GTFS_Explorer.Core.Interfaces;
 using GTFS_Explorer.Core.Interfaces.RepoInterfaces;
@@ -9,7 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace GTFS_Explorer.BackEnd
 {
-    public static class DependencyInjection
+	public static class DependencyInjection
     {
         /// <summary>
         /// Adds services from backend to ServiceCollection
@@ -33,7 +33,8 @@ namespace GTFS_Explorer.BackEnd
 
             //Other Services
             services.AddSingleton<IEventRegistry, EventRegistry>();
-            services.AddScoped<IScheduleBuilderRepository, ScheduleBuilderRepository>();
+            services.AddScoped<IScheduleBuilderService, ScheduleBuilderService>();
+            services.AddScoped<IRouteMapBuilderService, RouteMapBuilderService>();
             services.AddSignalR();
 
             return services;

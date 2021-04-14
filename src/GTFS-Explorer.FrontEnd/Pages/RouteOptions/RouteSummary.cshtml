@@ -72,23 +72,70 @@
 						Model.StatsDictionary.TryGetValue(direction, out stats);
 					    <div class="d-block p-lg-3">
 						    <h6 class="text-white">@direction.ToString()</h6>
-						    <ul>
-							    <li class="text-white">
-                                    The route runs @stats.StartTime to @stats.EndTime
-                                </li>
-							    <li class="text-white">
-                                    Trips start at @stats.StartStops[0]
-                                </li>
+							<ul>
 								<li class="text-white">
-                                    Trips end at @stats.EndStops[0]
-                                </li>
-								<li class="text-white">
-									Trips are @stats.ShortestTrip.Minutes minutes 
-									to @stats.LongestTrip.Minutes minutes 
-                                    long (@stats.AverageTrip.ToString() on average)
+									The route runs @stats.StartTime to @stats.EndTime
 								</li>
-						    </ul>
-					    </div>
+								<li class="text-white">
+									Trips start at @stats.StartStops[0]
+								</li>
+								<li class="text-white">
+									Trips end at @stats.EndStops[0]
+								</li>
+
+								<!--Might refactor this later-->
+								<li class="text-white">
+									@if (stats.ShortestTrip.Hours >= 1)
+									{
+										if (stats.ShortestTrip.Hours == 1)
+										{
+											<p class="text-white d-inline">
+												Trips are @stats.ShortestTrip.Hours hour
+												@stats.ShortestTrip.Minutes minutes to
+											</p>
+										}
+										else
+										{
+											<p class="text-white d-inline">
+												Trips are @stats.ShortestTrip.Hours hours
+												@stats.ShortestTrip.Minutes minutes to
+											</p>
+										}
+									}
+									else
+									{
+										<p class="text-white d-inline">Trips are @stats.ShortestTrip.Minutes minutes to</p>
+									}
+
+									@if (stats.LongestTrip.Hours >= 1)
+									{
+										if (stats.LongestTrip.Hours == 1)
+										{
+											<p class="text-white d-inline">
+												@stats.LongestTrip.Hours hour
+												@stats.LongestTrip.Minutes minutes
+											</p>
+										}
+										else
+										{
+											<p class="text-white d-inline">
+												@stats.LongestTrip.Hours hours
+												@stats.LongestTrip.Minutes minutes
+											</p>
+										}
+									}
+									else
+									{
+										<p class="text-white d-inline">
+											@stats.LongestTrip.Minutes minutes
+										</p>
+									}
+									<p class="text-white d-inline">
+										(@stats.AverageTrip.ToString() on average)
+									</p>
+								</li>
+							</ul>
+						</div>
 					}
 				</div>
             </div>

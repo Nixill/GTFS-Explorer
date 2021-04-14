@@ -18,12 +18,12 @@ namespace GTFS_Explorer.BackEnd.Repositiories
 	{
 		private readonly GTFSFeedReader _reader;
 		private readonly ITimepointRepository _timepointRepository;
-		private readonly IScheduleBuilderRepository _scheduleBuilder;
+		private readonly IScheduleBuilderService _scheduleBuilder;
 
 		public RoutesRepository(
 		  GTFSFeedReader feedReader,
 		  ITimepointRepository timepointRepository,
-		  IScheduleBuilderRepository scheduleBuilder)
+		  IScheduleBuilderService scheduleBuilder)
 		{
 			_reader = feedReader;
 			_timepointRepository = timepointRepository;

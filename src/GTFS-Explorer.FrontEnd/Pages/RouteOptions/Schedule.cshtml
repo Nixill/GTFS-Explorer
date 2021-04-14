@@ -21,7 +21,7 @@
 		</div>
     </div>
     <div class="floater d-flex justify-content-around">
-		<div class="floater-content col-lg-7">
+		<div class="floater-content col-lg-7 scrollbar" id="style-1">
 			<table class="table">
 				@{ int index = 0; }
 				@foreach (GridLine<string> gridLine in (Grid<string>)Model.Schedule)
@@ -102,6 +102,12 @@
 @section Scripts
 {
 	<script>
+		window.addEventListener('load', () => {
+			$('#loader').css('display', 'none');
+			$('#fader').css('display', 'none');
+			$('#loader-wrapper').css('display', 'none');
+		});
+
 		const dir = document.getElementById("route-direction");
 		function changeDirection() {
 			const dir = document.getElementById("route-direction");
