@@ -29,6 +29,14 @@ namespace GTFS_Explorer.BackEnd.Lookups
         }
       }
 
+      foreach (List<Route> list in dict.Values)
+      {
+        list.Sort((l, r) =>
+        {
+          return (l.LongName ?? l.ShortName ?? l.Id).CompareTo(r.LongName ?? r.ShortName ?? r.Id);
+        });
+      }
+
       return dict;
     }
 
