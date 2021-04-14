@@ -18,9 +18,8 @@
 			   asp-route-routeId="@Model.RouteId">Schedule</a>
 		</div>
 	</div>
-	<div class="floater">
-		<div class="floater-content">
-		</div>
+	<div class="floater container">
+		<div class="row h-100 d-block" id="route-map"></div>
 	</div>
 	<form>
 		<input type="file" id="selectFile" class="hidden" />
@@ -29,3 +28,23 @@
 		<label class="select-file" for="returnToRoutes">Return to Routes</label>
 	</form>
 </section>
+
+@section Scripts 
+{
+	<script>
+		const routeMap = L.map('route-map').setView([51.5, -0.09], 13);
+		const osmAttribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
+		const osmTileUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+
+		const tiles = L.tileLayer(osmTileUrl, {
+			attribution: osmAttribution
+		});
+
+		tiles.addTo(routeMap);
+
+		//const marker = L.marker([51.5, -0.09]);
+		//marker.addTo(routeMap)
+		//	.bindPopup('A pretty CSS3 popup.<br> Easily customizable.')
+		//	.openPopup();
+	</script>
+}
