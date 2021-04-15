@@ -54,6 +54,38 @@
 	const drawnLines = L.polyline(lines, { color: colors[1], weight: 5 }).addTo(routeMap);
 	L.polyline(lines, { color: colors[0], weight: 3 }).addTo(routeMap);
 
+	// Add the stops to the map, but don't display them immediately
+	const timepoints = L.layerGroup();
+	const nonTimepoints = L.layerGroup();
+
+	var marker;
+
+	@foreach(var stop in Model.RouteStops) {
+		@:marker = L.marker([@stop.Item1.Latitude, @stop.Item1.Longitude], {title: '@stop.Item1.Name.Replace("'", "\'")'});
+		if (stop.Item2) {
+			@:marker.addTo(timepoints);
+		} else {
+			@:marker.addTo(nonTimepoints);
+		}
+	}
+
+	// Add the zoom handler
+	routeMap.on('zoomend', function() {
+		var zoom = routeMap.getZoom();
+
+		if (zoom >= 11) {
+			if (!routeMap.hasLayer(timepoints)) routeMap.addLayer(timepoints);
+		} else {
+			if (routeMap.hasLayer(timepoints)) routeMap.removeLayer(timepoints);
+		}
+
+		if (zoom >= 15) {
+			if (!routeMap.hasLayer(nonTimepoints)) routeMap.addLayer(nonTimepoints);
+		} else {
+			if (routeMap.hasLayer(nonTimepoints)) routeMap.removeLayer(nonTimepoints);
+		}
+	});
+
 	routeMap.fitBounds(drawnLines.getBounds());
 </script>
 }

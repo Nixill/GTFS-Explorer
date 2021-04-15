@@ -29,7 +29,7 @@ namespace GTFS_Explorer.FrontEnd.Pages.RouteOptions
     public Route Route { get; set; }
     public List<List<Coordinate>> RouteShapes { get; set; }
     public Tuple<Color, Color> RouteColors { get; set; }
-    public List<Stop> RouteStops { get; set; }
+    public List<Tuple<Stop, bool>> RouteStops { get; set; }
 
     public void OnGet(string routeId)
     {

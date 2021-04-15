@@ -74,14 +74,14 @@ namespace GTFS_Explorer.BackEnd.Lookups
       return new Tuple<Color, Color>(primary, secondary);
     }
 
-    public static List<Stop> GetStops(GTFSFeed feed, string routeID)
+    public static List<Tuple<Stop, bool>> GetStops(GTFSFeed feed, string routeID)
     {
       return feed.Trips
         .Where(x => x.RouteId == routeID)
         .SelectMany(x =>
           feed.StopTimes
             .Where(y => y.TripId == x.Id)
-            .Select(y => feed.Stops.Get(y.StopId))
+            .Select(y => new Tuple<Stop, bool>(feed.Stops.Get(y.StopId), y.TimepointType == GTFS.Entities.Enumerations.TimePointType.Exact))
         ).Distinct().ToList();
     }
   }
