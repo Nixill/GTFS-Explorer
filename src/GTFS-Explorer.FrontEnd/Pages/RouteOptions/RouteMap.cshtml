@@ -1,50 +1,59 @@
 ﻿@page "{routeId}"
 @model GTFS_Explorer.FrontEnd.Pages.RouteOptions.RouteMapModel
 @{
-    ViewData["Title"] = "RouteMap";
+	ViewData["Title"] = "RouteMap";
 }
+@using GTFS_Explorer.Core.Models.Structs
+@using GTFS_Explorer.Core.Extensions
+@using System.Linq
 
 <section>
-	<div class="header">
-		<div class="header-right">
-			<a asp-page="/RouteOptions/RouteSummary"
-			   asp-route-routeId="@Model.RouteId">Summary</a>
-			<a class="active"
-			   asp-page="/RouteOptions/RouteMap"
-			   asp-route-routeId="@Model.RouteId">Route Map</a>
-			<a asp-page="/RouteOptions/StopList"
-			   asp-route-routeId="@Model.RouteId">Stop List</a>
-			<a asp-page="/RouteOptions/Schedule"
-			   asp-route-routeId="@Model.RouteId">Schedule</a>
-		</div>
+ <div class="header">
+	<div class="header-right">
+	 <a asp-page="/RouteOptions/RouteSummary" asp-route-routeId="@Model.RouteId">Summary</a>
+	 <a class="active" asp-page="/RouteOptions/RouteMap" asp-route-routeId="@Model.RouteId">Route Map</a>
+	 <a asp-page="/RouteOptions/StopList" asp-route-routeId="@Model.RouteId">Stop List</a>
+	 <a asp-page="/RouteOptions/Schedule" asp-route-routeId="@Model.RouteId">Schedule</a>
 	</div>
-	<div class="floater container">
-		<div class="row h-100 d-block" id="route-map"></div>
-	</div>
-	<form>
-		<input type="file" id="selectFile" class="hidden" />
-		<label class="select-file" for="selectFile">Select New File</label>
-		<a asp-page="/MainPages/Routes" id="returnToRoutes" />
-		<label class="select-file" for="returnToRoutes">Return to Routes</label>
-	</form>
+ </div>
+ <div class="floater container">
+	<div class="row h-100 d-block" id="route-map"></div>
+ </div>
+ <form>
+	<input type="file" id="selectFile" class="hidden" />
+	<label class="select-file" for="selectFile">Select New File</label>
+	<a asp-page="/MainPages/Routes" id="returnToRoutes" />
+	<label class="select-file" for="returnToRoutes">Return to Routes</label>
+ </form>
 </section>
 
-@section Scripts 
+@section Scripts
 {
-	<script>
-		const routeMap = L.map('route-map').setView([51.5, -0.09], 13);
-		const osmAttribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
-		const osmTileUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+<script>
+	const routeMap = L.map('route-map').setView([51.5, -0.09], 13);
+	const osmAttribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
+	const osmTileUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 
-		const tiles = L.tileLayer(osmTileUrl, {
-			attribution: osmAttribution
-		});
+	const tiles = L.tileLayer(osmTileUrl, {
+		attribution: osmAttribution
+	});
 
-		tiles.addTo(routeMap);
+	tiles.addTo(routeMap);
 
-		//const marker = L.marker([51.5, -0.09]);
-		//marker.addTo(routeMap)
-		//	.bindPopup('A pretty CSS3 popup.<br> Easily customizable.')
-		//	.openPopup();
-	</script>
+	// Add the route lines to the map
+	const lines = @(
+		"[" + string.Join(", ",
+		Model.RouteShapes.Select(x => "[" + string.Join(", ",
+		x.Select(y => "[" + y.Latitude + ", " + y.Longitude + "]"))
+		+ "]"))
+		+ "]"
+		);
+
+	const colors = ['#@Model.RouteColors.Item1.ToRGBHexString()', '#@Model.RouteColors.Item2.ToRGBHexString()'];
+
+	const drawnLines = L.polyline(lines, { color: colors[1], weight: 5 }).addTo(routeMap);
+	L.polyline(lines, { color: colors[0], weight: 3 }).addTo(routeMap);
+
+	routeMap.fitBounds(drawnLines.getBounds());
+</script>
 }
