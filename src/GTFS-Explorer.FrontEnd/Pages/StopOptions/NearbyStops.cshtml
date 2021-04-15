@@ -1,4 +1,4 @@
-﻿@page
+﻿@page "{stopId}"
 @model GTFS_Explorer.FrontEnd.Pages.StopOptions.NearbyStopsModel
 @{
     ViewData["Title"] = "NearbyStops";
@@ -7,9 +7,9 @@
 <section>
     <div class="header">
         <div class="header-right">
-            <a asp-page="/StopOptions/StopSummary">Summary</a>
-            <a asp-page="/StopOptions/StopSchedule">Stop Schedule</a>
-            <a class="active" asp-page="/StopOptions/NearbyStops">Nearby Stops</a>
+            <a asp-page="/StopOptions/StopSummary" asp-route-stopId="@Model.StopId">Summary</a>
+            <a asp-page="/StopOptions/StopSchedule" asp-route-stopId="@Model.StopId">Stop Schedule</a>
+            <a class="active" asp-page="/StopOptions/NearbyStops" asp-route-stopId="@Model.StopId">Nearby Stops</a>
         </div>
     </div>
     <div class="floater">

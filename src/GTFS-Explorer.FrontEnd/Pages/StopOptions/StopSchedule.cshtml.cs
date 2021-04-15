@@ -9,9 +9,16 @@ namespace GTFS_Explorer.FrontEnd.Pages.StopOptions
 {
     public class StopScheduleModel : PageModel
     {
-        public void OnGet()
-        {
+		public StopScheduleModel()
+		{
 
+		}
+
+		public string StopId { get; set; }
+
+		public void OnGet(string stopId)
+        {
+			StopId = stopId;
         }
     }
 }

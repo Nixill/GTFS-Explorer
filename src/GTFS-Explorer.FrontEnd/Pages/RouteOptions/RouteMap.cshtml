@@ -29,7 +29,7 @@
 
 @section Scripts
 {
-<script>
+	<script>
 	const routeMap = L.map('route-map').setView([51.5, -0.09], 13);
 	const osmAttribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
 	const osmTileUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
@@ -59,15 +59,38 @@
 	const nonTimepoints = L.layerGroup();
 
 	var marker;
+	let title;
+	const markers = [];
 
-	@foreach(var stop in Model.RouteStops) {
-		@:marker = L.marker([@stop.Item1.Latitude, @stop.Item1.Longitude], {title: '@stop.Item1.Name.Replace("'", "\'")'});
+	@foreach(var stop in Model.RouteStops)
+	{
+		@:title = '@stop.Item1.Name.Replace("'", "\'")';
+		@:marker = L.marker([@stop.Item1.Latitude, @stop.Item1.Longitude], { title: title });
+
 		if (stop.Item2) {
-			@:marker.addTo(timepoints);
+			@:marker.addTo(timepoints).bindPopup(title);
 		} else {
-			@:marker.addTo(nonTimepoints);
+			@:marker.addTo(nonTimepoints).bindPopup(title);
 		}
+
+		<text>
+		markers.push(marker);
+		marker.addEventListener('click', function() {
+			//Url.Page() generates a link to page with route parameter stopId
+			location.href = '@(Url.Page("/StopOptions/StopSummary", new { stopId = stop.Item1.Id }))';
+		});
+		</text>
 	}
+
+	//https://www.nickang.com/2018-03-06-add-event-listener-for-loop-problem-in-javascript/
+	markers.forEach(function (marker) {
+		marker.addEventListener('mouseover', function () {
+			marker.openPopup();
+		});
+		marker.addEventListener('mouseout', function () {
+			marker.closePopup();
+		});
+	});
 
 	// Add the zoom handler
 	routeMap.on('zoomend', function() {
@@ -87,5 +110,5 @@
 	});
 
 	routeMap.fitBounds(drawnLines.getBounds());
-</script>
+	</script>
 }
