@@ -40,8 +40,10 @@ namespace Nixill.GTFS
       return timepointsOrdered.ToList();
     }
 
-    public static Dictionary<string, int> GetSortTimes(GTFSFeed feed, string route, DirectionType? dir, List<string> timepoints)
+    public static Dictionary<string, int> GetSortTimes(GTFSFeed feed, string route, DirectionType? dir, List<string> tpoints)
     {
+      List<string> timepoints = tpoints.Distinct().ToList();
+
       Dictionary<string, int> times = new Dictionary<string, int>();
 
       times[timepoints[0]] = 0;
@@ -116,6 +118,15 @@ namespace Nixill.GTFS
             break;
           }
         }
+
+        // Let's also add the final stop time of the trip in a blank, just in case
+        var endTime =
+          (from times in feed.StopTimes
+           where times.TripId == tripId && times.DepartureTime.HasValue
+           orderby times.DepartureTime descending
+           select times.DepartureTime.Value).First();
+
+        tripTimes.Add("", endTime);
 
         tripSchedules.Add(new Tuple<string, Dictionary<string, TimeOfDay>, int>(tripId, tripTimes, sortTime));
       }

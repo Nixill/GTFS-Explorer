@@ -222,15 +222,22 @@ namespace GTFS_Explorer.BackEnd.Lookups
       {
         List<string> tripRow = new List<string>();
         // Add the times at each stop
-        foreach (string stop in stops)
+        for (int i = 0; i < stops.Count; i++)
         {
+          string stop = stops[i];
           if (stop == "")
           {
             tripRow.Add(trip.Item1);
           }
           else
           {
-            if (trip.Item2.ContainsKey(stop))
+            if (stop == stops[1] && i != 1)
+            {
+              int time = trip.Item2[""].TotalSeconds;
+              string timeString = NodaTime.LocalTime.FromSecondsSinceMidnight(time).ToString("HH:mm", DateTimeFormatInfo.InvariantInfo);
+              tripRow.Add(timeString);
+            }
+            else if (trip.Item2.ContainsKey(stop))
             {
               int time = trip.Item2[stop].TotalSeconds;
               string timeString = NodaTime.LocalTime.FromSecondsSinceMidnight(time).ToString("HH:mm", DateTimeFormatInfo.InvariantInfo);
