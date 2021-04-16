@@ -213,6 +213,9 @@ namespace GTFS_Explorer.BackEnd.Lookups
       stops.Insert(0, "");
       ret.AddRow(stops);
 
+      // Prepare a frequencies row
+      List<string> freqRow = Enumerable.Repeat("", stops.Count).ToList();
+
       // Now add the trips
       var trips = sched.Item2;
       foreach (var trip in trips)
@@ -304,7 +307,9 @@ namespace GTFS_Explorer.BackEnd.Lookups
           string endTime = ExtraUtils.RemoveSeconds(freq.EndTime);
 
           freqDesc += $" from {startTime} to {endTime}";
-          ret.AddRow(new List<string> { "", freqDesc });
+
+          freqRow[1] = freqDesc;
+          ret.AddRow(freqRow);
         }
       }
 
