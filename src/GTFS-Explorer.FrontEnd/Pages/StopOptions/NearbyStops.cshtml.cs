@@ -9,16 +9,16 @@ namespace GTFS_Explorer.FrontEnd.Pages.StopOptions
 {
     public class NearbyStopsModel : PageModel
     {
-		public NearbyStopsModel()
-		{
-
-		}
-
-		public string StopId { get; set; }
-
-		public void OnGet(string stopId)
+        public NearbyStopsModel()
         {
-			StopId = stopId;
+
+        }
+
+        public string StopId { get; set; }
+
+        public void OnGet(string stopId)
+        {
+            StopId = stopId;
         }
     }
 }

@@ -2,9 +2,9 @@ using System.Collections.Generic;
 
 namespace Nixill.GTFS
 {
-  internal class DayMasks
-  {
-    private static readonly string[] Outputs = new string[] {
+    internal class DayMasks
+    {
+        private static readonly string[] Outputs = new string[] {
       "never",
       "Monday",
       "Tuesday",
@@ -135,9 +135,9 @@ namespace Nixill.GTFS
       "daily"
     };
 
-    internal static string Get(int input)
-    {
-      return Outputs[input % 128];
+        internal static string Get(int input)
+        {
+            return Outputs[input % 128];
+        }
     }
-  }
 }

@@ -14,7 +14,7 @@ namespace GTFS_Explorer.FrontEnd
     public class Startup
     {
         public Startup(
-            IConfiguration configuration, 
+            IConfiguration configuration,
             IWebHostEnvironment environment)
         {
             Configuration = configuration;
@@ -37,7 +37,7 @@ namespace GTFS_Explorer.FrontEnd
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(
-            IApplicationBuilder app, 
+            IApplicationBuilder app,
             IWebHostEnvironment env,
             IEventRegistry eventRegistry)
         {
@@ -85,7 +85,8 @@ namespace GTFS_Explorer.FrontEnd
             });
 
             window.SetMinimumSize(MIN_WIDTH, MIN_HEIGHT);
-            window.OnClosed += () => {
+            window.OnClosed += () =>
+            {
                 Electron.App.Quit();
             };
 

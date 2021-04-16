@@ -9,7 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace GTFS_Explorer.BackEnd
 {
-	public static class DependencyInjection
+    public static class DependencyInjection
     {
         /// <summary>
         /// Adds services from backend to ServiceCollection

@@ -14,37 +14,37 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace GTFS_Explorer.FrontEnd.Pages.RouteOptions
 {
-	public class RouteMapModel : PageModel
-	{
-		private readonly IRoutesRepository _routesRepository;
-		private readonly IRouteMapBuilderService _routeMapBuilderService;
-		private readonly IHubContext<EventsHub> _hubContext;
+    public class RouteMapModel : PageModel
+    {
+        private readonly IRoutesRepository _routesRepository;
+        private readonly IRouteMapBuilderService _routeMapBuilderService;
+        private readonly IHubContext<EventsHub> _hubContext;
 
-		public RouteMapModel(
-			IRoutesRepository routesRepository,
-			IRouteMapBuilderService routeMapBuilderService, 
-			IHubContext<EventsHub> hubContext)
-		{
-			_routesRepository = routesRepository;
-			_routeMapBuilderService = routeMapBuilderService;
-			_hubContext = hubContext;
-		}
+        public RouteMapModel(
+            IRoutesRepository routesRepository,
+            IRouteMapBuilderService routeMapBuilderService,
+            IHubContext<EventsHub> hubContext)
+        {
+            _routesRepository = routesRepository;
+            _routeMapBuilderService = routeMapBuilderService;
+            _hubContext = hubContext;
+        }
 
-		public string RouteId { get; set; }
-		public Route Route { get; set; }
-		public List<List<Coordinate>> RouteShapes { get; set; }
-		public Tuple<Color, Color> RouteColors { get; set; }
-		public List<Tuple<Stop, bool>> RouteStops { get; set; }
+        public string RouteId { get; set; }
+        public Route Route { get; set; }
+        public List<List<Coordinate>> RouteShapes { get; set; }
+        public Tuple<Color, Color> RouteColors { get; set; }
+        public List<Tuple<Stop, bool>> RouteStops { get; set; }
 
-		public async Task OnGetAsync(string routeId)
-		{
-			RouteId = routeId;
-			Route = _routesRepository.GetRouteById(RouteId);
-			await _hubContext.Clients.All.SendAsync("loading-file");
+        public async Task OnGetAsync(string routeId)
+        {
+            RouteId = routeId;
+            Route = _routesRepository.GetRouteById(RouteId);
+            await _hubContext.Clients.All.SendAsync("loading-file");
 
-			RouteShapes = _routeMapBuilderService.GetShapes(routeId);
-			RouteColors = _routeMapBuilderService.GetRouteColors(Route);
-			RouteStops = _routeMapBuilderService.GetStops(routeId);
-		}
-	}
+            RouteShapes = _routeMapBuilderService.GetShapes(routeId);
+            RouteColors = _routeMapBuilderService.GetRouteColors(Route);
+            RouteStops = _routeMapBuilderService.GetStops(routeId);
+        }
+    }
 }

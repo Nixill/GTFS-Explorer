@@ -12,19 +12,19 @@ namespace GTFS_Explorer.FrontEnd.Pages.MainPages
 
         public List<Route> Routes { get; set; } = new List<Route>();
 
-		public RoutesModel(IRoutesRepository routesRepository)
-		{
-			_routesRepository = routesRepository;
+        public RoutesModel(IRoutesRepository routesRepository)
+        {
+            _routesRepository = routesRepository;
             GetRoutes();
         }
 
-		public IActionResult OnGet()
+        public IActionResult OnGet()
         {
             return Page();
         }
 
         private void GetRoutes()
-		{
+        {
             var routes = _routesRepository.GetAllRoutes();
             foreach (var agency in routes.Keys)
             {

@@ -7,23 +7,23 @@ using System.Linq;
 
 namespace GTFS_Explorer.BackEnd.Repositiories
 {
-	public class AgencyRepository : IAgencyRepository
-	{
-		public GTFSFeedReader _reader;
+    public class AgencyRepository : IAgencyRepository
+    {
+        public GTFSFeedReader _reader;
 
-		public AgencyRepository(GTFSFeedReader reader)
-		{
-			_reader = reader;
-		}
+        public AgencyRepository(GTFSFeedReader reader)
+        {
+            _reader = reader;
+        }
 
-		public IUniqueEntityCollection<Agency> GetAgencies()
-		{
-			return _reader.Feed.Agencies;
-		}
+        public IUniqueEntityCollection<Agency> GetAgencies()
+        {
+            return _reader.Feed.Agencies;
+        }
 
-		public Agency GetFirstAgency()
-		{
-			return _reader.Feed.Agencies.FirstOrDefault();
-		}
-	}
+        public Agency GetFirstAgency()
+        {
+            return _reader.Feed.Agencies.FirstOrDefault();
+        }
+    }
 }

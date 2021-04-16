@@ -8,145 +8,145 @@ using GTFS_Explorer.Core.Enums;
 
 namespace Nixill.GTFS
 {
-  public static class ScheduleBuilder
-  {
-    public static List<string> GetScheduleHeader(GTFSFeed feed, string route, DirectionType? dir) =>
-      GetScheduleHeader(feed, route, dir, TimepointFinder.GetTimepointStrategy(feed));
-
-    public static List<string> GetScheduleHeader(GTFSFeed feed, string route, DirectionType? dir, TimepointStrategy strat)
+    public static class ScheduleBuilder
     {
-      IEnumerable<string> timepointList;
+        public static List<string> GetScheduleHeader(GTFSFeed feed, string route, DirectionType? dir) =>
+          GetScheduleHeader(feed, route, dir, TimepointFinder.GetTimepointStrategy(feed));
 
-      if (strat == TimepointStrategy.SpecifiedTimepoints)
-      {
-        timepointList = TimepointFinder.DataTimepoints(feed, route, dir, true)
-                                       .Select(x => x.Item1);
-      }
-      else if (strat == TimepointStrategy.NullTimepoints)
-      {
-        timepointList = TimepointFinder.DataTimepoints(feed, route, dir, true)
-                                       .Select(x => x.Item1);
-      }
-      else
-      {
-        timepointList = TimepointFinder.FirstAndLastStopList(feed, route, dir);
-      }
-
-      var timepointsOrdered =
-        from stops in StopLister.GetStopOrder(feed, route, dir)
-        join timepoints in timepointList on stops.Id equals timepoints
-        select stops.Id;
-
-      return timepointsOrdered.ToList();
-    }
-
-    public static Dictionary<string, int> GetSortTimes(GTFSFeed feed, string route, DirectionType? dir, List<string> tpoints)
-    {
-      List<string> timepoints = tpoints.Distinct().ToList();
-
-      Dictionary<string, int> times = new Dictionary<string, int>();
-
-      times[timepoints[0]] = 0;
-
-      List<string> checkedTimes = new List<string>();
-
-      bool failedLoop = true;
-
-      while (times.Count < timepoints.Count)
-      {
-        foreach (string stopFrom in timepoints.Intersect(times.Keys).Except(checkedTimes))
+        public static List<string> GetScheduleHeader(GTFSFeed feed, string route, DirectionType? dir, TimepointStrategy strat)
         {
-          failedLoop = false;
+            IEnumerable<string> timepointList;
 
-          foreach (string stopTo in timepoints.Except(times.Keys))
-          {
-            var differences =
-              from stopTimesUG in feed.StopTimes
-              join trips in feed.Trips on stopTimesUG.TripId equals trips.Id
-              where trips.RouteId == route && trips.Direction == dir
-              group stopTimesUG by stopTimesUG.TripId into stopTimes
-              where stopTimes.Any(x => x.StopId == stopFrom) && stopTimes.Any(x => x.StopId == stopTo)
-              select stopTimes.Where(x => x.StopId == stopTo).First().ArrivalTime.Value.TotalSeconds
-                 - stopTimes.Where(x => x.StopId == stopFrom).First().ArrivalTime.Value.TotalSeconds;
-
-            if (differences.Any())
+            if (strat == TimepointStrategy.SpecifiedTimepoints)
             {
-              times[stopTo] = (int)differences.Average() + times[stopFrom];
+                timepointList = TimepointFinder.DataTimepoints(feed, route, dir, true)
+                                               .Select(x => x.Item1);
             }
-          }
+            else if (strat == TimepointStrategy.NullTimepoints)
+            {
+                timepointList = TimepointFinder.DataTimepoints(feed, route, dir, true)
+                                               .Select(x => x.Item1);
+            }
+            else
+            {
+                timepointList = TimepointFinder.FirstAndLastStopList(feed, route, dir);
+            }
 
-          checkedTimes.Add(stopFrom);
+            var timepointsOrdered =
+              from stops in StopLister.GetStopOrder(feed, route, dir)
+              join timepoints in timepointList on stops.Id equals timepoints
+              select stops.Id;
+
+            return timepointsOrdered.ToList();
         }
 
-        if (failedLoop)
+        public static Dictionary<string, int> GetSortTimes(GTFSFeed feed, string route, DirectionType? dir, List<string> tpoints)
         {
-          times[timepoints.Except(checkedTimes).First()] = 0;
+            List<string> timepoints = tpoints.Distinct().ToList();
+
+            Dictionary<string, int> times = new Dictionary<string, int>();
+
+            times[timepoints[0]] = 0;
+
+            List<string> checkedTimes = new List<string>();
+
+            bool failedLoop = true;
+
+            while (times.Count < timepoints.Count)
+            {
+                foreach (string stopFrom in timepoints.Intersect(times.Keys).Except(checkedTimes))
+                {
+                    failedLoop = false;
+
+                    foreach (string stopTo in timepoints.Except(times.Keys))
+                    {
+                        var differences =
+                          from stopTimesUG in feed.StopTimes
+                          join trips in feed.Trips on stopTimesUG.TripId equals trips.Id
+                          where trips.RouteId == route && trips.Direction == dir
+                          group stopTimesUG by stopTimesUG.TripId into stopTimes
+                          where stopTimes.Any(x => x.StopId == stopFrom) && stopTimes.Any(x => x.StopId == stopTo)
+                          select stopTimes.Where(x => x.StopId == stopTo).First().ArrivalTime.Value.TotalSeconds
+                             - stopTimes.Where(x => x.StopId == stopFrom).First().ArrivalTime.Value.TotalSeconds;
+
+                        if (differences.Any())
+                        {
+                            times[stopTo] = (int)differences.Average() + times[stopFrom];
+                        }
+                    }
+
+                    checkedTimes.Add(stopFrom);
+                }
+
+                if (failedLoop)
+                {
+                    times[timepoints.Except(checkedTimes).First()] = 0;
+                }
+            }
+
+            return times;
         }
-      }
 
-      return times;
-    }
-
-    public static Tuple<List<string>, List<Tuple<string, Dictionary<string, TimeOfDay>>>> GetSchedule(GTFSFeed feed, string route, DirectionType? dir, List<string> serviceIds, List<string> stopOrder, Dictionary<string, int> sortTimes)
-    {
-      var filteredTrips =
-        from trips in feed.Trips
-        where trips.RouteId == route && trips.Direction == dir && serviceIds.Contains(trips.ServiceId)
-        select trips.Id;
-
-      List<Tuple<string, Dictionary<string, TimeOfDay>, int>> tripSchedules = new List<Tuple<string, Dictionary<string, TimeOfDay>, int>>();
-
-      foreach (string tripId in filteredTrips)
-      {
-        var tripTimes =
-          (from times in feed.StopTimes
-           where times.TripId == tripId && stopOrder.Contains(times.StopId)
-           group times by new { times.TripId, times.StopId } into times2
-           select new
-           {
-             times2.First().StopId,
-             times2.First().DepartureTime
-           }).ToDictionary(x => x.StopId, x => x.DepartureTime.Value);
-
-        int sortTime = 0;
-
-        foreach (string stopId in stopOrder)
+        public static Tuple<List<string>, List<Tuple<string, Dictionary<string, TimeOfDay>>>> GetSchedule(GTFSFeed feed, string route, DirectionType? dir, List<string> serviceIds, List<string> stopOrder, Dictionary<string, int> sortTimes)
         {
-          if (tripTimes.ContainsKey(stopId))
-          {
-            sortTime = tripTimes[stopId].TotalSeconds - sortTimes[stopId];
-            break;
-          }
+            var filteredTrips =
+              from trips in feed.Trips
+              where trips.RouteId == route && trips.Direction == dir && serviceIds.Contains(trips.ServiceId)
+              select trips.Id;
+
+            List<Tuple<string, Dictionary<string, TimeOfDay>, int>> tripSchedules = new List<Tuple<string, Dictionary<string, TimeOfDay>, int>>();
+
+            foreach (string tripId in filteredTrips)
+            {
+                var tripTimes =
+                  (from times in feed.StopTimes
+                   where times.TripId == tripId && stopOrder.Contains(times.StopId)
+                   group times by new { times.TripId, times.StopId } into times2
+                   select new
+                   {
+                       times2.First().StopId,
+                       times2.First().DepartureTime
+                   }).ToDictionary(x => x.StopId, x => x.DepartureTime.Value);
+
+                int sortTime = 0;
+
+                foreach (string stopId in stopOrder)
+                {
+                    if (tripTimes.ContainsKey(stopId))
+                    {
+                        sortTime = tripTimes[stopId].TotalSeconds - sortTimes[stopId];
+                        break;
+                    }
+                }
+
+                // Let's also add the final stop time of the trip in a blank, just in case
+                var endTime =
+                  (from times in feed.StopTimes
+                   where times.TripId == tripId && times.DepartureTime.HasValue
+                   orderby times.DepartureTime descending
+                   select times.DepartureTime.Value).First();
+
+                tripTimes.Add("", endTime);
+
+                tripSchedules.Add(new Tuple<string, Dictionary<string, TimeOfDay>, int>(tripId, tripTimes, sortTime));
+            }
+
+            List<Tuple<string, Dictionary<string, TimeOfDay>>> allTrips =
+              (from tripScheds in tripSchedules
+               orderby tripScheds.Item3
+               select new Tuple<string, Dictionary<string, TimeOfDay>>(tripScheds.Item1, tripScheds.Item2)).ToList();
+
+            return new Tuple<List<string>, List<Tuple<string, Dictionary<string, TimeOfDay>>>>(stopOrder, allTrips);
         }
 
-        // Let's also add the final stop time of the trip in a blank, just in case
-        var endTime =
-          (from times in feed.StopTimes
-           where times.TripId == tripId && times.DepartureTime.HasValue
-           orderby times.DepartureTime descending
-           select times.DepartureTime.Value).First();
+        public static Tuple<List<string>, List<Tuple<string, Dictionary<string, TimeOfDay>>>> GetSchedule(GTFSFeed feed, string route, DirectionType? dir, List<string> serviceIds) =>
+          GetSchedule(feed, route, dir, serviceIds, TimepointFinder.GetTimepointStrategy(feed));
 
-        tripTimes.Add("", endTime);
-
-        tripSchedules.Add(new Tuple<string, Dictionary<string, TimeOfDay>, int>(tripId, tripTimes, sortTime));
-      }
-
-      List<Tuple<string, Dictionary<string, TimeOfDay>>> allTrips =
-        (from tripScheds in tripSchedules
-         orderby tripScheds.Item3
-         select new Tuple<string, Dictionary<string, TimeOfDay>>(tripScheds.Item1, tripScheds.Item2)).ToList();
-
-      return new Tuple<List<string>, List<Tuple<string, Dictionary<string, TimeOfDay>>>>(stopOrder, allTrips);
+        public static Tuple<List<string>, List<Tuple<string, Dictionary<string, TimeOfDay>>>> GetSchedule(GTFSFeed feed, string route, DirectionType? dir, List<string> serviceIds, TimepointStrategy strat)
+        {
+            var stops = GetScheduleHeader(feed, route, dir, strat);
+            var times = GetSortTimes(feed, route, dir, stops);
+            return GetSchedule(feed, route, dir, serviceIds, stops, times);
+        }
     }
-
-    public static Tuple<List<string>, List<Tuple<string, Dictionary<string, TimeOfDay>>>> GetSchedule(GTFSFeed feed, string route, DirectionType? dir, List<string> serviceIds) =>
-      GetSchedule(feed, route, dir, serviceIds, TimepointFinder.GetTimepointStrategy(feed));
-
-    public static Tuple<List<string>, List<Tuple<string, Dictionary<string, TimeOfDay>>>> GetSchedule(GTFSFeed feed, string route, DirectionType? dir, List<string> serviceIds, TimepointStrategy strat)
-    {
-      var stops = GetScheduleHeader(feed, route, dir, strat);
-      var times = GetSortTimes(feed, route, dir, stops);
-      return GetSchedule(feed, route, dir, serviceIds, stops, times);
-    }
-  }
 }

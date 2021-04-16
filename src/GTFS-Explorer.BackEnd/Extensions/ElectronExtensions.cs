@@ -54,7 +54,7 @@ namespace GTFS_Explorer.BackEnd.Extensions
         public static void DeleteGTFSFileDir(this App app, IWebHostEnvironment env)
         {
             var dir = Electron.App.GetGTFSFileDir(env);
-            if(dir != null)
+            if (dir != null)
                 DeleteDirectory(dir);
         }
 

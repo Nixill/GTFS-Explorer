@@ -11,10 +11,10 @@ namespace GTFS_Explorer.BackEnd.Repositiories
     {
         private readonly GTFSFeedReader _reader;
 
-		public CalendarTesterRepository(GTFSFeedReader reader)
-		{
-			_reader = reader;
-		}
+        public CalendarTesterRepository(GTFSFeedReader reader)
+        {
+            _reader = reader;
+        }
 
         public string GetDescription(string serviceId, Tuple<DateTime, DateTime> dateRange)
             => CalendarTester.GetDescription(_reader.Feed, serviceId, dateRange);

@@ -10,14 +10,14 @@ using System.Linq;
 
 namespace GTFS_Explorer.BackEnd.Repositiories
 {
-	public class TimepointRepository : ITimepointRepository
-	{
+    public class TimepointRepository : ITimepointRepository
+    {
         private readonly GTFSFeedReader _reader;
 
-		public TimepointRepository(GTFSFeedReader reader)
-		{
-			_reader = reader;
-		}
+        public TimepointRepository(GTFSFeedReader reader)
+        {
+            _reader = reader;
+        }
 
         public TimepointStrategy GetTimepointStrategy()
             => TimepointFinder.GetTimepointStrategy(_reader.Feed);

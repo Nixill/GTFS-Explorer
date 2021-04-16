@@ -22,21 +22,21 @@ namespace GTFS_Explorer.FrontEnd.Pages.RouteOptions
         private readonly ITripsRepository _tripsRepository;
         private readonly IHubContext<EventsHub> _hubContext;
 
-		public ScheduleModel(
-			IRoutesRepository routesRepository,
-			ITimepointRepository timepointRepository,
-			IStopsRepository stopsRepository,
-			ITripsRepository tripsRepository, 
+        public ScheduleModel(
+            IRoutesRepository routesRepository,
+            ITimepointRepository timepointRepository,
+            IStopsRepository stopsRepository,
+            ITripsRepository tripsRepository,
             IHubContext<EventsHub> hubContext)
-		{
-			_routesRepository = routesRepository;
-			_timepointRepository = timepointRepository;
-			_stopsRepository = stopsRepository;
-			_tripsRepository = tripsRepository;
-			_hubContext = hubContext;
-		}
+        {
+            _routesRepository = routesRepository;
+            _timepointRepository = timepointRepository;
+            _stopsRepository = stopsRepository;
+            _tripsRepository = tripsRepository;
+            _hubContext = hubContext;
+        }
 
-		[BindProperty(SupportsGet = true)] //By default today's date
+        [BindProperty(SupportsGet = true)] //By default today's date
         public DateTime ScheduleDate { get; set; } = DateTime.UtcNow;
 
         [BindProperty(SupportsGet = true)] //By default OneDirection
@@ -45,13 +45,13 @@ namespace GTFS_Explorer.FrontEnd.Pages.RouteOptions
         [BindProperty]
         public string RouteId { get; set; }
 
-		public Grid<string> Schedule { get; set; }
+        public Grid<string> Schedule { get; set; }
         public List<Stop> Stops { get; set; } = new List<Stop>();
-        public IEnumerable<DirectionType?> DirectionsOfRoute { get; set; } 
+        public IEnumerable<DirectionType?> DirectionsOfRoute { get; set; }
 
         public async Task OnGetAsync(
-            string routeId, 
-            DateTime? scheduleDate, 
+            string routeId,
+            DateTime? scheduleDate,
             string routeDirection)
         {
             RouteId = routeId;
@@ -63,8 +63,8 @@ namespace GTFS_Explorer.FrontEnd.Pages.RouteOptions
 
             var dateResult = LocalDatePattern.Iso.Parse(ScheduleDate.ToString("yyyy-MM-dd"));
             DirectionsOfRoute = _tripsRepository.GetDirectionsOfRoute(RouteId);
-			DirectionType direction;
-			if (DirectionsOfRoute.Count() == 1)
+            DirectionType direction;
+            if (DirectionsOfRoute.Count() == 1)
                 direction = (DirectionType)DirectionsOfRoute.First();
             else
                 Enum.TryParse(RouteDirection, out direction);
@@ -72,24 +72,25 @@ namespace GTFS_Explorer.FrontEnd.Pages.RouteOptions
             await _hubContext.Clients.All.SendAsync("loading-file");
 
             Schedule = _routesRepository.GetSchedule(
-                routeId, direction, 
-                _routesRepository.ServicesOn(dateResult.Value), 
+                routeId, direction,
+                _routesRepository.ServicesOn(dateResult.Value),
                 _timepointRepository.GetTimepointStrategy());
 
             GridLine<string> stopIds = (GridLine<string>)Schedule.GetRow(0);
             foreach (string stopId in stopIds.Skip(1))
-			{
+            {
                 Stops.Add(_stopsRepository.GetStopById(stopId));
-			}
+            }
         }
 
         public IActionResult OnPostCreateSchedule(string routeDirection)
-		{
-            return RedirectToPage(new { 
-                routeId = RouteId, 
+        {
+            return RedirectToPage(new
+            {
+                routeId = RouteId,
                 scheduleDate = ScheduleDate.ToString("yyyy-MM-dd"),
-				routeDirection
-			});
-		}
+                routeDirection
+            });
+        }
     }
 }

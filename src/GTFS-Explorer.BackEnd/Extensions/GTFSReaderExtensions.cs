@@ -21,7 +21,7 @@ namespace GTFS_Explorer.BackEnd.Extensions
         {
             if (path == null) throw new ArgumentNullException(nameof(path));
 
-            
+
             if (Directory.Exists(path))
             {
                 using (var source = new GTFSDirectorySource(path, (char)separator))

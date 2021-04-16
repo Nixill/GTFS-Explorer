@@ -1,7 +1,7 @@
 ﻿namespace GTFS_Explorer.Core.Interfaces
 {
-	public interface IEventRegistry
-	{
-		void RegisterEvents();
-	}
+    public interface IEventRegistry
+    {
+        void RegisterEvents();
+    }
 }

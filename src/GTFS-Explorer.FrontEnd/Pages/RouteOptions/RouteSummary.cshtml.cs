@@ -19,16 +19,16 @@ namespace GTFS_Explorer.FrontEnd.Pages.RouteOptions
         private readonly IRoutesRepository _routesRepository;
         private readonly IHubContext<EventsHub> _hubContext;
 
-		public RouteSummaryModel(
-            IRoutesRepository routesRepository, 
+        public RouteSummaryModel(
+            IRoutesRepository routesRepository,
             IHubContext<EventsHub> hubContext)
-		{
-			_routesRepository = routesRepository;
-			_hubContext = hubContext;
-		}
+        {
+            _routesRepository = routesRepository;
+            _hubContext = hubContext;
+        }
 
-		//From URL:
-		[BindProperty]
+        //From URL:
+        [BindProperty]
         public string RouteId { get; set; }
 
         [BindProperty(SupportsGet = true)] //By default today's date

@@ -17,7 +17,7 @@ namespace GTFS_Explorer.BackEnd.Readers
         }
 
         public void ReadFeed()
-		{
+        {
             var dir = Electron.App.CreateGTFSFileDir(_env);
             string[] files = Directory.GetFiles(dir);
 

@@ -13,24 +13,24 @@ namespace GTFS_Explorer.FrontEnd.Pages.MainPages
         private readonly IRoutesRepository _routesRepository;
         private readonly IRouteMapBuilderService _routeMapBuilderService;
 
-		public SystemMapModel(
-			IRoutesRepository routesRepository,
-			IRouteMapBuilderService routeMapBuilderService)
-		{
-			_routesRepository = routesRepository;
-			_routeMapBuilderService = routeMapBuilderService;
+        public SystemMapModel(
+            IRoutesRepository routesRepository,
+            IRouteMapBuilderService routeMapBuilderService)
+        {
+            _routesRepository = routesRepository;
+            _routeMapBuilderService = routeMapBuilderService;
             InitRoutes();
-		}
+        }
 
-		public List<Route> Routes { get; set; } = new List<Route>();
+        public List<Route> Routes { get; set; } = new List<Route>();
         public List<List<Coordinate>> RouteShapes { get; set; } = new List<List<Coordinate>>();
 
         public void OnGet()
         {
             List<List<List<Coordinate>>> allShapes = new List<List<List<Coordinate>>>();
 
-			foreach (var route in Routes)
-			{
+            foreach (var route in Routes)
+            {
                 allShapes.Add(_routeMapBuilderService.GetShapes(route.Id));
             }
         }

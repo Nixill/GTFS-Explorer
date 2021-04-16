@@ -7,8 +7,8 @@ namespace GTFS_Explorer.Core.Interfaces
     public interface IInstaller
     {
         void InstallServices(
-            IServiceCollection services, 
-            IConfiguration configuration, 
+            IServiceCollection services,
+            IConfiguration configuration,
             IWebHostEnvironment environment);
     }
 }
