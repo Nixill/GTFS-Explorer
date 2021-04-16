@@ -441,8 +441,8 @@ namespace GTFS_Explorer.BackEnd.Lookups
                 }
 
                 rs.AverageTrip /= rs.TotalTrips;
-                rs.StartStops.AddRange(firstStops.Select(x => feed.Stops.Get(x).Name));
-                rs.EndStops.AddRange(lastStops.Select(x => feed.Stops.Get(x).Name));
+                rs.StartStops.AddRange(firstStops.Distinct().Select(x => feed.Stops.Get(x).Name));
+                rs.EndStops.AddRange(lastStops.Distinct().Select(x => feed.Stops.Get(x).Name));
                 ret[dir] = rs;
             }
 

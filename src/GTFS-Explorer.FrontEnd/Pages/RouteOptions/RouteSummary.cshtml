@@ -66,76 +66,67 @@
 					</div>
                 </div>
 				<div class="row">
-					@foreach (var direction in Model.StatsDictionary.Keys)
-					{
-						RouteStats stats;
-						Model.StatsDictionary.TryGetValue(direction, out stats);
-					    <div class="d-block p-lg-3">
-						    <h6 class="text-white">@direction.ToString()</h6>
-							<ul>
-								<li class="text-white">
-									The route runs @stats.StartTime to @stats.EndTime
-								</li>
-								<li class="text-white">
-									Trips start at @stats.StartStops[0]
-								</li>
-								<li class="text-white">
-									Trips end at @stats.EndStops[0]
-								</li>
-
-								<!--Might refactor this later-->
-								<li class="text-white">
-									@if (stats.ShortestTrip.Hours >= 1)
-									{
-										if (stats.ShortestTrip.Hours == 1)
-										{
-											<p class="text-white d-inline">
-												Trips are @stats.ShortestTrip.Hours hour
-												@stats.ShortestTrip.Minutes minutes to
-											</p>
+					@{
+						int size = Model.StatsDictionary.Keys.Count;
+						int i = 0;
+						foreach (var direction in Model.StatsDictionary.Keys)
+						{
+							RouteStats stats;
+							Model.StatsDictionary.TryGetValue(direction, out stats);
+								<div class="d-block p-lg-3">
+									<h6 class="text-white">
+										@{
+											if (size == 1)
+											{
+												@:This route runs one way.
+											}
+											else if (size == 2)
+											{
+												if (i == 0)
+												{
+													@:In one direction...
+												}
+												else
+												{
+													@:In the other...
+												}
+											}
+											else
+											{
+												if (i == 0)
+												{
+													@:In the first direction...
+												}
+												else if (i == 1)
+												{
+													@:In the second...
+												}
+												else
+												{
+													@:In the third...
+												}
+											}
 										}
-										else
-										{
-											<p class="text-white d-inline">
-												Trips are @stats.ShortestTrip.Hours hours
-												@stats.ShortestTrip.Minutes minutes to
-											</p>
-										}
-									}
-									else
-									{
-										<p class="text-white d-inline">Trips are @stats.ShortestTrip.Minutes minutes to</p>
-									}
-
-									@if (stats.LongestTrip.Hours >= 1)
-									{
-										if (stats.LongestTrip.Hours == 1)
-										{
-											<p class="text-white d-inline">
-												@stats.LongestTrip.Hours hour
-												@stats.LongestTrip.Minutes minutes
-											</p>
-										}
-										else
-										{
-											<p class="text-white d-inline">
-												@stats.LongestTrip.Hours hours
-												@stats.LongestTrip.Minutes minutes
-											</p>
-										}
-									}
-									else
-									{
-										<p class="text-white d-inline">
-											@stats.LongestTrip.Minutes minutes
-										</p>
-									}
-									<p class="text-white d-inline">
-										(@stats.AverageTrip.ToString() on average)
-									</p>
-								</li>
-							</ul>
-						</div>
+									</h6>
+								<ul>
+									<li class="text-white">
+										The route runs @Model.DurationToTimeOfDay(stats.StartTime) to @Model.DurationToTimeOfDay(stats.EndTime)
+									</li>
+									<li class="text-white">
+										Trips start at @string.Join(", ", stats.StartStops)
+									</li>
+									<li class="text-white">
+										Trips end at @string.Join(", ", stats.EndStops)
+									</li>
+									<li class="text-white">
+										Trips are @Model.DurationToLengthString(stats.ShortestTrip) to
+										@Model.DurationToLengthString(stats.LongestTrip) long
+										(@Model.DurationToLengthString(stats.AverageTrip) on average).
+									</li>
+								</ul>
+							</div>
+							i++;
+						}
 					}
 				</div>
             </div>
