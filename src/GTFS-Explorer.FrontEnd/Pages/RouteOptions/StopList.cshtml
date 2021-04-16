@@ -1,9 +1,8 @@
-﻿@page "{routeId}"
+﻿@page "{routeId}/{routeDirection?}"
 @model GTFS_Explorer.FrontEnd.Pages.RouteOptions.StopListModel
 @{
     ViewData["Title"] = "StopList";
 }
-
 
 <section>
     <div class="header">
@@ -19,9 +18,59 @@
 			   asp-route-routeId="@Model.RouteId">Schedule</a>
 		</div>
     </div>
-    <div class="floater">
+    <div class="floater d-flex justify-content-around">
         <div class="floater-content">
+			<table class="table table-hover">
+				<thead>
+					<tr>
+						<th>Stop List</th>
+					</tr>
+				</thead>
+				<tbody>
+					@foreach (var stops in Model.StopsFromRoute)
+					{
+						if (stops.Item2)
+						{
+							<!--Major Stop-->
+							<tr>
+								<td class="mouse-pointer font-weight-bold"
+									onclick="location.href = '@(Url.Page("/StopOptions/StopSummary", new { stopId = stops.Item1.Id }))'">
+									@stops.Item1.Name
+								</td>
+							</tr>
+						}
+						else
+						{
+							<tr>
+								<td class="mouse-pointer"
+									onclick="location.href = '@(Url.Page("/StopOptions/StopSummary", new { stopId = stops.Item1.Id }))'">
+									@stops.Item1.Name
+								</td>
+							</tr>
+						}
+					}
+				</tbody>
+			</table>
         </div>
+		<div>
+			@if (Model.DirectionsOfRoute.Count() > 1)
+			{ 
+				<form>
+					<input type="hidden"
+						   class="text-center"
+						   id="route-direction"
+						   value="@Model.RouteDirection"
+						   name="routeDirection" />
+					<button type="submit"
+							class="btn button submit"
+							style="margin-left: 10px"
+							onclick="changeDirection()">
+						Switch Direction
+					</button>
+				
+				</form>
+			}
+			</div>
     </div>
     <form>
         <input type="file" id="selectFile" class="hidden" />
@@ -30,3 +79,18 @@
         <label class="select-file" for="returnToRoutes">Return to Routes</label>
     </form>
 </section>
+
+@section Scripts 
+{
+	<script>
+		hideLoader();
+		const dir = document.getElementById("route-direction");
+		function changeDirection() {
+			const dir = document.getElementById("route-direction");
+			if (dir.value == "OneDirection")
+				dir.value = "OppositeDirection";
+			else
+				dir.value = "OneDirection";
+		}
+	</script>
+}

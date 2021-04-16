@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Nixill.Collections.Grid;
 using NodaTime;
 using GTFS_Explorer.Core.Models.Structs;
+using System;
 
 namespace GTFS_Explorer.Core.Interfaces.RepoInterfaces
 {
@@ -18,5 +19,7 @@ namespace GTFS_Explorer.Core.Interfaces.RepoInterfaces
         bool HasAnyService(string route);
         List<string> ServicesOn(LocalDate date);
         Dictionary<DirectionType?, RouteStats> GetRouteStats(LocalDate date, string route);
+        IEnumerable<Tuple<Stop, bool>> GetRouteStops(string routeId, DirectionType? dir, TimepointStrategy strat);
+        IEnumerable<Tuple<Stop, bool>> GetRouteStops(string routeId, DirectionType? dir);
     }
 }

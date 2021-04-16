@@ -210,5 +210,10 @@ namespace GTFS_Explorer.BackEnd.Repositiories
             => RouteLookups.GetRouteStats(_reader.Feed, date, route);
 
         public IEnumerable<Route> GetRoutesServingStop(string stopId) => StopLookups.GetRoutesServingStop(_reader.Feed, stopId);
+
+        public IEnumerable<Tuple<Stop, bool>> GetRouteStops(string routeId, DirectionType? dir) => 
+            GetRouteStops(routeId, dir, _timepointRepository.GetTimepointStrategy());
+        public IEnumerable<Tuple<Stop, bool>> GetRouteStops(string routeId, DirectionType? dir, TimepointStrategy strat)
+            => RouteLookups.GetRouteStops(_reader.Feed, routeId, dir, strat);
     }
 }
