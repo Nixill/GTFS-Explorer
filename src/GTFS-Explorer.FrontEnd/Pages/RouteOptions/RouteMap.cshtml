@@ -65,7 +65,7 @@
 	@foreach(var stop in Model.RouteStops)
 	{
 		@:title = '@stop.Item1.Name.Replace("'", "\'")';
-		@:marker = L.marker([@stop.Item1.Latitude, @stop.Item1.Longitude], { title: title });
+		@:marker = L.marker([@stop.Item1.Latitude, @stop.Item1.Longitude]);
 
 		if (stop.Item2) {
 			@:marker.addTo(timepoints).bindPopup(title);
