@@ -42,3 +42,11 @@ connection.on("loading-file", () => {
 		ipcRenderer.send("select-new-gtfs-file");
 	});
 }());
+
+function hideLoader() {
+	window.addEventListener('load', () => {
+		$('#loader').css('display', 'none');
+		$('#fader').css('display', 'none');
+		$('#loader-wrapper').css('display', 'none');
+	});
+}

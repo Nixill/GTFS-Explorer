@@ -13,6 +13,7 @@ namespace GTFS_Explorer.Core.Interfaces.RepoInterfaces
     Dictionary<Agency, List<Route>> GetAllRoutes();
     Route GetRouteById(string id);
     List<Route> GetRoutesList();
+    List<Route> GetRoutesServingStop(string stopId);
     Grid<string> GetSchedule(string route, DirectionType? dir, List<string> serviceIds, TimepointStrategy strat);
     bool HasAnyService(string route);
     List<string> ServicesOn(LocalDate date);

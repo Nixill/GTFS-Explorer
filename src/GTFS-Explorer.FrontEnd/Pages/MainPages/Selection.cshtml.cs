@@ -1,13 +1,11 @@
 ﻿using ElectronNET.API;
 using GTFS.Entities;
 using GTFS_Explorer.BackEnd.Readers;
-using GTFS_Explorer.BackEnd.SignalR;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.SignalR;
+using System;
+using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace GTFS_Explorer.FrontEnd.Pages.MainPages
 {
@@ -20,8 +18,9 @@ namespace GTFS_Explorer.FrontEnd.Pages.MainPages
 			_reader = reader;
 		}
 
-		[BindProperty]
 		public FeedInfo FeedInfo { get; set; }
+		public DateTime FeedStartDate { get; set; }
+		public DateTime FeedEndDate { get; set; }
 
 		public void OnGet()
         {
@@ -31,12 +30,16 @@ namespace GTFS_Explorer.FrontEnd.Pages.MainPages
 			else
 			{
 				if (!string.IsNullOrEmpty(FeedInfo.StartDate) &&
-			   !string.IsNullOrEmpty(FeedInfo.EndDate))
+					!string.IsNullOrEmpty(FeedInfo.EndDate))
 				{
 					FeedInfo.StartDate =
 						Regex.Replace(FeedInfo.StartDate, @"^(....)(..)(..)$", "$1-$2-$3");
 					FeedInfo.EndDate =
 						Regex.Replace(FeedInfo.EndDate, @"^(....)(..)(..)$", "$1-$2-$3");
+					FeedStartDate = 
+						DateTime.ParseExact(FeedInfo.StartDate, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+					FeedEndDate =
+						DateTime.ParseExact(FeedInfo.EndDate, "yyyy-MM-dd", CultureInfo.InvariantCulture);
 				}
 
 				Electron.IpcMain.On("open-publisher-url", async (args) =>

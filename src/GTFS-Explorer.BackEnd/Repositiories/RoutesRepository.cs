@@ -18,16 +18,13 @@ namespace GTFS_Explorer.BackEnd.Repositiories
 	{
 		private readonly GTFSFeedReader _reader;
 		private readonly ITimepointRepository _timepointRepository;
-		private readonly IScheduleBuilderService _scheduleBuilder;
 
 		public RoutesRepository(
 		  GTFSFeedReader feedReader,
-		  ITimepointRepository timepointRepository,
-		  IScheduleBuilderService scheduleBuilder)
+		  ITimepointRepository timepointRepository)
 		{
 			_reader = feedReader;
 			_timepointRepository = timepointRepository;
-			_scheduleBuilder = scheduleBuilder;
 		}
 
 		/// <summary>
@@ -50,6 +47,18 @@ namespace GTFS_Explorer.BackEnd.Repositiories
 		public List<Route> GetRoutesList()
 		{
 			return _reader.Feed.Routes.ToList();
+		}
+
+		public List<Route> GetRoutesServingStop(string stopId)
+		{
+			var routeEnumerable =
+				from stopTime in _reader.Feed.StopTimes
+				where stopTime.StopId == stopId
+				join trip in _reader.Feed.Trips on stopTime.TripId equals trip.Id
+				join route in _reader.Feed.Routes on trip.RouteId equals route.Id
+				select route;
+
+			return routeEnumerable.Distinct().ToList();
 		}
 
 		/// <summary>

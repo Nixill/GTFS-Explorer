@@ -150,11 +150,7 @@
     </form>
 
     <script>
-		window.addEventListener('load', () => {
-			$('#loader').css('display', 'none');
-			$('#fader').css('display', 'none');
-			$('#loader-wrapper').css('display', 'none');
-		});
+		hideLoader();
 
         (function(){
             const { ipcRenderer } = require("electron");

@@ -20,11 +20,19 @@
 				</p>
 				<p class="text-white lead">Language: @Model.FeedInfo.Lang</p>
 				@if (!string.IsNullOrEmpty(Model.FeedInfo.StartDate) &&
-				  !string.IsNullOrEmpty(Model.FeedInfo.EndDate))
+				 !string.IsNullOrEmpty(Model.FeedInfo.EndDate))
 				{
 					<p class="text-white lead">
 						Valid from @Model.FeedInfo.StartDate to @Model.FeedInfo.EndDate
 					</p>
+					@if (DateTime.UtcNow < Model.FeedStartDate)
+					{
+						<p class="text-danger">Feed is not yet to date</p>
+					}
+					else if (DateTime.UtcNow > Model.FeedEndDate)
+					{
+						<p class="text-danger">Feed is outdated</p>
+					}
 				}
 			}
 			else
@@ -57,11 +65,7 @@
 @section Scripts
 {
 	<script>
-		window.addEventListener('load', () => {
-			$('#loader').css('display', 'none');
-            $('#fader').css('display', 'none');
-			$('#loader-wrapper').css('display', 'none');
-		});
+		hideLoader();
 
         const { ipcRenderer } = require("electron");
 

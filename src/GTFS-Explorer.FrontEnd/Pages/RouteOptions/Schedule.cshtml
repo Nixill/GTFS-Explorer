@@ -102,11 +102,7 @@
 @section Scripts
 {
 	<script>
-		window.addEventListener('load', () => {
-			$('#loader').css('display', 'none');
-			$('#fader').css('display', 'none');
-			$('#loader-wrapper').css('display', 'none');
-		});
+		hideLoader();
 
 		const dir = document.getElementById("route-direction");
 		function changeDirection() {

@@ -12,9 +12,40 @@
             <a asp-page="/StopOptions/NearbyStops" asp-route-stopId="@Model.StopId">Nearby Stops</a>
         </div>
     </div>
-    <div class="floater">
+    <div class="floater d-flex justify-content-around">
+		<div class="p-3">
+			<h3 class="text-white">@Model.Stop.Name</h3>
+			@if (!string.IsNullOrEmpty(Model.Stop.Description))
+			{
+				<p class="text-white">@Model.Stop.Description</p>
+			}
+			@if (!string.IsNullOrEmpty(Model.Stop.Url ))
+			{
+				<p class="text-white">URL: @Model.Stop.Url</p>
+			}
+
+            <table class="table table-hover floater-background-color scrollbar" 
+				   id="style-1">
+                <thead>
+                    <tr>
+						<th>
+							Routes That Stop here
+						</th>
+                    </tr>
+                </thead>
+				<tbody>
+					@foreach (var route in Model.RoutesServingStop)
+					{
+						<tr class="mouse-pointer"
+							onclick="location.href = '@(Url.Page("/RouteOptions/RouteSummary", new { routeId = route.Id }))'">
+							<td>@route.LongName</td>
+						</tr>
+					}
+				</tbody>
+            </table>
+		</div>
         <div class="floater-content">
-            <p>@Model.Stop.Name</p>
+            <div class="h-100 d-block" id="stop-map"></div>
         </div>
     </div>
     <form>
@@ -24,3 +55,28 @@
         <label class="select-file" for="returnToStops">Return to Stops</label>
     </form>
 </section>
+
+@section Scripts
+{
+	<script>
+		hideLoader();
+		const stopMap = new L.map('stop-map').setView([@Model.Stop.Latitude, @Model.Stop.Longitude], 13);
+		const osmAttribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
+		const osmTileUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+
+		const tiles = L.tileLayer(osmTileUrl, {
+			attribution: osmAttribution
+		});
+
+		tiles.addTo(stopMap);
+
+		var stopMarker = L.marker([@Model.Stop.Latitude, @Model.Stop.Longitude]);
+		stopMarker.addTo(stopMap)
+			.bindPopup('@Model.Stop.Name')
+			.openPopup();
+
+		stopMarker.on("click", () => {
+			stopMarker.openPopup();
+		});
+	</script>
+}
