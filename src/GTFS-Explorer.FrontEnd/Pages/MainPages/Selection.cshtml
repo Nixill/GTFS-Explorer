@@ -1,5 +1,6 @@
 ﻿@page
 @model GTFS_Explorer.FrontEnd.Pages.MainPages.SelectionModel
+@using NodaTime
 @{
     ViewData["Title"] = "Selection";
 }
@@ -25,11 +26,11 @@
 					<p class="text-white lead">
 						Valid from @Model.FeedInfo.StartDate to @Model.FeedInfo.EndDate
 					</p>
-					@if (DateTime.UtcNow < Model.FeedStartDate)
+					@if (DateTime.Now < Model.FeedStartDate)
 					{
-						<p class="text-danger">Feed is not yet to date</p>
+						<p class="text-danger">Feed is not yet in effect</p>
 					}
-					else if (DateTime.UtcNow > Model.FeedEndDate)
+					else if (DateTime.Now > Model.FeedEndDate)
 					{
 						<p class="text-danger">Feed is outdated</p>
 					}
@@ -38,6 +39,18 @@
 			else
 			{
 				<h3>Feed Info was not provided</h3>
+			}
+			<h3>Service dates</h3>
+			<p class="text-white lead">
+				Services run from @Model.ServiceRange.Min to @Model.ServiceRange.Max.
+			</p>
+			@if (LocalDate.FromDateTime(DateTime.Now) < Model.ServiceRange.Min)
+			{
+				<p class="text-danger">Services are not yet in effect</p>
+			}
+			else if (LocalDate.FromDateTime(DateTime.Now) > Model.ServiceRange.Max)
+			{
+				<p class="text-danger">Services have already ended</p>
 			}
 		</div>
         <br>

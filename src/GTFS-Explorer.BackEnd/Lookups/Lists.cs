@@ -1,9 +1,12 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using GTFS;
 using GTFS.Entities;
 using GTFS.Entities.Enumerations;
+using GTFS_Explorer.Core.Models.Structs;
 using Nixill.Collections;
+using NodaTime;
 
 namespace GTFS_Explorer.BackEnd.Lookups
 {
@@ -66,6 +69,50 @@ namespace GTFS_Explorer.BackEnd.Lookups
             );
 
             return list;
+        }
+
+        public static DateRange GetServiceRange(GTFSFeed feed)
+        {
+            List<DateRange> ranges = new List<DateRange>();
+
+            // Range from feed.Calendars
+            if (feed.Calendars.Any())
+            {
+                LocalDate min = LocalDate.MaxIsoValue;
+                LocalDate max = LocalDate.MinIsoValue;
+
+                foreach (Calendar cal in feed.Calendars)
+                {
+                    min = LocalDate.Min(LocalDate.FromDateTime(cal.StartDate), min);
+                    max = LocalDate.Max(LocalDate.FromDateTime(cal.EndDate), max);
+                }
+
+                ranges.Add(new DateRange(min, max));
+            }
+
+            // Range from feed.CalendarDates
+            if (feed.CalendarDates.Any())
+            {
+                LocalDate min = LocalDate.MaxIsoValue;
+                LocalDate max = LocalDate.MinIsoValue;
+
+                foreach (CalendarDate cal in feed.CalendarDates.Where(x => x.ExceptionType == ExceptionType.Added))
+                {
+                    min = LocalDate.Min(LocalDate.FromDateTime(cal.Date), min);
+                    max = LocalDate.Max(LocalDate.FromDateTime(cal.Date), max);
+                }
+
+                ranges.Add(new DateRange(min, max));
+            }
+
+            if (ranges.Count == 2)
+            {
+                return ranges[0] + ranges[1];
+            }
+            else
+            {
+                return ranges[0];
+            }
         }
     }
 }

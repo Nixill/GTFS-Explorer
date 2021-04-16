@@ -1,6 +1,8 @@
 ﻿using ElectronNET.API;
 using GTFS.Entities;
+using GTFS_Explorer.BackEnd.Lookups;
 using GTFS_Explorer.BackEnd.Readers;
+using GTFS_Explorer.Core.Models.Structs;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
 using System.Globalization;
@@ -21,6 +23,7 @@ namespace GTFS_Explorer.FrontEnd.Pages.MainPages
         public FeedInfo FeedInfo { get; set; }
         public DateTime FeedStartDate { get; set; }
         public DateTime FeedEndDate { get; set; }
+        public DateRange ServiceRange { get; set; }
 
         public void OnGet()
         {
@@ -47,6 +50,8 @@ namespace GTFS_Explorer.FrontEnd.Pages.MainPages
                     await Electron.Shell.OpenExternalAsync(FeedInfo.PublisherUrl);
                 });
             }
+
+            ServiceRange = Lists.GetServiceRange(_reader.Feed);
         }
 
         private bool AreFeedInfoPropsNull(FeedInfo feedInfo)
