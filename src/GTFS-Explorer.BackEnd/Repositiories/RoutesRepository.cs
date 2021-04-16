@@ -99,7 +99,7 @@ namespace GTFS_Explorer.BackEnd.Repositiories
         /// </param>
         /// <param name="date">The date to retrieve.</param>
         public Grid<string> GetSchedule(string route, DirectionType? dir, LocalDate date) =>
-          GetSchedule(route, dir, ServicesOn(date));
+          GetSchedule(route, dir, ServicesOn(date).Item1);
 
         /// <summary>
         ///   <para>Returns a transit schedule in grid form.</para>
@@ -139,7 +139,7 @@ namespace GTFS_Explorer.BackEnd.Repositiories
         ///   <c>TimepointFinder.GetTimepointStrategy()</c>.
         /// </param>
         public Grid<string> GetSchedule(string route, DirectionType? dir, LocalDate date, TimepointStrategy strat) =>
-          GetSchedule(route, dir, ServicesOn(date), strat);
+          GetSchedule(route, dir, ServicesOn(date).Item1, strat);
 
         /// <summary>
         ///   <para>Returns a transit schedule in grid form.</para>
@@ -203,7 +203,7 @@ namespace GTFS_Explorer.BackEnd.Repositiories
         ///   If no services run on a given day, an empty list is returned.
         /// </remarks>
         /// <param name="date">The date to check.</param>
-        public List<string> ServicesOn(LocalDate date)
+        public Tuple<List<string>, bool> ServicesOn(LocalDate date)
             => RouteLookups.ServicesOn(_reader.Feed, date);
 
         public Dictionary<DirectionType?, RouteStats> GetRouteStats(LocalDate date, string route)
@@ -211,7 +211,7 @@ namespace GTFS_Explorer.BackEnd.Repositiories
 
         public IEnumerable<Route> GetRoutesServingStop(string stopId) => StopLookups.GetRoutesServingStop(_reader.Feed, stopId);
 
-        public IEnumerable<Tuple<Stop, bool>> GetRouteStops(string routeId, DirectionType? dir) => 
+        public IEnumerable<Tuple<Stop, bool>> GetRouteStops(string routeId, DirectionType? dir) =>
             GetRouteStops(routeId, dir, _timepointRepository.GetTimepointStrategy());
         public IEnumerable<Tuple<Stop, bool>> GetRouteStops(string routeId, DirectionType? dir, TimepointStrategy strat)
             => RouteLookups.GetRouteStops(_reader.Feed, routeId, dir, strat);

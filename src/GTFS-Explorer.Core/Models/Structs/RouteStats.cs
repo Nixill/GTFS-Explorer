@@ -3,8 +3,8 @@ using System.Collections.Generic;
 
 namespace GTFS_Explorer.Core.Models.Structs
 {
-	public struct RouteStats
-	{
+    public struct RouteStats
+    {
         // Line 1
         public Duration StartTime;
         public Duration EndTime;
@@ -17,5 +17,7 @@ namespace GTFS_Explorer.Core.Models.Structs
         public Duration LongestTrip;
         public Duration AverageTrip;
         public int TotalTrips;
+        // Line 5
+        public bool GenericDay;
     }
 }

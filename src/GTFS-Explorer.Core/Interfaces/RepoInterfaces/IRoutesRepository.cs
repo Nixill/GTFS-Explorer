@@ -17,7 +17,7 @@ namespace GTFS_Explorer.Core.Interfaces.RepoInterfaces
         IEnumerable<Route> GetRoutesServingStop(string stopId);
         Grid<string> GetSchedule(string route, DirectionType? dir, List<string> serviceIds, TimepointStrategy strat);
         bool HasAnyService(string route);
-        List<string> ServicesOn(LocalDate date);
+        Tuple<List<string>, bool> ServicesOn(LocalDate date);
         Dictionary<DirectionType?, RouteStats> GetRouteStats(LocalDate date, string route);
         IEnumerable<Tuple<Stop, bool>> GetRouteStops(string routeId, DirectionType? dir, TimepointStrategy strat);
         IEnumerable<Tuple<Stop, bool>> GetRouteStops(string routeId, DirectionType? dir);

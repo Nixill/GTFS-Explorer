@@ -34,7 +34,7 @@ namespace GTFS_Explorer.FrontEnd.Pages.RouteOptions
         public string RouteId { get; set; }
 
         [BindProperty(SupportsGet = true)] //By default today's date
-        public DateTime ServicesDate { get; set; } = DateTime.UtcNow;
+        public DateTime ServicesDate { get; set; } = DateTime.Now;
 
         public Dictionary<DirectionType?, RouteStats> StatsDictionary { get; set; }
         public Route Route { get; set; }

@@ -5,6 +5,7 @@
 }
 
 @using Nixill.Collections.Grid;
+@using NodaTime;
 
 <section>
     <div class="header">
@@ -97,6 +98,12 @@
 					See Schedule
 				</button>
 			</div>
+			@if (Model.IsGenericSchedule)
+			{
+				<p class="text-danger">
+					Showing generic @Model.ScheduleDate.DayOfWeek schedule. No services available for @(LocalDate.FromDateTime(Model.ScheduleDate)).
+				</p>
+			}
 		</form>
     </div>
     <form>

@@ -5,6 +5,7 @@
 }
 
 @using GTFS_Explorer.Core.Models.Structs; 
+@using NodaTime
 
 <link rel="stylesheet" href="~/css/style.css" />
 <section>
@@ -123,6 +124,11 @@
 										@Model.DurationToLengthString(stats.LongestTrip) long
 										(@Model.DurationToLengthString(stats.AverageTrip) on average).
 									</li>
+									@if (stats.GenericDay) {
+										<li class="text-danger">
+											Stats for generic @Model.ServicesDate.DayOfWeek schedule. No data provided for @(LocalDate.FromDateTime(Model.ServicesDate)).
+										</li>
+									}
 								</ul>
 							</div>
 							i++;

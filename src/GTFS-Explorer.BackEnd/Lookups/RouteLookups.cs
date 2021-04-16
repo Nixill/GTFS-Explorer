@@ -11,11 +11,14 @@ using GTFS_Explorer.Core.Models.Structs;
 using Nixill.Collections.Grid;
 using Nixill.GTFS;
 using NodaTime;
+using NodaTime.Text;
 
 namespace GTFS_Explorer.BackEnd.Lookups
 {
     public static class RouteLookups
     {
+        private static readonly DurationPattern FrequencyParser = DurationPattern.CreateWithInvariantCulture("HH:mm:ss");
+
         /// <summary>
         ///   <para>Returns a transit schedule in grid form.</para>
         /// </summary>
@@ -69,7 +72,7 @@ namespace GTFS_Explorer.BackEnd.Lookups
         /// </param>
         /// <param name="date">The date to retrieve.</param>
         public static Grid<string> GetSchedule(GTFSFeed feed, string route, DirectionType? dir, LocalDate date) =>
-          GetSchedule(feed, route, dir, ServicesOn(feed, date));
+          GetSchedule(feed, route, dir, ServicesOn(feed, date).Item1);
 
         /// <summary>
         ///   <para>Returns a transit schedule in grid form.</para>
@@ -141,7 +144,7 @@ namespace GTFS_Explorer.BackEnd.Lookups
         ///   <c>TimepointFinder.GetTimepointStrategy()</c>.
         /// </param>
         public static Grid<string> GetSchedule(GTFSFeed feed, string route, DirectionType? dir, LocalDate date, TimepointStrategy strat) =>
-          GetSchedule(feed, route, dir, ServicesOn(feed, date), strat);
+          GetSchedule(feed, route, dir, ServicesOn(feed, date).Item1, strat);
 
         /// <summary>
         ///   <para>Returns a transit schedule in grid form.</para>
@@ -202,7 +205,7 @@ namespace GTFS_Explorer.BackEnd.Lookups
         /// <param name="stopOrder">The order of stops to use.</param>
         /// <param name="sortTimes">The sort times of the trips.</param>
         public static Grid<string> GetSchedule(GTFSFeed feed, string route, DirectionType? dir, LocalDate date, List<string> stopOrder, Dictionary<string, int> sortTimes) =>
-          GridifySchedule(feed, ScheduleBuilder.GetSchedule(feed, route, dir, ServicesOn(feed, date), stopOrder, sortTimes));
+          GridifySchedule(feed, ScheduleBuilder.GetSchedule(feed, route, dir, ServicesOn(feed, date).Item1, stopOrder, sortTimes));
 
         private static Grid<string> GridifySchedule(GTFSFeed feed, Tuple<List<string>, List<Tuple<string, Dictionary<string, TimeOfDay>>>> sched)
         {
@@ -352,43 +355,66 @@ namespace GTFS_Explorer.BackEnd.Lookups
         }
 
         /// <summary>
-        ///   Returns a <c>List</c> of all the service IDs active on a given
-        ///   day.
+        ///   Returns a <c>Tuple</c> which contains a <c>List</c> of all
+        ///   the service IDs active on a given day, and a <c>bool</c>
+        ///   indicating whether or not that's a generic list.
         /// </summary>
         /// <remarks>
         ///   If no services run on a given day, an empty list is returned.
         /// </remarks>
         /// <param name="feed">The GTFS feed to check.</param>
         /// <param name="date">The date to check.</param>
-        public static List<string> ServicesOn(GTFSFeed feed, LocalDate date)
+        public static Tuple<List<string>, bool> ServicesOn(GTFSFeed feed, LocalDate date)
         {
+            DateRange range = Lists.GetServiceRange(feed);
             DateTime dt = date.ToDateTimeUnspecified();
 
-            var ret = from cal in feed.Calendars
-                      where cal.StartDate <= dt
-                        && cal.EndDate >= dt
-                        && date.DayOfWeek switch
-                        {
-                            IsoDayOfWeek.Monday => cal.Monday,
-                            IsoDayOfWeek.Tuesday => cal.Tuesday,
-                            IsoDayOfWeek.Wednesday => cal.Wednesday,
-                            IsoDayOfWeek.Thursday => cal.Thursday,
-                            IsoDayOfWeek.Friday => cal.Friday,
-                            IsoDayOfWeek.Saturday => cal.Saturday,
-                            IsoDayOfWeek.Sunday => cal.Sunday,
-                            _ => false
-                        }
-                      select cal.ServiceId;
+            if (date >= range.Min && date <= range.Max)
+            {
+                var ret = from cal in feed.Calendars
+                          where cal.StartDate <= dt
+                              && cal.EndDate >= dt
+                              && date.DayOfWeek switch
+                              {
+                                  IsoDayOfWeek.Monday => cal.Monday,
+                                  IsoDayOfWeek.Tuesday => cal.Tuesday,
+                                  IsoDayOfWeek.Wednesday => cal.Wednesday,
+                                  IsoDayOfWeek.Thursday => cal.Thursday,
+                                  IsoDayOfWeek.Friday => cal.Friday,
+                                  IsoDayOfWeek.Saturday => cal.Saturday,
+                                  IsoDayOfWeek.Sunday => cal.Sunday,
+                                  _ => false
+                              }
+                          select cal.ServiceId;
 
-            ret = ret.Except(from cald in feed.CalendarDates
-                             where cald.Date == dt && cald.ExceptionType == ExceptionType.Removed
-                             select cald.ServiceId);
+                ret = ret.Except(from cald in feed.CalendarDates
+                                 where cald.Date == dt && cald.ExceptionType == ExceptionType.Removed
+                                 select cald.ServiceId);
 
-            ret = ret.Union(from cald in feed.CalendarDates
-                            where cald.Date == dt && cald.ExceptionType == ExceptionType.Added
-                            select cald.ServiceId);
+                ret = ret.Union(from cald in feed.CalendarDates
+                                where cald.Date == dt && cald.ExceptionType == ExceptionType.Added
+                                select cald.ServiceId);
 
-            return ret.Distinct().ToList();
+                return new Tuple<List<string>, bool>(ret.Distinct().ToList(), false);
+            }
+            else
+            {
+                var ret = from cal in feed.Calendars
+                          where date.DayOfWeek switch
+                          {
+                              IsoDayOfWeek.Monday => cal.Monday,
+                              IsoDayOfWeek.Tuesday => cal.Tuesday,
+                              IsoDayOfWeek.Wednesday => cal.Wednesday,
+                              IsoDayOfWeek.Thursday => cal.Thursday,
+                              IsoDayOfWeek.Friday => cal.Friday,
+                              IsoDayOfWeek.Saturday => cal.Saturday,
+                              IsoDayOfWeek.Sunday => cal.Sunday,
+                              _ => false
+                          }
+                          select cal.ServiceId;
+
+                return new Tuple<List<string>, bool>(ret.Distinct().ToList(), true);
+            }
         }
 
         public static Dictionary<DirectionType?, RouteStats> GetRouteStats(GTFSFeed feed, LocalDate date, string route)
@@ -396,7 +422,7 @@ namespace GTFS_Explorer.BackEnd.Lookups
             Dictionary<DirectionType?, RouteStats> ret = new Dictionary<DirectionType?, RouteStats>();
 
             var services = ServicesOn(feed, date);
-            var allTrips = feed.Trips.Where(x => x.RouteId == route && services.Contains(x.ServiceId));
+            var allTrips = feed.Trips.Where(x => x.RouteId == route && services.Item1.Contains(x.ServiceId));
             var directions = allTrips.Select(x => x.Direction).Distinct();
 
             foreach (DirectionType? dir in directions)
@@ -438,12 +464,27 @@ namespace GTFS_Explorer.BackEnd.Lookups
 
                     rs.AverageTrip += length;
                     rs.TotalTrips += 1;
+
+                    // Don't forget about frequencies
+                    var freqs = feed.Frequencies.Where(x => x.TripId == t.Id);
+                    foreach (Frequency f in freqs)
+                    {
+                        var firstTimeF = FrequencyParser.Parse(f.StartTime).Value;
+                        var lastTimeF = FrequencyParser.Parse(f.EndTime).Value;
+
+                        lastTimeF += (lastTime - firstTime);
+
+                        if (rs.StartTime > firstTimeF) rs.StartTime = firstTimeF;
+                        if (rs.EndTime < lastTimeF) rs.EndTime = lastTimeF;
+                    }
                 }
 
                 rs.AverageTrip /= rs.TotalTrips;
                 rs.StartStops.AddRange(firstStops.Distinct().Select(x => feed.Stops.Get(x).Name));
                 rs.EndStops.AddRange(lastStops.Distinct().Select(x => feed.Stops.Get(x).Name));
                 ret[dir] = rs;
+
+                rs.GenericDay = services.Item2;
             }
 
             return ret;

@@ -37,7 +37,7 @@ namespace GTFS_Explorer.FrontEnd.Pages.RouteOptions
         }
 
         [BindProperty(SupportsGet = true)] //By default today's date
-        public DateTime ScheduleDate { get; set; } = DateTime.UtcNow;
+        public DateTime ScheduleDate { get; set; } = DateTime.Now;
 
         [BindProperty(SupportsGet = true)] //By default OneDirection
         public string RouteDirection { get; set; } = DirectionType.OneDirection.ToString();
@@ -48,6 +48,7 @@ namespace GTFS_Explorer.FrontEnd.Pages.RouteOptions
         public Grid<string> Schedule { get; set; }
         public List<Stop> Stops { get; set; } = new List<Stop>();
         public IEnumerable<DirectionType?> DirectionsOfRoute { get; set; }
+        public bool IsGenericSchedule { get; set; }
 
         public async Task OnGetAsync(
             string routeId,
@@ -71,9 +72,12 @@ namespace GTFS_Explorer.FrontEnd.Pages.RouteOptions
 
             await _hubContext.Clients.All.SendAsync("loading-file");
 
+            var services = _routesRepository.ServicesOn(dateResult.Value);
+            IsGenericSchedule = services.Item2;
+
             Schedule = _routesRepository.GetSchedule(
                 routeId, direction,
-                _routesRepository.ServicesOn(dateResult.Value),
+                services.Item1,
                 _timepointRepository.GetTimepointStrategy());
 
             GridLine<string> stopIds = (GridLine<string>)Schedule.GetRow(0);
