@@ -448,5 +448,24 @@ namespace GTFS_Explorer.BackEnd.Lookups
 
       return ret;
     }
+
+    public static IEnumerable<Tuple<Stop, bool>> GetRouteStops(GTFSFeed feed, string routeId, DirectionType? dir) => GetRouteStops(feed, routeId, dir, TimepointFinder.GetTimepointStrategy(feed));
+    public static IEnumerable<Tuple<Stop, bool>> GetRouteStops(GTFSFeed feed, string routeId, DirectionType? dir, TimepointStrategy strat)
+    {
+      var stops = StopLister.GetStopOrder(feed, routeId, dir);
+      List<string> timepoints = ScheduleBuilder.GetScheduleHeader(feed, routeId, dir, strat);
+
+      foreach (Stop stop in stops)
+      {
+        if (timepoints.Contains(stop.Id))
+        {
+          yield return new Tuple<Stop, bool>(stop, true);
+        }
+        else
+        {
+          yield return new Tuple<Stop, bool>(stop, false);
+        }
+      }
+    }
   }
 }
