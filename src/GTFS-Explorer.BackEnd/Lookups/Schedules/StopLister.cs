@@ -51,6 +51,7 @@ namespace Nixill.GTFS
         };
 
       List<string> outStops = new List<string>();
+      bool copyFirstLast = false;
 
       while (stopsOnTrips.Count() > 0)
       {
@@ -58,24 +59,28 @@ namespace Nixill.GTFS
         string newTrip = stopsOnTrips.First().TripId;
 
         var newStops =
-          (from rstListing in routeStopTimes
-           where rstListing.TripId == newTrip
-           orderby rstListing.StopSequence
-           select rstListing.StopId).Distinct();
+          from rstListing in routeStopTimes
+          where rstListing.TripId == newTrip
+          orderby rstListing.StopSequence
+          select rstListing.StopId;
 
         // Handling for first trip searched
         if (outStops.Count == 0)
         {
-          outStops = newStops.Distinct().ToList();
+          outStops = newStops.ToList();
+          if (outStops[0] == outStops[outStops.Count - 1]) copyFirstLast = true;
+          outStops = outStops.Distinct().ToList();
         }
         else
         {
+          copyFirstLast = false;
+
           // Now merge the listings
           List<string> foundStops = new List<string>(outStops);
           List<string> addingStops = new List<string>();
           string lastFoundStop = null;
 
-          foreach (string stop in newStops)
+          foreach (string stop in newStops.Distinct())
           {
             int foundIndex = foundStops.IndexOf(stop);
             if (foundIndex != -1)
@@ -129,6 +134,11 @@ namespace Nixill.GTFS
             Stops = rstListingGrouped.Count(),
             FoundStops = rstListingGrouped.Count(x => outStops.Contains(x.StopId))
           };
+      }
+
+      if (copyFirstLast)
+      {
+        outStops.Add(outStops[0]);
       }
 
       return

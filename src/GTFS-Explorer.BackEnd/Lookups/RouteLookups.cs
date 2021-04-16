@@ -213,21 +213,31 @@ namespace GTFS_Explorer.BackEnd.Lookups
       stops.Insert(0, "");
       ret.AddRow(stops);
 
+      // Prepare a frequencies row
+      List<string> freqRow = Enumerable.Repeat("", stops.Count).ToList();
+
       // Now add the trips
       var trips = sched.Item2;
       foreach (var trip in trips)
       {
         List<string> tripRow = new List<string>();
         // Add the times at each stop
-        foreach (string stop in stops)
+        for (int i = 0; i < stops.Count; i++)
         {
+          string stop = stops[i];
           if (stop == "")
           {
             tripRow.Add(trip.Item1);
           }
           else
           {
-            if (trip.Item2.ContainsKey(stop))
+            if (stop == stops[1] && i != 1)
+            {
+              int time = trip.Item2[""].TotalSeconds;
+              string timeString = NodaTime.LocalTime.FromSecondsSinceMidnight(time).ToString("HH:mm", DateTimeFormatInfo.InvariantInfo);
+              tripRow.Add(timeString);
+            }
+            else if (trip.Item2.ContainsKey(stop))
             {
               int time = trip.Item2[stop].TotalSeconds;
               string timeString = NodaTime.LocalTime.FromSecondsSinceMidnight(time).ToString("HH:mm", DateTimeFormatInfo.InvariantInfo);
@@ -304,7 +314,9 @@ namespace GTFS_Explorer.BackEnd.Lookups
           string endTime = ExtraUtils.RemoveSeconds(freq.EndTime);
 
           freqDesc += $" from {startTime} to {endTime}";
-          ret.AddRow(new List<string> { "", freqDesc });
+
+          freqRow[1] = freqDesc;
+          ret.AddRow(freqRow);
         }
       }
 
@@ -435,6 +447,25 @@ namespace GTFS_Explorer.BackEnd.Lookups
       }
 
       return ret;
+    }
+
+    public static IEnumerable<Tuple<Stop, bool>> GetRouteStops(GTFSFeed feed, string routeId, DirectionType? dir) => GetRouteStops(feed, routeId, dir, TimepointFinder.GetTimepointStrategy(feed));
+    public static IEnumerable<Tuple<Stop, bool>> GetRouteStops(GTFSFeed feed, string routeId, DirectionType? dir, TimepointStrategy strat)
+    {
+      var stops = StopLister.GetStopOrder(feed, routeId, dir);
+      List<string> timepoints = ScheduleBuilder.GetScheduleHeader(feed, routeId, dir, strat);
+
+      foreach (Stop stop in stops)
+      {
+        if (timepoints.Contains(stop.Id))
+        {
+          yield return new Tuple<Stop, bool>(stop, true);
+        }
+        else
+        {
+          yield return new Tuple<Stop, bool>(stop, false);
+        }
+      }
     }
   }
 }
