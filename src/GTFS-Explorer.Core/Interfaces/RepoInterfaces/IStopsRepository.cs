@@ -1,5 +1,6 @@
 ﻿using GTFS.Entities;
 using GTFS.Entities.Enumerations;
+using System;
 using System.Collections.Generic;
 
 namespace GTFS_Explorer.Core.Interfaces.RepoInterfaces
@@ -10,5 +11,6 @@ namespace GTFS_Explorer.Core.Interfaces.RepoInterfaces
         IEnumerable<Stop> GetStopOrder(string route, DirectionType? direction = null);
         Stop GetStopById(string stopId);
         List<Stop> GetStopList();
+        List<Tuple<TimeOfDay?, Stop>> GetStopsFromTrip(string tripId);
     }
 }

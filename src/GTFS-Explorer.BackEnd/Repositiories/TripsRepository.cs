@@ -26,5 +26,10 @@ namespace GTFS_Explorer.BackEnd.Repositiories
         {
             return _reader.Feed.Trips.Where(x => x.RouteId == routeId);
         }
+
+        public Trip GetTripById(string tripId)
+		{
+            return _reader.Feed.Trips.Get(tripId);
+		}
     }
 }

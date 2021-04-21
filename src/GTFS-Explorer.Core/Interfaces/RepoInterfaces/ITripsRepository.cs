@@ -8,5 +8,6 @@ namespace GTFS_Explorer.Core.Interfaces.RepoInterfaces
     {
         IEnumerable<Trip> GetAllTripsOfRoute(string routeId);
         IEnumerable<DirectionType?> GetDirectionsOfRoute(string routeId);
+        Trip GetTripById(string tripId);
     }
 }

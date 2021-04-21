@@ -62,5 +62,8 @@ namespace GTFS_Explorer.BackEnd.Repositiories
         /// </param>
         public IEnumerable<Stop> GetStopOrder(Route route, DirectionType? direction = null)
             => GetStopOrder(route.Id, direction);
+
+        public List<Tuple<TimeOfDay?, Stop>> GetStopsFromTrip(string tripId)
+            => TripLookups.GetStopsFromTrip(_reader.Feed, tripId);
     }
 }

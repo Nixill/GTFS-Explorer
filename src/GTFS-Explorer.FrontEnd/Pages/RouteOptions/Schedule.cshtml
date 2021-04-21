@@ -53,13 +53,15 @@
 									foreach (string column in gridLine.Skip(1))
 									{
 										<td class="mouse-pointer"
-											onclick="location.href='@(Url.Page("/Trips", new { tripId = tripId}))' ">
+											onclick="location.href='@(Url.Page("/RouteOptions/Trip", 
+																	new { routeId = Model.RouteId, tripId = tripId}))' ">
 											@column
 										</td>
 									}
 								} else {
 									<td class="mouse-pointer" colspan="@(gridLine.Count-1)"
-										onclick="location.href='@(Url.Page("/Trips", new { tripId = lastTripId}))' ">
+										onclick="location.href='@(Url.Page("/RouteOptions/Trip", 
+																new { routeId = Model.RouteId, tripId = lastTripId}))' ">
 										@gridLine[1]
 									</td>
 								}

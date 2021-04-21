@@ -1,0 +1,120 @@
+﻿@page "{routeId}/trip/{tripId}/{tripDate:datetime?}"
+@model GTFS_Explorer.FrontEnd.Pages.RouteOptions.TripModel
+@{
+	ViewData["Title"] = "Trip";
+}
+
+<section>
+	<div class="header">
+		<div class="header-right">
+			<a asp-page="/RouteOptions/RouteSummary" asp-route-routeId="@Model.RouteId">Summary</a>
+			<a asp-page="/RouteOptions/RouteMap" asp-route-routeId="@Model.RouteId">Route Map</a>
+			<a asp-page="/RouteOptions/StopList" asp-route-routeId="@Model.RouteId">Stop List</a>
+			<a asp-page="/RouteOptions/Schedule" asp-route-routeId="@Model.RouteId">Schedule</a>
+		</div>
+	</div>
+	<div class="floater d-flex justify-content-around">
+		<div class="p-3">
+			@if (!string.IsNullOrEmpty(Model.Trip.ShortName))
+			{
+				<h3 class="text-white text-center">Trip of @Model.Trip.ShortName</h3>
+				@if (!string.IsNullOrEmpty(Model.Trip.Headsign))
+				{
+					<h3 class="text-white text-center">to @Model.Trip.Headsign</h3>
+				}
+			}
+			@*<form class="text-center">
+				<input type="date"
+					   class="form-control text-center"
+					   asp-for="TripDate" />
+				<button type="submit"
+						class="btn button submit text-center">
+					Change Date
+				</button>
+			</form>*@
+			<div style="overflow:auto;
+						height: 86%;"
+				 class="text-center scrollbar"
+				 id="style-1">
+				<table class="table table-hover floater-background-color">
+					<thead>
+						<tr>
+							<th>
+								Time
+							</th>
+							<th>
+								Trip Stops
+							</th>
+						</tr>
+					</thead>
+					<tbody>
+						@foreach (var stopTimes in Model.TripStops)
+						{
+							<tr class="mouse-pointer"
+								onclick="location.href = '@(Url.Page("/StopOptions/StopSummary", new { stopId = stopTimes.Item2.Id }))'">
+
+								@if (stopTimes.Item1.HasValue)
+								{
+									<td>@stopTimes.Item1.Value.Hours:@stopTimes.Item1.Value.Minutes</td>
+								}
+
+								<td>@stopTimes.Item2.Name</td>
+							</tr>
+						}
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<div class="floater-content">
+			<div class="h-100 d-block" id="trip-map"></div>
+		</div>
+	</div>
+	<form>
+		<input type="file" id="selectFile" class="hidden" />
+		<label class="select-file" for="selectFile">Select New File</label>
+		<a asp-page="/RouteOptions/Schedule" asp-route-routeId="@Model.RouteId" id="returnToSchedule" />
+		<label class="select-file" for="returnToSchedule">Return to Schedule</label>
+	</form>
+</section>
+
+@section Scripts
+{
+	<script>
+		hideLoader();
+
+		const tripMap = new L.map('trip-map')
+			.setView([@Model.TripStops[0].Item2.Latitude, @Model.TripStops[0].Item2.Longitude], 13);
+		const osmAttribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
+		const osmTileUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+
+		const tiles = L.tileLayer(osmTileUrl, {
+			attribution: osmAttribution
+		});
+
+		tiles.addTo(tripMap);
+		const lines = [];
+
+		@if(Model.TripShapes != null)
+		{
+			foreach (var shapeCoordinate in Model.TripShapes)
+			{
+				@:var point = new L.LatLng(@shapeCoordinate.Latitude, @shapeCoordinate.Longitude);
+				@:lines.push(point);
+			}
+		}
+
+		//Red for now...
+		const drawnLine = L.polyline(lines, { color: "red", weight: 5 }).addTo(tripMap);
+
+
+
+		@*var stopMarker = L.marker([@Model.TripStops[0].Item2.Latitude, @Model.TripStops[0].Item2.Longitude]);
+		stopMarker.addTo(tripMap)
+			.bindPopup('@Model.TripStops[0].Item2.Name')
+			.openPopup();
+
+		stopMarker.on("click", () => {
+			stopMarker.openPopup();
+		});*@
+	</script>
+}
