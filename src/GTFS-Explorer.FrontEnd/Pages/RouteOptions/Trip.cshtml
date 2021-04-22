@@ -5,6 +5,7 @@
 }
 @using GTFS_Explorer.BackEnd.Utilities
 @using GTFS.Entities.Enumerations
+@using GTFS_Explorer.Core.Extensions
 
 <section>
 	<div class="header">
@@ -113,8 +114,7 @@
 	<script>
 		hideLoader();
 
-		const tripMap = new L.map('trip-map')
-			.setView([@Model.TripStops[0].Item1.Latitude, @Model.TripStops[0].Item1.Longitude], 13);
+		const tripMap = new L.map('trip-map');
 		const osmAttribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
 		const osmTileUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 
@@ -123,21 +123,17 @@
 		});
 
 		tiles.addTo(tripMap);
-		const lines = [];
+		const lines = @(
+		"[" + string.Join(", ",
+		Model.TripShapes.Select(y => "[" + y.Latitude + ", " + y.Longitude + "]"))
+		+ "]");
 
-		@if(Model.TripShapes != null)
-		{
-			foreach (var shapeCoordinate in Model.TripShapes)
-			{
-				@:var point = new L.LatLng(@shapeCoordinate.Latitude, @shapeCoordinate.Longitude);
-				@:lines.push(point);
-			}
-		}
+		const colors = ['#@Model.TripColors.Item1.ToRGBHexString()', '#@Model.TripColors.Item2.ToRGBHexString()'];
 
-		//Red for now...
-		const drawnLine = L.polyline(lines, { color: "red", weight: 5 }).addTo(tripMap);
+		const backLine = L.polyline(lines, {color: colors[1], weight: 5}).addTo(tripMap);
+		const foreLine = L.polyline(lines, {color: colors[0], weight: 3}).addTo(tripMap);
 
-
+		tripMap.fitBounds(foreLine.getBounds());
 
 		@*var stopMarker = L.marker([@Model.TripStops[0].Item2.Latitude, @Model.TripStops[0].Item2.Longitude]);
 		stopMarker.addTo(tripMap)

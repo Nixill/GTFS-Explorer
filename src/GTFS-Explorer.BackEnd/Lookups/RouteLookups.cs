@@ -236,13 +236,13 @@ namespace GTFS_Explorer.BackEnd.Lookups
                     {
                         if (stop == stops[1] && i != 1)
                         {
-                            int time = trip.Item2[""].TotalSeconds;
+                            int time = trip.Item2[""].TotalSeconds % 86400;
                             string timeString = NodaTime.LocalTime.FromSecondsSinceMidnight(time).ToString("HH:mm", DateTimeFormatInfo.InvariantInfo);
                             tripRow.Add(timeString);
                         }
                         else if (trip.Item2.ContainsKey(stop))
                         {
-                            int time = trip.Item2[stop].TotalSeconds;
+                            int time = trip.Item2[stop].TotalSeconds % 86400;
                             string timeString = NodaTime.LocalTime.FromSecondsSinceMidnight(time).ToString("HH:mm", DateTimeFormatInfo.InvariantInfo);
                             tripRow.Add(timeString);
                         }
