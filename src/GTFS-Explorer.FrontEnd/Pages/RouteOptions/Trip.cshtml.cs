@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using GTFS.Entities;
+using GTFS.Entities.Enumerations;
 using GTFS_Explorer.BackEnd.SignalR;
 using GTFS_Explorer.Core.Interfaces;
 using GTFS_Explorer.Core.Interfaces.RepoInterfaces;
@@ -19,27 +20,27 @@ namespace GTFS_Explorer.FrontEnd.Pages.RouteOptions
         private readonly IStopsRepository _stopsRepository;
         private readonly ITripMapBuilderService _tripMapBuilderService;
 
-		public TripModel(
-			ITripsRepository tripsRepository,
-			IHubContext<EventsHub> hubContext,
-			IStopsRepository stopsRepository, 
-			ITripMapBuilderService tripMapBuilderService)
-		{
-			_tripsRepository = tripsRepository;
-			_hubContext = hubContext;
-			_stopsRepository = stopsRepository;
-			_tripMapBuilderService = tripMapBuilderService;
-		}
+        public TripModel(
+            ITripsRepository tripsRepository,
+            IHubContext<EventsHub> hubContext,
+            IStopsRepository stopsRepository,
+            ITripMapBuilderService tripMapBuilderService)
+        {
+            _tripsRepository = tripsRepository;
+            _hubContext = hubContext;
+            _stopsRepository = stopsRepository;
+            _tripMapBuilderService = tripMapBuilderService;
+        }
 
-		[BindProperty(SupportsGet = true)]
+        [BindProperty(SupportsGet = true)]
         public DateTime TripDate { get; set; } = DateTime.Now;
         public string RouteId { get; set; }
-		public string TripId { get; set; }
-		public Trip Trip { get; set; }
-		public List<Tuple<TimeOfDay?, Stop>> TripStops { get; set; }
-		public List<Coordinate> TripShapes { get; set; }
+        public string TripId { get; set; }
+        public Trip Trip { get; set; }
+        public List<Tuple<Stop, TimeOfDay?, TimeOfDay?, bool, PickupType, DropOffType>> TripStops { get; set; }
+        public List<Coordinate> TripShapes { get; set; }
 
-		public async Task OnGetAsync(string routeId, string tripId, DateTime? tripDate)
+        public async Task OnGetAsync(string routeId, string tripId, DateTime? tripDate)
         {
             if (tripDate.HasValue)
                 TripDate = (DateTime)tripDate;
@@ -50,17 +51,38 @@ namespace GTFS_Explorer.FrontEnd.Pages.RouteOptions
             TripId = tripId;
             Trip = _tripsRepository.GetTripById(TripId);
             TripStops = _stopsRepository.GetStopsFromTrip(TripId);
-			TripShapes = _tripMapBuilderService.GetAllTripShapes(Trip);
-		}
+            TripShapes = _tripMapBuilderService.GetAllTripShapes(Trip);
+        }
 
-  //      public IActionResult OnPost()
-		//{
-  //          return RedirectToPage(new
-  //          {
-  //              routeId = RouteId,
-  //              tripId = TripId,
-  //              tripDate = TripDate.ToString("yyyy-MM-dd")
-  //          });
-		//}
+        //      public IActionResult OnPost()
+        //{
+        //          return RedirectToPage(new
+        //          {
+        //              routeId = RouteId,
+        //              tripId = TripId,
+        //              tripDate = TripDate.ToString("yyyy-MM-dd")
+        //          });
+        //}
+
+        public string PickupDropoffRule(PickupType pick, DropOffType drop)
+        => (((int)pick) * 4 + ((int)drop)) switch
+        {
+            1 => "Pickup only",
+            2 => "Call agency for drop-off",
+            3 => "Ask driver for drop-off",
+            4 => "Drop-off only",
+            5 => "Timing only",
+            6 => "No pickup, call agency for drop-off",
+            7 => "No pickup, ask driver for drop-off",
+            8 => "Call agency for pickup",
+            9 => "No drop-off, call agency for pickup",
+            10 => "Call agency",
+            11 => "Ask driver for drop-off, call agency for pickup",
+            12 => "Ask driver for pickup",
+            13 => "No drop-off, ask driver for pickup",
+            14 => "Call agency for drop-off, ask driver for pickup",
+            15 => "Ask the driver",
+            _ => ""
+        };
     }
 }

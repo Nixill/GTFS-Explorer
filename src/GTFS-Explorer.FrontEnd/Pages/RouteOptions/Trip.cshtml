@@ -3,6 +3,8 @@
 @{
 	ViewData["Title"] = "Trip";
 }
+@using GTFS_Explorer.BackEnd.Utilities
+@using GTFS.Entities.Enumerations
 
 <section>
 	<div class="header">
@@ -51,14 +53,43 @@
 						@foreach (var stopTimes in Model.TripStops)
 						{
 							<tr class="mouse-pointer"
-								onclick="location.href = '@(Url.Page("/StopOptions/StopSummary", new { stopId = stopTimes.Item2.Id }))'">
+								onclick="location.href = '@(Url.Page("/StopOptions/StopSummary", new { stopId = stopTimes.Item1.Id }))'">
 
-								@if (stopTimes.Item1.HasValue)
+								@if (stopTimes.Item2.HasValue)
 								{
-									<td>@stopTimes.Item1.Value.Hours:@stopTimes.Item1.Value.Minutes</td>
+									if (stopTimes.Item3.HasValue && stopTimes.Item2.Value != stopTimes.Item3.Value)
+									{
+										<td>@ExtraUtils.TimeOfDayToString(stopTimes.Item2.Value)<br />@ExtraUtils.TimeOfDayToString(stopTimes.Item3.Value)</td>
+									}
+									else
+									{
+										<td>@ExtraUtils.TimeOfDayToString(stopTimes.Item2.Value)</td>
+									}
+								}
+								else if (stopTimes.Item3.HasValue)
+								{
+									<td>@ExtraUtils.TimeOfDayToString(stopTimes.Item3.Value)</td>
+								}
+								else
+								{
+									<td></td>
 								}
 
-								<td>@stopTimes.Item2.Name</td>
+								<td>
+									@if (stopTimes.Item4)
+									{
+										<strong>@stopTimes.Item1.Name</strong>
+									}
+									else
+									{
+										@:@stopTimes.Item1.Name
+									}
+
+									@if (stopTimes.Item5 != PickupType.Regular || stopTimes.Item6 != DropOffType.Regular)
+									{
+										<br />@Model.PickupDropoffRule(stopTimes.Item5, stopTimes.Item6)
+									}
+								</td>
 							</tr>
 						}
 					</tbody>
@@ -83,7 +114,7 @@
 		hideLoader();
 
 		const tripMap = new L.map('trip-map')
-			.setView([@Model.TripStops[0].Item2.Latitude, @Model.TripStops[0].Item2.Longitude], 13);
+			.setView([@Model.TripStops[0].Item1.Latitude, @Model.TripStops[0].Item1.Longitude], 13);
 		const osmAttribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
 		const osmTileUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 

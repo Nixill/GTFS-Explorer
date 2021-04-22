@@ -16,7 +16,7 @@ namespace GTFS_Explorer.BackEnd.Lookups
             var trips = feed.Trips.Where(x => x.RouteId == route);
 
             var shapeIDs = trips.Select(x => x.ShapeId).Distinct();
-            var shapeless = trips.Where(x => x.ShapeId == null);
+            var shapeless = trips.Where(x => x.ShapeId == null || x.ShapeId == "");
 
             List<List<Coordinate>> ret = new List<List<Coordinate>>();
 

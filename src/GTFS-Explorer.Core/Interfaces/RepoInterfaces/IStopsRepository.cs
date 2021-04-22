@@ -11,6 +11,6 @@ namespace GTFS_Explorer.Core.Interfaces.RepoInterfaces
         IEnumerable<Stop> GetStopOrder(string route, DirectionType? direction = null);
         Stop GetStopById(string stopId);
         List<Stop> GetStopList();
-        List<Tuple<TimeOfDay?, Stop>> GetStopsFromTrip(string tripId);
+        List<Tuple<Stop, TimeOfDay?, TimeOfDay?, bool, PickupType, DropOffType>> GetStopsFromTrip(string tripId);
     }
 }

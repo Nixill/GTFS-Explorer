@@ -6,6 +6,7 @@
 
 @using GTFS_Explorer.Core.Models.Structs; 
 @using NodaTime
+@using GTFS_Explorer.BackEnd.Utilities
 
 <link rel="stylesheet" href="~/css/style.css" />
 <section>
@@ -111,7 +112,7 @@
 									</h6>
 								<ul>
 									<li class="text-white">
-										The route runs @Model.DurationToTimeOfDay(stats.StartTime) to @Model.DurationToTimeOfDay(stats.EndTime)
+										The route runs @ExtraUtils.DurationToTimeOfDay(stats.StartTime) to @ExtraUtils.DurationToTimeOfDay(stats.EndTime)
 									</li>
 									<li class="text-white">
 										Trips start at @string.Join(", ", stats.StartStops)
@@ -120,9 +121,9 @@
 										Trips end at @string.Join(", ", stats.EndStops)
 									</li>
 									<li class="text-white">
-										Trips are @Model.DurationToLengthString(stats.ShortestTrip) to
-										@Model.DurationToLengthString(stats.LongestTrip) long
-										(@Model.DurationToLengthString(stats.AverageTrip) on average).
+										Trips are @ExtraUtils.DurationToLengthString(stats.ShortestTrip) to
+										@ExtraUtils.DurationToLengthString(stats.LongestTrip) long
+										(@ExtraUtils.DurationToLengthString(stats.AverageTrip) on average).
 									</li>
 									@if (stats.GenericDay) {
 										<li class="text-danger">
