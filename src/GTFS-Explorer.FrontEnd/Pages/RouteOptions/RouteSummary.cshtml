@@ -24,7 +24,7 @@
         </div>
     </div>
     <div class="d-flex align-items-center">
-        <div class="container floater"
+        <div class="container floater overflow-vscroll"
              style="height: 560px;">
             <div class="row ml-2 mt-3 mr-2 d-flex justify-content-center">
                 <div class="col-md-5 p-md-5">
@@ -65,9 +65,6 @@
 								See Stats
 							</button>
 						</form>
-					</div>
-                </div>
-				<div class="row">
 					@{
 						int size = Model.StatsDictionary.Keys.Count;
 						int i = 0;
@@ -76,7 +73,7 @@
 							RouteStats stats;
 							Model.StatsDictionary.TryGetValue(direction, out stats);
 								<div class="d-block p-lg-3">
-									<h6 class="text-white">
+									<h6 class="text-black">
 										@{
 											if (size == 1)
 											{
@@ -111,16 +108,16 @@
 										}
 									</h6>
 								<ul>
-									<li class="text-white">
+									<li class="text-black">
 										The route runs @ExtraUtils.DurationToTimeOfDay(stats.StartTime) to @ExtraUtils.DurationToTimeOfDay(stats.EndTime)
 									</li>
-									<li class="text-white">
+									<li class="text-black">
 										Trips start at @string.Join(", ", stats.StartStops)
 									</li>
-									<li class="text-white">
+									<li class="text-black">
 										Trips end at @string.Join(", ", stats.EndStops)
 									</li>
-									<li class="text-white">
+									<li class="text-black">
 										Trips are @ExtraUtils.DurationToLengthString(stats.ShortestTrip) to
 										@ExtraUtils.DurationToLengthString(stats.LongestTrip) long
 										(@ExtraUtils.DurationToLengthString(stats.AverageTrip) on average).
@@ -134,8 +131,8 @@
 							</div>
 							i++;
 						}
-					}
-				</div>
+					}					</div>
+                </div>
             </div>
         </div>
     </div>

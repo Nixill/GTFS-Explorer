@@ -135,13 +135,22 @@
 
 		tripMap.fitBounds(foreLine.getBounds());
 
-		@*var stopMarker = L.marker([@Model.TripStops[0].Item2.Latitude, @Model.TripStops[0].Item2.Longitude]);
-		stopMarker.addTo(tripMap)
-			.bindPopup('@Model.TripStops[0].Item2.Name')
-			.openPopup();
+		const stops = @Html.Raw(
+			"[" + string.Join(", ",
+			Model.TripStops.Select(x => 
+			  "{name: \"" + x.Item1.Name.Replace("\\", "\\\\").Replace("\"", "\\\"") + "\", "
+				+ "coords: [" + x.Item1.Latitude + ", " + x.Item1.Longitude + "], "
+				+ "rules: \"" + Model.PickupDropoffRule(x.Item5, x.Item6) + "\"}")) + "]"
+		)
 
-		stopMarker.on("click", () => {
-			stopMarker.openPopup();
-		});*@
+		stops.forEach(function(item, index) {
+			var stopMarker = L.marker(item.coords);
+			stopMarker.addTo(tripMap)
+				.bindPopup(item.name);
+
+			stopMarker.on("click", () => {
+				stopMarker.openPopup();
+			});
+		});
 	</script>
 }

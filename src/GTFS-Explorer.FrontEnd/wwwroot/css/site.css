@@ -24,6 +24,11 @@ a {
   border-color: #1861ac;
 }
 
+.overflow-vscroll {
+  overflow-y: scroll;
+  max-height: 100%;
+}
+
 /* Sticky footer styles
 -------------------------------------------------- */
 html {
