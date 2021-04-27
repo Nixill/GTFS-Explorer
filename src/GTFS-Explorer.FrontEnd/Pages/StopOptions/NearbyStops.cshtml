@@ -12,10 +12,30 @@
             <a class="active" asp-page="/StopOptions/NearbyStops" asp-route-stopId="@Model.StopId">Nearby Stops</a>
         </div>
     </div>
-    <div class="floater">
-        <div class="floater-content">
-        </div>
-    </div>
+	<div class="floater d-flex justify-content-around">
+		<div class="floater-content"
+             id="nearby-stops-map"></div>
+		<div class="floater-background-color col-lg-4">
+			<table class="table table-hover">
+                <thead>
+                    <tr><th>Nearby Stops</th></tr>
+                </thead>
+                <tbody>
+                    @foreach (var stop in Model.NearbyStops)
+					{
+					<tr>
+						<td onclick="location.href = '@(Url.Page("/StopOptions/StopSummary", new { stopId = stop.Id }))'">
+                            @stop.Name
+                        </td>
+						<td onclick="location.href = '@(Url.Page("/StopOptions/StopSummary", new { stopId = stop.Id }))'">
+                            @stop.Id
+                        </td>
+					</tr>
+					}
+                </tbody>
+            </table>
+		</div>
+	</div>
     <form>
         <input type="file" id="selectFile" class="hidden" />
         <label class="select-file" for="selectFile">Select New File</label>
@@ -23,3 +43,47 @@
         <label class="select-file" for="returnToStops">Return to Stops</label>
     </form>
 </section>
+
+@section Scripts 
+{
+	<script>
+		hideLoader();
+
+		const nearbyStopsMap = L.map('nearby-stops-map').setView([51.5, -0.09], 13);
+		const osmAttribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
+		const osmTileUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+
+		const tiles = L.tileLayer(osmTileUrl, {
+			attribution: osmAttribution
+		});
+
+		tiles.addTo(nearbyStopsMap);
+
+		var marker;
+		let title;
+		const markers = [];
+
+		@foreach(var stop in Model.NearbyStops)
+		{
+			@:title = '@stop.Name.Replace("'", "\'")';
+			@:marker = L.marker([@stop.Latitude, @stop.Longitude]);
+
+			<text>
+			markers.push(marker);
+			marker.addEventListener('click', () => {
+				location.href = '@(Url.Page("/StopOptions/StopSummary", new { stopId = stop.Id }))';
+			});
+			</text>
+		}
+
+		markers.forEach((marker) => {
+			marker.addEventListener('mouseover', function () {
+				marker.openPopup();
+			});
+			marker.addEventListener('mouseout', function () {
+				marker.closePopup();
+			});
+			marker.addTo(nearbyStopsMap)
+		});
+	</script>
+}

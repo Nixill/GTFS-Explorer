@@ -4,6 +4,7 @@ using GTFS_Explorer.BackEnd.Lookups;
 using GTFS_Explorer.BackEnd.Readers;
 using GTFS_Explorer.Core.Interfaces.RepoInterfaces;
 using Nixill.GTFS;
+using NodaTime;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -65,5 +66,11 @@ namespace GTFS_Explorer.BackEnd.Repositiories
 
         public List<Tuple<Stop, TimeOfDay?, TimeOfDay?, bool, PickupType, DropOffType>> GetStopsFromTrip(string tripId)
             => TripLookups.GetStopsFromTrip(_reader.Feed, tripId);
-    }
+
+        public IEnumerable<StopTime> GetStopSchedule(string stopId, string routeId, LocalDate day)
+            => StopLookups.GetStopSchedule(_reader.Feed, stopId, routeId, day);
+
+        public IEnumerable<Stop> GetNearbyStops(string stopId)
+            => StopLookups.GetNearbyStops(_reader.Feed, stopId);
+	}
 }

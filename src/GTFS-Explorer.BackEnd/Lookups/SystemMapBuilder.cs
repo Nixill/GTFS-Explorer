@@ -11,10 +11,10 @@ namespace GTFS_Explorer.BackEnd.Lookups
 {
     public class SystemMapBuilder
     {
-        public bool DoShapelessTripsExist(GTFSFeed feed) =>
+        public static bool DoShapelessTripsExist(GTFSFeed feed) =>
             feed.Trips.Any(tp => tp.ShapeId == null || tp.ShapeId == "");
 
-        public IEnumerable<Tuple<Tuple<Color, Color>, IEnumerable<Coordinate>>> GetRouteShapeLines(GTFSFeed feed) =>
+        public static IEnumerable<Tuple<Tuple<Color, Color>, IEnumerable<Coordinate>>> GetRouteShapeLines(GTFSFeed feed) =>
             feed.Routes.SelectMany(rt =>
                 feed.Trips
                     .Where(tp => rt.Id == tp.RouteId && tp.ShapeId != null && tp.ShapeId != "")
@@ -28,7 +28,7 @@ namespace GTFS_Explorer.BackEnd.Lookups
                     ))
             );
 
-        public IEnumerable<Tuple<Tuple<Color, Color>, IEnumerable<Coordinate>>> GetRouteStopPatternLines(GTFSFeed feed) =>
+        public static IEnumerable<Tuple<Tuple<Color, Color>, IEnumerable<Coordinate>>> GetRouteStopPatternLines(GTFSFeed feed) =>
             feed.Routes.SelectMany(rt =>
                 feed.Trips
                     .Where(tp => rt.Id == tp.RouteId && (tp.ShapeId == null || tp.ShapeId == ""))
@@ -42,7 +42,7 @@ namespace GTFS_Explorer.BackEnd.Lookups
                     ))
             );
 
-        public IEnumerable<Stop> GetAllStops(GTFSFeed feed) =>
+        public static IEnumerable<Stop> GetAllStops(GTFSFeed feed) =>
             feed.Stops.Where(st =>
                 (st.LocationType == LocationType.Stop && st.ParentStation == "")
                 || st.LocationType == LocationType.Station
