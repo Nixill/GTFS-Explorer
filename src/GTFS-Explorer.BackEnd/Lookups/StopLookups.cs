@@ -60,7 +60,7 @@ namespace GTFS_Explorer.BackEnd.Lookups
                 if (GIS.MetersBetween(st.Latitude, st.Longitude, stop.Latitude, stop.Longitude) > 1000) return false;
 
                 return true;
-            }).OrderBy(st => GIS.MetersBetween(st.Latitude, st.Longitude, stop.Latitude, stop.Longitude)).Skip(1).Limit(10);
+            }).OrderBy(st => GIS.MetersBetween(st.Latitude, st.Longitude, stop.Latitude, stop.Longitude)).Skip(1).Take(10);
 
             // Adjacent stops on lines that serve it
             var adjacentStops = GetAdjacentStops(feed, stopId).Distinct().Select(id => feed.Stops.Get(id));
@@ -76,10 +76,13 @@ namespace GTFS_Explorer.BackEnd.Lookups
 
             foreach (StopTime time in orderedStopTimes)
             {
-                if (lastTime != null)
+                if (lastTime != null && lastTime.TripId == time.TripId)
                 {
-                    if (lastTime.TripId == time.TripId && lastTime.StopId == stopId) yield return time.StopId;
+                    if (lastTime.StopId == stopId) yield return time.StopId;
+                    if (time.StopId == stopId) yield return lastTime.StopId;
                 }
+
+                lastTime = time;
             }
         }
 
@@ -91,7 +94,11 @@ namespace GTFS_Explorer.BackEnd.Lookups
 
         //     var orderedStopTimes = feed.StopTimes
         //         .Where(x => x.StopId == stopId)
-        //         .OrderBy(stm => new Tuple<string, TimeOfDay>(routes[stm.TripId].Id, stm.ArrivalTime.HasValue ? stm.ArrivalTime.Value : TimeOfDay.FromTotalSeconds(1000000)));
+        //         .OrderBy(stm => new Tuple<string, TimeOfDay>(
+        //             routes[stm.TripId].Id,
+        //             stm.ArrivalTime.HasValue ? stm.ArrivalTime.Value : TimeOfDay.FromTotalSeconds(1000000)));
+
+
         // }
     }
 }
