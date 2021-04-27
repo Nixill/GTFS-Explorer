@@ -36,6 +36,7 @@ namespace GTFS_Explorer.BackEnd
             services.AddScoped<IScheduleBuilderService, ScheduleBuilderService>();
             services.AddScoped<IRouteMapBuilderService, RouteMapBuilderService>();
             services.AddScoped<ITripMapBuilderService, TripMapBuilderService>();
+            services.AddScoped<ISystemMapBuilderService, SystemMapBuilderService>();
             services.AddSignalR();
 
             return services;

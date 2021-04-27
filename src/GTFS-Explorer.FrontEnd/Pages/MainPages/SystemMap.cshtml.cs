@@ -1,38 +1,42 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Threading.Tasks;
 using GTFS.Entities;
+using GTFS_Explorer.BackEnd.SignalR;
 using GTFS_Explorer.Core.Interfaces;
 using GTFS_Explorer.Core.Interfaces.RepoInterfaces;
 using GTFS_Explorer.Core.Models.Structs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.SignalR;
 
 namespace GTFS_Explorer.FrontEnd.Pages.MainPages
 {
     public class SystemMapModel : PageModel
     {
         private readonly IRoutesRepository _routesRepository;
-        private readonly IRouteMapBuilderService _routeMapBuilderService;
+        private readonly ISystemMapBuilderService _systemMapBuilderService;
+        private readonly IHubContext<EventsHub> _hubContext;
 
-        public SystemMapModel(
-            IRoutesRepository routesRepository,
-            IRouteMapBuilderService routeMapBuilderService)
-        {
-            _routesRepository = routesRepository;
-            _routeMapBuilderService = routeMapBuilderService;
+		public SystemMapModel(
+			IRoutesRepository routesRepository,
+			ISystemMapBuilderService systemMapBuilderService, 
+            IHubContext<EventsHub> hubContext)
+		{
+			_routesRepository = routesRepository;
+			_systemMapBuilderService = systemMapBuilderService;
+            _hubContext = hubContext;
             InitRoutes();
         }
 
-        public List<Route> Routes { get; set; } = new List<Route>();
-        public List<List<Coordinate>> RouteShapes { get; set; } = new List<List<Coordinate>>();
+		public List<Route> Routes { get; set; } = new List<Route>();
+		public IEnumerable<Tuple<Tuple<Color, Color>, IEnumerable<Coordinate>>> ShapeLines { get; set; }
 
-        public void OnGet()
+		public async Task OnGetAsync()
         {
-            List<List<List<Coordinate>>> allShapes = new List<List<List<Coordinate>>>();
-
-            foreach (var route in Routes)
-            {
-                allShapes.Add(_routeMapBuilderService.GetShapes(route.Id));
-            }
+            await _hubContext.Clients.All.SendAsync("loading-file");
+            ShapeLines = _systemMapBuilderService.GetRouteShapeLines();
         }
 
         private void InitRoutes()

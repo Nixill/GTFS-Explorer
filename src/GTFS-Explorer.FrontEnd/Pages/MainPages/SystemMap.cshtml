@@ -1,31 +1,37 @@
 ﻿@page
 @model GTFS_Explorer.FrontEnd.Pages.MainPages.SystemMapModel
 @{
-    ViewData["Title"] = "SystemMap";
+	ViewData["Title"] = "SystemMap";
 }
 
+@using GTFS_Explorer.Core.Models.Structs;
+@using System.Drawing;
+@using GTFS_Explorer.Core.Extensions
+
 <section>
-    <div class="header">
-        <div class="header-right">
-            <a asp-page="/MainPages/Routes">Routes</a>
-            <a asp-page="/MainPages/Stops">Stops</a>
-            <a class="active" asp-page="/MainPages/SystemMap">Map</a>
-        </div>
-    </div>
-    <div class="container">
-        <div id="system-map"></div>
-    </div>
-    <form>
-        <input type="file" class="hidden" id="selectFile" />
-        <label class="select-file" for="selectFile">Select New File</label>
-    </form>
+	<div class="header">
+		<div class="header-right">
+			<a asp-page="/MainPages/Routes">Routes</a>
+			<a asp-page="/MainPages/Stops">Stops</a>
+			<a class="active" asp-page="/MainPages/SystemMap">Map</a>
+		</div>
+	</div>
+	<div class="container">
+		<div id="system-map"></div>
+	</div>
+	<form>
+		<input type="file" class="hidden" id="selectFile" />
+		<label class="select-file" for="selectFile">Select New File</label>
+	</form>
 </section>
 
 @section Scripts
 {
-    <script>
-        hideLoader();
-		const systemMap = L.map('system-map').setView([51.5, -0.09], 13);
+	<script>
+		hideLoader();
+		const systemMap = L.map('system-map')
+			.setView([@Model.ShapeLines.ToList()[0].Item2.ToList()[0].Latitude,
+				@Model.ShapeLines.ToList()[0].Item2.ToList()[0].Longitude], 11);
 		const osmAttribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
 		const osmTileUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 
@@ -35,10 +41,39 @@
 
 		tiles.addTo(systemMap);
 
-		const marker = L.marker([51.5, -0.09])
+		//const marker = L.marker([51.5, -0.09])
 
-		marker.addTo(systemMap)
-			.bindPopup('A pretty CSS3 popup.<br> Easily customizable.')
-			.openPopup();
-    </script>
+		let lines;
+		let colors;
+		let drawnLines = [];
+
+
+		@foreach (Tuple<Tuple<Color, Color>, IEnumerable<Coordinate>> item in Model.ShapeLines)
+		{
+			//ret is a single pair of polylines to be drawn atop one another to look like a single line with an outline
+			Tuple<Color, Color> colors = item.Item1;
+			Color foreColor = colors.Item1; // This is the color the thinner, second line should be drawn with
+			Color backColor = colors.Item2; // This is the color the thicker, first line should be drawn with
+			IEnumerable<Coordinate> coords = item.Item2; // This is the list of coordinates of the polyline
+
+			<text>
+			lines = @(
+				"[" + string.Join(", ",
+				coords.Select(y => "[" + y.Latitude + ", " + y.Longitude + "]"))
+				+ "]");
+
+			colors = ['#@foreColor.ToRGBHexString()', '#@backColor.ToRGBHexString()'];
+			drawnLines.push(L.polyline(lines, { color: colors[1], weight: 5 }));
+			drawnLines.push(L.polyline(lines, { color: colors[0], weight: 3 }));
+			</text>
+		}
+
+		drawnLines.forEach((line) => {
+			line.addTo(systemMap);
+		});
+
+		//marker.addTo(systemMap)
+		//	.bindPopup('A pretty CSS3 popup.<br> Easily customizable.')
+		//	.openPopup();
+	</script>
 }
