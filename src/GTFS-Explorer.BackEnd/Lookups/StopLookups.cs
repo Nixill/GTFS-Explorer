@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using GTFS;
 using GTFS.Entities;
+using GTFS_Explorer.BackEnd.Extensions;
+using Nixill.Collections;
 using NodaTime;
 
 namespace GTFS_Explorer.BackEnd.Lookups
@@ -49,8 +51,8 @@ namespace GTFS_Explorer.BackEnd.Lookups
             var stopsWithin1km = feed.Stops.Where(st =>
             {
                 if (
-                    st.Latitude < minLon ||
-                    st.Latitude > maxLon ||
+                    st.Latitude < minLat ||
+                    st.Latitude > maxLat ||
                     st.Longitude < minLon ||
                     st.Longitude > maxLon
                 ) return false;
@@ -58,7 +60,7 @@ namespace GTFS_Explorer.BackEnd.Lookups
                 if (GIS.MetersBetween(st.Latitude, st.Longitude, stop.Latitude, stop.Longitude) > 1000) return false;
 
                 return true;
-            });
+            }).OrderBy(st => GIS.MetersBetween(st.Latitude, st.Longitude, stop.Latitude, stop.Longitude)).Skip(1).Limit(10);
 
             // Adjacent stops on lines that serve it
             var adjacentStops = GetAdjacentStops(feed, stopId).Distinct().Select(id => feed.Stops.Get(id));
@@ -80,5 +82,16 @@ namespace GTFS_Explorer.BackEnd.Lookups
                 }
             }
         }
+
+        // public static Dictionary<Route, IEnumerable<StopTime>> GetStopSchedule(GTFSFeed feed, string stopId, LocalDate date)
+        // {
+        //     GeneratorDictionary<string, Route> routes = new GeneratorDictionary<string, Route>(
+        //         new FuncGenerator<string, Route>(x => feed.Routes.Get(feed.Trips.Get(x).RouteId))
+        //     );
+
+        //     var orderedStopTimes = feed.StopTimes
+        //         .Where(x => x.StopId == stopId)
+        //         .OrderBy(stm => new Tuple<string, TimeOfDay>(routes[stm.TripId].Id, stm.ArrivalTime.HasValue ? stm.ArrivalTime.Value : TimeOfDay.FromTotalSeconds(1000000)));
+        // }
     }
 }
