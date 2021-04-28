@@ -54,19 +54,14 @@
 			}
 		</div>
         <br>
-        <div class="d-flex justify-content-around">
-            <form method="post">
-                <button class="tablinks" 
-                        type="submit" 
-                        asp-page="/MainPages/Routes">Routes</button>
-                <button class="tablinks" 
-                        type="submit" 
-                        asp-page="/MainPages/Stops">Stops</button>
-                <button class="tablinks" 
-                        type="submit" 
-                        asp-page="/MainPages/SystemMap">System Map</button>
-            </form>
-        </div>
+		<div class="d-flex justify-content-around">
+			<a class="tablinks"
+				asp-page="/MainPages/Routes">Routes</a>
+			<a class="tablinks"
+				asp-page="/MainPages/Stops">Stops</a>
+			<a class="tablinks"
+				asp-page="/MainPages/SystemMap">System Map</a>
+		</div>
     </div>
 
     <form>
@@ -74,6 +69,33 @@
         <label class="select-file" for="selectFile">Select New File</label>
     </form>
 </section>
+
+<style>
+	a:link {
+		text-decoration: none !important;
+	}
+
+	.tablinks {
+	background-color: #ECA227;
+	float: none;
+	border: none;
+	margin: 10px;
+	color: white;
+	text-align: center;
+	outline: none;
+	cursor: pointer;
+	padding: 20px;
+	transition: 0.3s;
+	text-decoration: none;
+	border-radius: 10px;
+	text-decoration: none;
+	-webkit-border-top-left-radius: 15px -webkit-border-top-right-radius:15px;
+	-moz-border-radius-topleft: 15px;
+	-moz-border-radius-topright: 15px;
+	border-top-left-radius: 15px;
+	border-top-right-radius: 15px;
+	}
+</style>
 
 @section Scripts
 {

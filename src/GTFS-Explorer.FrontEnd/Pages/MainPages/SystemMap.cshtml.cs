@@ -27,7 +27,6 @@ namespace GTFS_Explorer.FrontEnd.Pages.MainPages
 			_routesRepository = routesRepository;
 			_systemMapBuilderService = systemMapBuilderService;
             _hubContext = hubContext;
-            InitRoutes();
         }
 
 		public List<Route> Routes { get; set; } = new List<Route>();
@@ -36,6 +35,7 @@ namespace GTFS_Explorer.FrontEnd.Pages.MainPages
 		public async Task OnGetAsync()
         {
             await _hubContext.Clients.All.SendAsync("loading-file");
+            InitRoutes();
             ShapeLines = _systemMapBuilderService.GetRouteShapeLines();
         }
 

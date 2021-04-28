@@ -1,8 +1,10 @@
 ﻿@page "{stopId}"
 @model GTFS_Explorer.FrontEnd.Pages.StopOptions.StopScheduleModel
 @{
-    ViewData["Title"] = "StopSchedule";
+	ViewData["Title"] = "StopSchedule";
 }
+
+@using GTFS.Entities; 
 
 <section>
     <div class="header">
@@ -12,9 +14,90 @@
             <a asp-page="/StopOptions/NearbyStops" asp-route-stopId="@Model.StopId">Nearby Stops</a>
         </div>
     </div>
-    <div class="floater">
-        <div class="floater-content">
-        </div>
+    <div class="floater d-flex justify-content-around">
+		<div class="floater-content col-lg-5 scrollbar"
+			 style="padding:0;"
+			 id="style-1">
+			<table class="table table-hover floater-background-color">
+				<thead>
+					<tr>
+						<th>
+							Routes That Stop here
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					@foreach (var route in Model.RoutesServingStop)
+					{
+						<tr class="mouse-pointer"
+							onclick="location.href = '@(Url.Page("/RouteOptions/RouteSummary", new { routeId = route.Id }))'">
+							<td>@route.LongName</td>
+						</tr>
+					}
+				</tbody>
+			</table>
+		</div>
+		<div class="col-lg-6" style="padding:0;">
+			<h4 class="text-center text-white">Scheduled Arrivals</h4>
+			<form class="d-block">
+				<input type="date"
+					   class="form-control text-center"
+					   asp-for="ScheduleDate" />
+				@Html.HiddenFor(m => m.StopId)
+				<div class="text-center">
+					<button type="submit"
+							class="btn button submit"
+							style="margin-left: 10px">
+						See Schedule
+					</button>
+				</div>
+			</form>
+			<div class="text-center floater-background-color scrollbar overflow-auto"
+				 id="style-1"
+				 style="height:59%;">
+				<table class="table">
+					<thead>
+						<tr>
+							@foreach (var route in Model.StopSchedule.Keys)
+							{
+								<th class="mouse-pointer"
+									onclick="location.href='@(Url.Page("/RouteOptions/RouteSummary", new { routeId = route.Id}))'">
+									@route.LongName
+								</th>
+							}
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							@foreach (var keyValuePair in Model.StopSchedule)
+							{
+							List<StopTime> stopTimes = keyValuePair.Value;
+							<td style="padding: 0">
+							<table class="table table-hover scrollbar overflow-auto"
+									id="style-1">
+								<tbody>
+									@foreach (var stopTime in stopTimes)
+									{
+									<tr>
+										<td class="mouse-pointer"
+											onclick="location.href='@(Url.Page("/RouteOptions/Trip", 
+																	new { 
+																		routeId = keyValuePair.Key.Id,
+																		tripId = stopTime.TripId
+																	}))'">
+											@stopTime.ArrivalTime
+										</td>
+									</tr>	
+									}
+									</tbody>
+							</table>
+							</td>
+							}
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
     </div>
     <form>
         <input type="file" id="selectFile" class="hidden" />

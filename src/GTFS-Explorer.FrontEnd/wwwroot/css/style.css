@@ -161,15 +161,15 @@ p {
     background-color: transparent;
     font-family: sans-serif;
     color: white;
-    margin: 45px auto;
-    padding-top: 50px;
+    margin: 30px auto;
+    padding-top: 25px;
     padding-right: 30px;
     padding-bottom: 50px;
     padding-left: 80px;
 }
 
 /* Style the buttons that are used to open the tab content */
-.tab button {
+.tab a {
     background-color: #ECA227;
     float: none;
     border: none;

@@ -28,7 +28,6 @@
 @section Scripts
 {
 	<script>
-		hideLoader();
 		const systemMap = L.map('system-map')
 			.setView([@Model.ShapeLines.ToList()[0].Item2.ToList()[0].Latitude,
 				@Model.ShapeLines.ToList()[0].Item2.ToList()[0].Longitude], 11);
@@ -46,7 +45,6 @@
 		let lines;
 		let colors;
 		let drawnLines = [];
-
 
 		@foreach (Tuple<Tuple<Color, Color>, IEnumerable<Coordinate>> item in Model.ShapeLines)
 		{
@@ -68,8 +66,17 @@
 			</text>
 		}
 
+		let i = 0;
 		drawnLines.forEach((line) => {
 			line.addTo(systemMap);
+
+			//Hide Loader when finished loading lines
+			if (i === drawnLines.length-1) {
+				//$('#loader').css('display', 'none');
+				//$('#fader').css('display', 'none');
+				//$('#loader-wrapper').css('display', 'none');
+			}
+			i++;
 		});
 
 		//marker.addTo(systemMap)

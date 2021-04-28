@@ -16,7 +16,8 @@
 		<div class="floater-content"
              id="nearby-stops-map"></div>
 		<div class="floater-background-color col-lg-4 scrollbar" 
-			 id="style-1">
+			 id="style-1"
+			 style="padding:0;">
 			<table class="table table-hover">
                 <thead>
                     <tr><th>Nearby Stops</th></tr>
@@ -53,7 +54,7 @@
 		hideLoader();
 
 		const nearbyStopsMap = L.map('nearby-stops-map')
-			.setView([@Model.NearbyStops.ToList()[0].Latitude, @Model.NearbyStops.ToList()[0].Longitude], 10);
+			.setView([@Model.NearbyStops.ToList()[0].Latitude, @Model.NearbyStops.ToList()[0].Longitude], 15);
 		const osmAttribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
 		const osmTileUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 
