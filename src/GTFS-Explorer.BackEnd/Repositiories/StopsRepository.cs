@@ -72,5 +72,8 @@ namespace GTFS_Explorer.BackEnd.Repositiories
 
         public IEnumerable<Stop> GetNearbyStops(string stopId)
             => StopLookups.GetNearbyStops(_reader.Feed, stopId);
-	}
+
+        public Dictionary<Route, List<StopTime>> GetStopSchedule(string stopId, LocalDate date)
+            => StopLookups.GetStopSchedule(_reader.Feed, stopId, date);
+    }
 }

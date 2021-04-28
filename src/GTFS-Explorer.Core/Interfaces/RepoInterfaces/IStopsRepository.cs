@@ -15,5 +15,6 @@ namespace GTFS_Explorer.Core.Interfaces.RepoInterfaces
         List<Tuple<Stop, TimeOfDay?, TimeOfDay?, bool, PickupType, DropOffType>> GetStopsFromTrip(string tripId);
         IEnumerable<StopTime> GetStopSchedule(string stopId, string routeId, LocalDate day);
         IEnumerable<Stop> GetNearbyStops(string stopId);
+        Dictionary<Route, List<StopTime>> GetStopSchedule(string stopId, LocalDate date);
     }
 }

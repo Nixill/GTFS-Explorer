@@ -15,7 +15,8 @@
 	<div class="floater d-flex justify-content-around">
 		<div class="floater-content"
              id="nearby-stops-map"></div>
-		<div class="floater-background-color col-lg-4">
+		<div class="floater-background-color col-lg-4 scrollbar" 
+			 id="style-1">
 			<table class="table table-hover">
                 <thead>
                     <tr><th>Nearby Stops</th></tr>
@@ -24,10 +25,12 @@
                     @foreach (var stop in Model.NearbyStops)
 					{
 					<tr>
-						<td onclick="location.href = '@(Url.Page("/StopOptions/StopSummary", new { stopId = stop.Id }))'">
+						<td onclick="location.href = '@(Url.Page("/StopOptions/StopSummary", new { stopId = stop.Id }))'"
+							class="mouse-pointer">
                             @stop.Name
                         </td>
-						<td onclick="location.href = '@(Url.Page("/StopOptions/StopSummary", new { stopId = stop.Id }))'">
+						<td onclick="location.href = '@(Url.Page("/StopOptions/StopSummary", new { stopId = stop.Id }))'"
+							class="mouse-pointer">
                             @stop.Id
                         </td>
 					</tr>
@@ -49,7 +52,8 @@
 	<script>
 		hideLoader();
 
-		const nearbyStopsMap = L.map('nearby-stops-map').setView([51.5, -0.09], 13);
+		const nearbyStopsMap = L.map('nearby-stops-map')
+			.setView([@Model.NearbyStops.ToList()[0].Latitude, @Model.NearbyStops.ToList()[0].Longitude], 10);
 		const osmAttribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
 		const osmTileUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 
@@ -69,6 +73,7 @@
 			@:marker = L.marker([@stop.Latitude, @stop.Longitude]);
 
 			<text>
+			marker.addTo(nearbyStopsMap).bindPopup(title)
 			markers.push(marker);
 			marker.addEventListener('click', () => {
 				location.href = '@(Url.Page("/StopOptions/StopSummary", new { stopId = stop.Id }))';
@@ -83,7 +88,6 @@
 			marker.addEventListener('mouseout', function () {
 				marker.closePopup();
 			});
-			marker.addTo(nearbyStopsMap)
 		});
 	</script>
 }
