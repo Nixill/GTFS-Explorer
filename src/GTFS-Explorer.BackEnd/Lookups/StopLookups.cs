@@ -86,19 +86,28 @@ namespace GTFS_Explorer.BackEnd.Lookups
             }
         }
 
-        // public static Dictionary<Route, IEnumerable<StopTime>> GetStopSchedule(GTFSFeed feed, string stopId, LocalDate date)
-        // {
-        //     GeneratorDictionary<string, Route> routes = new GeneratorDictionary<string, Route>(
-        //         new FuncGenerator<string, Route>(x => feed.Routes.Get(feed.Trips.Get(x).RouteId))
-        //     );
+        public static Dictionary<Route, List<StopTime>> GetStopSchedule(GTFSFeed feed, string stopId, LocalDate date)
+        {
+            GeneratorDictionary<string, Route> routes = new GeneratorDictionary<string, Route>(
+                new FuncGenerator<string, Route>(x => feed.Routes.Get(feed.Trips.Get(x).RouteId))
+            );
 
-        //     var orderedStopTimes = feed.StopTimes
-        //         .Where(x => x.StopId == stopId)
-        //         .OrderBy(stm => new Tuple<string, TimeOfDay>(
-        //             routes[stm.TripId].Id,
-        //             stm.ArrivalTime.HasValue ? stm.ArrivalTime.Value : TimeOfDay.FromTotalSeconds(1000000)));
+            var orderedStopTimes = feed.StopTimes
+                .Where(x => x.StopId == stopId)
+                .OrderBy(stm => new Tuple<string, TimeOfDay>(
+                    routes[stm.TripId].Id,
+                    stm.ArrivalTime.HasValue ? stm.ArrivalTime.Value : TimeOfDay.FromTotalSeconds(1000000)));
 
+            GeneratorDictionary<Route, List<StopTime>> times = new GeneratorDictionary<Route, List<StopTime>>(
+                new FuncGenerator<Route, List<StopTime>>(x => new List<StopTime>())
+            );
 
-        // }
+            foreach (var time in orderedStopTimes)
+            {
+                times[routes[time.TripId]].Add(time);
+            }
+
+            return times;
+        }
     }
 }
