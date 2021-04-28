@@ -17,6 +17,7 @@ using GTFS_Explorer.BackEnd.SignalR;
 
 namespace GTFS_Explorer.FrontEnd.Pages
 {
+    [DisableRequestSizeLimit]
     public class IndexModel : PageModel
     {
         private readonly ILogger<IndexModel> _logger;
