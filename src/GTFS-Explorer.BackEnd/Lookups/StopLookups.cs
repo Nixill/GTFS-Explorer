@@ -88,12 +88,14 @@ namespace GTFS_Explorer.BackEnd.Lookups
 
         public static Dictionary<Route, List<StopTime>> GetStopSchedule(GTFSFeed feed, string stopId, LocalDate date)
         {
+            Tuple<List<string>, bool> services = RouteLookups.ServicesOn(feed, date);
+
             GeneratorDictionary<string, Route> routes = new GeneratorDictionary<string, Route>(
                 new FuncGenerator<string, Route>(x => feed.Routes.Get(feed.Trips.Get(x).RouteId))
             );
 
             var orderedStopTimes = feed.StopTimes
-                .Where(x => x.StopId == stopId)
+                .Where(x => x.StopId == stopId && services.Item1.Contains(feed.Trips.Get(x.TripId).ServiceId))
                 .OrderBy(stm => new Tuple<string, TimeOfDay>(
                     routes[stm.TripId].Id,
                     stm.ArrivalTime.HasValue ? stm.ArrivalTime.Value : TimeOfDay.FromTotalSeconds(1000000)));
