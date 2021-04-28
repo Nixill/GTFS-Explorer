@@ -1,45 +1,63 @@
 ﻿@page
 @model GTFS_Explorer.FrontEnd.Pages.MainPages.StopsModel
 @{
-    ViewData["Title"] = "Stops";
+	ViewData["Title"] = "Stops";
 }
 
 <section>
-    <div class="header">
-        <div class="header-right">
-            <a asp-page="/MainPages/Routes">Routes</a>
-            <a class="active" asp-page="/MainPages/Stops">Stops</a>
-            <a asp-page="/MainPages/SystemMap">Map</a>
-        </div>
-    </div>
-    <div class="floater">
-        <div class="floater-content scrollbar d-flex justify-content-around"
-             id="style-1">
-            <table class="table table-hover">
-                <thead>
-                    <tr>
-                        <th scope="col">Stop #</th>
-                        <th scope="col">Stop Name</th>
-                    </tr>
-                </thead>
-                <tbody class="routes-tbody">
-                    @foreach (var stop in Model.Stops)
-                    {
-                        <tr onclick="location.href = '@(Url.Page("/StopOptions/StopSummary", new { stopId = stop.Id }))'">
-                            <td scope="row">
-                                @stop.Id
-                            </td>
-                            <td scope="row">
-                                @stop.Name
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-    </div>
-    <form>
-        <input type="file" class="hidden" id="selectFile"/>
-        <label class="select-file" for="selectFile">Select New File</label>
-    </form>
+	<div class="header">
+		<div class="header-right">
+			<a asp-page="/MainPages/Routes">Routes</a>
+			<a class="active" asp-page="/MainPages/Stops">Stops</a>
+			<a asp-page="/MainPages/SystemMap">Map</a>
+		</div>
+	</div>
+	<div class="floater">
+		<input type="text" placeholder="Search..." id="search-stops">
+		<div class="floater-content scrollbar d-flex justify-content-around"
+			 id="style-1">
+			<table class="table table-hover">
+				<thead>
+					<tr>
+						<th scope="col">Stop #</th>
+						<th scope="col">Stop Name</th>
+					</tr>
+				</thead>
+				<tbody class="routes-tbody"
+					   id="all-stops-tbody">
+					@foreach (var stop in Model.Stops)
+					{
+						<tr onclick="location.href = '@(Url.Page("/StopOptions/StopSummary", new { stopId = stop.Id }))'">
+							<td scope="row">
+								@stop.Id
+							</td>
+							<td scope="row">
+								@stop.Name
+							</td>
+						</tr>
+					}
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<form>
+		<input type="file" class="hidden" id="selectFile" />
+		<label class="select-file" for="selectFile">Select New File</label>
+	</form>
 </section>
+
+
+@section Scripts
+{
+	<script>
+		var $rows = $('#all-stops-tbody tr');
+		$('#search-stops').keyup(function () {
+			var val = $.trim($(this).val()).replace(/ +/g, ' ').toLowerCase();
+
+			$rows.show().filter(function () {
+				var text = $(this).text().replace(/\s+/g, ' ').toLowerCase();
+				return !~text.indexOf(val);
+			}).hide();
+		});
+	</script>
+}
