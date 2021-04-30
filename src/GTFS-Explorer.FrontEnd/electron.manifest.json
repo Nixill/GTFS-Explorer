@@ -10,8 +10,8 @@
   "build": {
     "appId": "com.GTFS-Explorer.FrontEnd.app",
     "productName": "GTFS-Explorer.FrontEnd",
-    "copyright": "Copyright © 2020",
-    "buildVersion": "1.0.0",
+    "copyright": "Copyright © 2021",
+    "buildVersion": "0.1.0",
     "compression": "maximum",
     "directories": {
       "output": "../../../bin/Desktop"
@@ -20,14 +20,18 @@
       {
         "from": "./bin",
         "to": "bin",
-        "filter": [ "**/*" ]
+        "filter": [
+          "**/*"
+        ]
       }
     ],
     "files": [
       {
         "from": "./ElectronHostHook/node_modules",
         "to": "ElectronHostHook/node_modules",
-        "filter": [ "**/*" ]
+        "filter": [
+          "**/*"
+        ]
       },
       "**/*"
     ]
