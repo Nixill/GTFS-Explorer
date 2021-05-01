@@ -1,77 +1,78 @@
 ﻿@page "{routeId}/{servicesDate:datetime?}"
 @model GTFS_Explorer.FrontEnd.Pages.RouteOptions.RouteSummaryModel
 @{
-    ViewData["Title"] = "RouteSummary";
+	ViewData["Title"] = "RouteSummary";
 }
 
-@using GTFS_Explorer.Core.Models.Structs; 
+@using GTFS_Explorer.Core.Models.Structs;
 @using NodaTime
 @using GTFS_Explorer.BackEnd.Utilities
 
 <link rel="stylesheet" href="~/css/style.css" />
 <section>
-    <div class="header">
-        <div class="header-right">
-            <a class="active"
-               asp-page="/RouteOptions/RouteSummary"
-               asp-route-routeId="@Model.RouteId">Summary</a>
-            <a asp-page="/RouteOptions/RouteMap" 
-               asp-route-routeId="@Model.RouteId">Route Map</a>
-            <a asp-page="/RouteOptions/StopList"
-               asp-route-routeId="@Model.RouteId">Stop List</a>
-            <a asp-page="/RouteOptions/Schedule"
-               asp-route-routeId="@Model.RouteId">Schedule</a>
-        </div>
-    </div>
-    <div class="d-flex align-items-center">
-        <div class="container floater overflow-vscroll"
-             style="height: 560px;">
-            <div class="row ml-2 mt-3 mr-2 d-flex justify-content-center">
-                <div class="col-md-5 p-md-5">
-                    @if (string.IsNullOrEmpty(Model.Route.Description))
-                    {
-                        <p class="text-light">No description provided!</p>
-                    }
-                    else
-                    {
-                        <p class="text-light">@Model.Route.Description</p>
-                    }
+	<div class="header">
+		<div class="header-right">
+			<a class="active"
+			   asp-page="/RouteOptions/RouteSummary"
+			   asp-route-routeId="@Model.RouteId">Summary</a>
+			<a asp-page="/RouteOptions/RouteMap"
+			   asp-route-routeId="@Model.RouteId">Route Map</a>
+			<a asp-page="/RouteOptions/StopList"
+			   asp-route-routeId="@Model.RouteId">Stop List</a>
+			<a asp-page="/RouteOptions/Schedule"
+			   asp-route-routeId="@Model.RouteId">Schedule</a>
+		</div>
+	</div>
+	<div class="d-flex align-items-center">
+		<div class="container floater overflow-vscroll"
+			 style="height: 560px;">
+			<div class="row ml-2 mt-3 mr-2 d-flex justify-content-center">
+				<div class="col-md-5 p-md-5">
+					@if (string.IsNullOrEmpty(Model.Route.Description))
+					{
+						<p class="text-light">No description provided!</p>
+					}
+					else
+					{
+						<p class="text-light">@Model.Route.Description</p>
+					}
 
-                    @if (string.IsNullOrEmpty(Model.Route.Url))
-                    {
-                        <p class="text-light">No URL provided!</p>
-                    }
-                    else
-                    {
-                        <a class="text-light" id="route-link">@Model.Route.Url</a>
-                    }
-                </div>
-                <div class="col p-2"
-                     style="background-color: #EFEEED;">
+					@if (string.IsNullOrEmpty(Model.Route.Url))
+					{
+						<p class="text-light">No URL provided!</p>
+					}
+					else
+					{
+						<a class="text-light mouse-pointer" 
+						   id="route-link">@Model.Route.Url</a>
+					}
+				</div>
+				<div class="col p-2"
+					 style="background-color: #EFEEED;">
 					<div class="d-flex justify-content-between">
 						<h5 style="color: #087983;"
 							class="pt-2">
 							Route Stats
 						</h5>
 						<form asp-page-handler="RouteStats"
-                              class="d-flex justify-content-center">
+							  class="d-flex justify-content-center">
 							<input type="date"
 								   class="form-control"
 								   asp-for="ServicesDate" />
 							@Html.HiddenFor(m => m.RouteId)
 							<button type="submit"
 									class="btn-sm button submit"
-                                    style="margin-left: 10px">
+									style="margin-left: 10px">
 								See Stats
 							</button>
 						</form>
-					@{
-						int size = Model.StatsDictionary.Keys.Count;
-						int i = 0;
-						foreach (var direction in Model.StatsDictionary.Keys)
-						{
-							RouteStats stats;
-							Model.StatsDictionary.TryGetValue(direction, out stats);
+						@{
+							int size = Model.StatsDictionary.Keys.Count;
+							int i = 0;
+							foreach (var direction in Model.StatsDictionary.Keys)
+							{
+								RouteStats stats;
+								Model.StatsDictionary.TryGetValue(direction, out stats);
 								<div class="d-block p-lg-3">
 									<h6 class="text-black">
 										@{
@@ -107,52 +108,57 @@
 											}
 										}
 									</h6>
-								<ul>
-									<li class="text-black">
-										The route runs @ExtraUtils.DurationToTimeOfDay(stats.StartTime) to @ExtraUtils.DurationToTimeOfDay(stats.EndTime)
-									</li>
-									<li class="text-black">
-										Trips start at @string.Join(", ", stats.StartStops)
-									</li>
-									<li class="text-black">
-										Trips end at @string.Join(", ", stats.EndStops)
-									</li>
-									<li class="text-black">
-										Trips are @ExtraUtils.DurationToLengthString(stats.ShortestTrip) to
-										@ExtraUtils.DurationToLengthString(stats.LongestTrip) long
-										(@ExtraUtils.DurationToLengthString(stats.AverageTrip) on average).
-									</li>
-									@if (stats.GenericDay) {
-										<li class="text-danger">
-											Stats for generic @Model.ServicesDate.DayOfWeek schedule. No data provided for @(LocalDate.FromDateTime(Model.ServicesDate)).
+									<ul>
+										<li class="text-black">
+											The route runs @ExtraUtils.DurationToTimeOfDay(stats.StartTime) to @ExtraUtils.DurationToTimeOfDay(stats.EndTime)
 										</li>
-									}
-								</ul>
-							</div>
-							i++;
+										<li class="text-black">
+											Trips start at @string.Join(", ", stats.StartStops)
+										</li>
+										<li class="text-black">
+											Trips end at @string.Join(", ", stats.EndStops)
+										</li>
+										<li class="text-black">
+											Trips are @ExtraUtils.DurationToLengthString(stats.ShortestTrip) to
+											@ExtraUtils.DurationToLengthString(stats.LongestTrip) long
+											(@ExtraUtils.DurationToLengthString(stats.AverageTrip) on average).
+										</li>
+										@if (stats.GenericDay)
+										{
+											<li class="text-danger">
+												Stats for generic @Model.ServicesDate.DayOfWeek schedule. No data provided for @(LocalDate.FromDateTime(Model.ServicesDate)).
+											</li>
+										}
+									</ul>
+								</div>
+								i++;
+							}
 						}
-					}					</div>
-                </div>
-            </div>
-        </div>
-    </div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 
-    <form>
-        <input type="file" id="selectFile" class="hidden" />
-        <label class="select-file" for="selectFile">Select New File</label>
-        <a asp-page="/MainPages/Routes" id="returnToRoutes" />
-        <label class="select-file" for="returnToRoutes">Return to Routes</label>
-    </form>
+	<form>
+		<input type="file" id="selectFile" class="hidden" />
+		<label class="select-file" for="selectFile">Select New File</label>
+		<a asp-page="/MainPages/Routes" id="returnToRoutes" />
+		<label class="select-file" for="returnToRoutes">Return to Routes</label>
+	</form>
+</section>
 
-    <script>
+@section Scripts
+{
+	<script>
 		hideLoader();
 
-        (function(){
-            const { ipcRenderer } = require("electron");
+		(function () {
+			const { ipcRenderer } = require("electron");
 
-            document.getElementById("route-link").addEventListener("click", () => {
-                ipcRenderer.send("open-route-link");
-            });
-        }());
-    </script>
-</section>
+			document.getElementById("route-link").addEventListener("click", () => {
+				ipcRenderer.send("open-route-link");
+			});
+		}());
+	</script>
+}

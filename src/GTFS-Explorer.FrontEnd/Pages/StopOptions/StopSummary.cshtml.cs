@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using ElectronNET.API;
 using GTFS.Entities;
 using GTFS_Explorer.BackEnd.SignalR;
 using GTFS_Explorer.Core.Interfaces.RepoInterfaces;
@@ -35,6 +36,11 @@ namespace GTFS_Explorer.FrontEnd.Pages.StopOptions
             Stop = _stopsRepository.GetStopById(StopId);
             await _hubContext.Clients.All.SendAsync("loading-file");
             RoutesServingStop = _routesRepository.GetRoutesServingStop(stopId);
+
+            Electron.IpcMain.On("open-stop-link", async (args) =>
+            {
+                await Electron.Shell.OpenExternalAsync(Stop.Url);
+            });
         }
     }
 }
