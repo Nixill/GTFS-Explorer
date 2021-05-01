@@ -1,17 +1,17 @@
 {
-  "executable": "GTFS-Explorer.FrontEnd",
+  "executable": "GTFS-Explorer",
   "splashscreen": {
     "imageFile": ""
   },
-  "name": "GTFS-Explorer.FrontEnd",
+  "name": "GTFS-Explorer",
   "author": "",
   "singleInstance": false,
   "environment": "Production",
   "build": {
-    "appId": "com.GTFS-Explorer.FrontEnd.app",
-    "productName": "GTFS-Explorer.FrontEnd",
+    "appId": "com.GTFS-Explorer.app",
+    "productName": "GTFS-Explorer",
     "copyright": "Copyright © 2021",
-    "buildVersion": "0.1.1",
+    "buildVersion": "0.1.2",
     "compression": "maximum",
     "directories": {
       "output": "../../../bin/Desktop"
