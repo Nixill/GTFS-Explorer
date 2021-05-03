@@ -62,14 +62,6 @@
 	<script>
 		hideLoader();
 
-		(function () {
-			const { ipcRenderer } = require("electron");
-
-			document.getElementById("stop-link").addEventListener("click", () => {
-				ipcRenderer.send("open-stop-link");
-			});
-		}());
-
 		const stopMap = new L.map('stop-map').setView([@Model.Stop.Latitude, @Model.Stop.Longitude], 13);
 		const osmAttribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
 		const osmTileUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
@@ -88,5 +80,13 @@
 		stopMarker.on("click", () => {
 			stopMarker.openPopup();
 		});
+
+		(function () {
+			const { ipcRenderer } = require("electron");
+
+			document.getElementById("stop-link").addEventListener("click", () => {
+				ipcRenderer.send("open-stop-link");
+			});
+		}());
 	</script>
 }
