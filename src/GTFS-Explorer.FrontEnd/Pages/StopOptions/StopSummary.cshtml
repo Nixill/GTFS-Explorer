@@ -25,25 +25,30 @@
 				   id="stop-link">URL: @Model.Stop.Url</a>
 			}
 
-            <table class="table table-hover floater-background-color scrollbar" 
-				   id="style-1">
-                <thead>
-                    <tr>
-						<th>
-							Routes That Stop here
-						</th>
-                    </tr>
-                </thead>
-				<tbody>
-					@foreach (var route in Model.RoutesServingStop)
-					{
-						<tr class="mouse-pointer"
-							onclick="location.href = '@(Url.Page("/RouteOptions/RouteSummary", new { routeId = route.Id }))'">
-							<td>@route.LongName</td>
+			<div class="floater-background-color scrollbar"
+				 id="style-1"
+				 style="overflow:auto;
+						height: 78%;
+						width: 100%;">
+				<table class="table table-hover">
+					<thead>
+						<tr>
+							<th>
+								Routes That Stop here
+							</th>
 						</tr>
-					}
-				</tbody>
-            </table>
+					</thead>
+					<tbody>
+						@foreach (var route in Model.RoutesServingStop)
+						{
+							<tr class="mouse-pointer"
+								onclick="location.href = '@(Url.Page("/RouteOptions/RouteSummary", new { routeId = route.Id }))'">
+								<td>@route.LongName</td>
+							</tr>
+						}
+					</tbody>
+				</table>
+			</div>
 		</div>
         <div class="floater-content">
             <div class="h-100 d-block" id="stop-map"></div>
