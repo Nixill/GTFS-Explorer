@@ -17,3 +17,10 @@ Register the `dotnet` command (or an alias of your choice):
 Lastly, add the environment variable to your PATH:
 
 `export DOTNET_ROOT=/snap/dotnet-sdk/current`
+
+### 2. Compile and Run
+In the root project directory, run the following commands:
+`dotnet build`
+`dotnet run --project src/GTFS-Explorer.FrontEnd/GTFS-Explorer.FrontEnd.csproj`
+
+By default, the application will be hosted on port 5001. Open a web browser and navigate to [https://localhost:5001](https://localhost:5001).
